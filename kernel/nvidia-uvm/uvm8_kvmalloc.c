@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -89,7 +90,7 @@ MODULE_PARM_DESC(uvm_leak_checker,
                  "0 = disabled, 1 = count total bytes allocated and freed, 2 = per-allocation origin tracking.");
 
 NV_STATUS uvm_kvmalloc_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_leak_checker >= UVM_KVMALLOC_LEAK_CHECK_ORIGIN) {
         spin_lock_init(&g_uvm_leak_checker.lock);
         uvm_init_radix_tree_preloadable(&g_uvm_leak_checker.allocation_info);
@@ -101,10 +102,10 @@ NV_STATUS uvm_kvmalloc_init(void)
 
     g_malloc_initialized = true;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_kvmalloc_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!g_malloc_initialized)
         return;
 
@@ -146,10 +147,10 @@ void uvm_kvmalloc_exit(void)
     }
 
     g_malloc_initialized = false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS insert_info(uvm_kvmalloc_info_t *info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long irq_flags;
     int ret = radix_tree_preload(NV_UVM_GFP_FLAGS);
     if (ret != 0) {
@@ -165,10 +166,10 @@ static NV_STATUS insert_info(uvm_kvmalloc_info_t *info)
     // We shouldn't have duplicates
     UVM_ASSERT(ret == 0);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_kvmalloc_info_t *remove_info(void *p)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_kvmalloc_info_t *info;
     unsigned long irq_flags;
 
@@ -184,10 +185,10 @@ static uvm_kvmalloc_info_t *remove_info(void *p)
         UVM_ASSERT(info->ptr == p);
     }
     return info;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void alloc_tracking_add(void *p, const char *file, int line, const char *function)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Add uvm_kvsize(p) instead of size because uvm_kvsize might be larger (due
     // to ksize), and uvm_kvfree only knows about uvm_kvsize
     size_t size = uvm_kvsize(p);
@@ -216,10 +217,10 @@ static void alloc_tracking_add(void *p, const char *file, int line, const char *
         if (insert_info(info) != NV_OK)
             kmem_cache_free(g_uvm_leak_checker.info_cache, info);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void alloc_tracking_remove(void *p)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t size = uvm_kvsize(p);
     uvm_kvmalloc_info_t *info;
 
@@ -235,19 +236,19 @@ static void alloc_tracking_remove(void *p)
         if (info)
             kmem_cache_free(g_uvm_leak_checker.info_cache, info);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_vmalloc_hdr_t *get_hdr(void *p)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_vmalloc_hdr_t *hdr;
     UVM_ASSERT(is_vmalloc_addr(p));
     hdr = container_of(p, uvm_vmalloc_hdr_t, ptr);
     UVM_ASSERT(hdr->alloc_size > UVM_KMALLOC_THRESHOLD);
     return hdr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void *alloc_internal(size_t size, bool zero_memory)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_vmalloc_hdr_t *hdr;
 
     // Make sure that the allocation pointer is suitably-aligned for a natively-
@@ -273,30 +274,30 @@ static void *alloc_internal(size_t size, bool zero_memory)
 
     hdr->alloc_size = size;
     return hdr->ptr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *__uvm_kvmalloc(size_t size, const char *file, int line, const char *function)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *p = alloc_internal(size, false);
 
     if (uvm_leak_checker && p)
         alloc_tracking_add(p, file, line, function);
 
     return p;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *__uvm_kvmalloc_zero(size_t size, const char *file, int line, const char *function)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *p = alloc_internal(size, true);
 
     if (uvm_leak_checker && p)
         alloc_tracking_add(p, file, line, function);
 
     return p;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_kvfree(void *p)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!p)
         return;
 
@@ -307,11 +308,11 @@ void uvm_kvfree(void *p)
         vfree(get_hdr(p));
     else
         kfree(p);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Handle reallocs of kmalloc-based allocations
 static void *realloc_from_kmalloc(void *p, size_t new_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *new_p;
 
     // Simple case: kmalloc -> kmalloc
@@ -325,11 +326,11 @@ static void *realloc_from_kmalloc(void *p, size_t new_size)
     memcpy(new_p, p, min(ksize(p), new_size));
     kfree(p);
     return new_p;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Handle reallocs of vmalloc-based allocations
 static void *realloc_from_vmalloc(void *p, size_t new_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_vmalloc_hdr_t *old_hdr = get_hdr(p);
     void *new_p;
 
@@ -350,10 +351,10 @@ static void *realloc_from_vmalloc(void *p, size_t new_size)
     memcpy(new_p, p, min(new_size, old_hdr->alloc_size));
     vfree(old_hdr);
     return new_p;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *__uvm_kvrealloc(void *p, size_t new_size, const char *file, int line, const char *function)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *new_p;
     uvm_kvmalloc_info_t *info = NULL;
     size_t old_size;
@@ -400,13 +401,13 @@ void *__uvm_kvrealloc(void *p, size_t new_size, const char *file, int line, cons
     }
 
     return new_p;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 size_t uvm_kvsize(void *p)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(g_malloc_initialized);
     UVM_ASSERT(p);
     if (is_vmalloc_addr(p))
         return get_hdr(p)->alloc_size;
     return ksize(p);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

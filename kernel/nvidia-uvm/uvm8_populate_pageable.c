@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018-2019 NVIDIA Corporation
 
@@ -34,7 +35,7 @@ NV_STATUS uvm_populate_pageable_vma(struct vm_area_struct *vma,
                                     unsigned long start,
                                     unsigned long length,
                                     int min_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long vma_size;
     unsigned long vma_num_pages;
     unsigned long outer = start + length;
@@ -81,13 +82,13 @@ NV_STATUS uvm_populate_pageable_vma(struct vm_area_struct *vma,
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_populate_pageable(struct mm_struct *mm,
                                 const unsigned long start,
                                 const unsigned long length,
                                 int min_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct vm_area_struct *vma;
     const unsigned long outer = start + length;
     unsigned long prev_outer = outer;
@@ -115,10 +116,10 @@ NV_STATUS uvm_populate_pageable(struct mm_struct *mm,
 
     // Input range not fully covered by VMAs.
     return NV_ERR_INVALID_ADDRESS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_populate_pageable(const UVM_POPULATE_PAGEABLE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     bool allow_managed;
     bool skip_prot_check;
@@ -165,4 +166,4 @@ NV_STATUS uvm_api_populate_pageable(const UVM_POPULATE_PAGEABLE_PARAMS *params, 
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

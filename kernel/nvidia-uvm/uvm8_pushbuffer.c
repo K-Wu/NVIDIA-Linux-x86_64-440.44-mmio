@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -37,7 +38,7 @@
 static void uvm_pushbuffer_print_common(uvm_pushbuffer_t *pushbuffer, struct seq_file *s);
 
 static int nv_procfs_read_pushbuffer_info(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_t *pushbuffer = (uvm_pushbuffer_t *)s->private;
 
     if (!uvm_down_read_trylock(&g_uvm_global.pm.lock))
@@ -48,17 +49,17 @@ static int nv_procfs_read_pushbuffer_info(struct seq_file *s, void *v)
     uvm_up_read(&g_uvm_global.pm.lock);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_pushbuffer_info_entry(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(nv_procfs_read_pushbuffer_info(s, v));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 UVM_DEFINE_SINGLE_PROCFS_FILE(pushbuffer_info_entry);
 
 static NV_STATUS create_procfs(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = pushbuffer->channel_manager->gpu;
 
     // The pushbuffer info file is for debug only
@@ -73,10 +74,10 @@ static NV_STATUS create_procfs(uvm_pushbuffer_t *pushbuffer)
         return NV_ERR_OPERATING_SYSTEM;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_pushbuffer_create_common(uvm_channel_manager_t *channel_manager, bool with_procfs, uvm_pushbuffer_t **pushbuffer_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     int i;
     uvm_gpu_t *gpu = channel_manager->gpu;
@@ -124,10 +125,10 @@ NV_STATUS uvm_pushbuffer_create_common(uvm_channel_manager_t *channel_manager, b
 error:
     uvm_pushbuffer_destroy(pushbuffer);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pushbuffer_chunk_t *get_chunk_in_mask(uvm_pushbuffer_t *pushbuffer, unsigned long *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index = find_first_bit(mask, UVM_PUSHBUFFER_CHUNKS);
 
     uvm_assert_spinlock_locked(&pushbuffer->lock);
@@ -136,50 +137,50 @@ static uvm_pushbuffer_chunk_t *get_chunk_in_mask(uvm_pushbuffer_t *pushbuffer, u
         return NULL;
 
     return &pushbuffer->chunks[index];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pushbuffer_chunk_t *get_available_chunk(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return get_chunk_in_mask(pushbuffer, pushbuffer->available_chunks);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pushbuffer_chunk_t *get_idle_chunk(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return get_chunk_in_mask(pushbuffer, pushbuffer->idle_chunks);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 chunk_get_index(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index = chunk - pushbuffer->chunks;
     UVM_ASSERT(index < UVM_PUSHBUFFER_CHUNKS);
     return index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 chunk_get_offset(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return chunk_get_index(pushbuffer, chunk) * UVM_PUSHBUFFER_CHUNK_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void set_chunk(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk, unsigned long *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index = chunk_get_index(pushbuffer, chunk);
 
     uvm_assert_spinlock_locked(&pushbuffer->lock);
 
     __set_bit(index, mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void clear_chunk(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk, unsigned long *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index = chunk_get_index(pushbuffer, chunk);
 
     uvm_assert_spinlock_locked(&pushbuffer->lock);
 
     __clear_bit(index, mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pushbuffer_chunk_t *pick_chunk(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_chunk_t *chunk = get_idle_chunk(pushbuffer);
 
     uvm_assert_spinlock_locked(&pushbuffer->lock);
@@ -188,10 +189,10 @@ static uvm_pushbuffer_chunk_t *pick_chunk(uvm_pushbuffer_t *pushbuffer)
         chunk = get_available_chunk(pushbuffer);
 
     return chunk;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool try_claim_chunk(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push, uvm_pushbuffer_chunk_t **chunk_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_chunk_t *chunk;
 
     uvm_spin_lock(&pushbuffer->lock);
@@ -209,10 +210,10 @@ done:
     *chunk_out = chunk;
 
     return chunk != NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 *chunk_get_next_push_start_addr(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     char *push_start = (char *)uvm_rm_mem_get_cpu_va(pushbuffer->memory);
     push_start += chunk_get_offset(pushbuffer, chunk);
     push_start += chunk->next_push_start;
@@ -220,10 +221,10 @@ static NvU32 *chunk_get_next_push_start_addr(uvm_pushbuffer_t *pushbuffer, uvm_p
     UVM_ASSERT(((NvU64)push_start) % sizeof(NvU32) == 0);
 
     return (NvU32*)push_start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS claim_chunk(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push, uvm_pushbuffer_chunk_t **chunk_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_channel_manager_t *channel_manager = pushbuffer->channel_manager;
     uvm_spin_loop_t spin;
@@ -241,10 +242,10 @@ static NV_STATUS claim_chunk(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push, uvm
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_pushbuffer_begin_push(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_chunk_t *chunk;
     NV_STATUS status;
 
@@ -266,21 +267,21 @@ NV_STATUS uvm_pushbuffer_begin_push(uvm_pushbuffer_t *pushbuffer, uvm_push_t *pu
     push->next = push->begin;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpfifo_entry_t *chunk_get_first_gpfifo(uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return list_first_entry_or_null(&chunk->pending_gpfifos, uvm_gpfifo_entry_t, pending_list_node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpfifo_entry_t *chunk_get_last_gpfifo(uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return list_last_entry_or_null(&chunk->pending_gpfifos, uvm_gpfifo_entry_t, pending_list_node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the cpu put within the chunk (in range [0, UVM_PUSHBUFFER_CHUNK_SIZE])
 static NvU32 chunk_get_cpu_put(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpfifo_entry_t *gpfifo = chunk_get_last_gpfifo(chunk);
 
     uvm_assert_spinlock_locked(&pushbuffer->lock);
@@ -289,11 +290,11 @@ static NvU32 chunk_get_cpu_put(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chun
         return gpfifo->pushbuffer_offset + gpfifo->pushbuffer_size - chunk_get_offset(pushbuffer, chunk);
     else
         return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the gpu get within the chunk (in range [0, UVM_PUSHBUFFER_CHUNK_SIZE))
 static NvU32 chunk_get_gpu_get(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpfifo_entry_t *gpfifo = chunk_get_first_gpfifo(chunk);
 
     uvm_assert_spinlock_locked(&pushbuffer->lock);
@@ -302,10 +303,10 @@ static NvU32 chunk_get_gpu_get(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chun
         return gpfifo->pushbuffer_offset - chunk_get_offset(pushbuffer, chunk);
     else
         return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void update_chunk(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 gpu_get = chunk_get_gpu_get(pushbuffer, chunk);
     NvU32 cpu_put = chunk_get_cpu_put(pushbuffer, chunk);
 
@@ -349,10 +350,10 @@ static void update_chunk(uvm_pushbuffer_t *pushbuffer, uvm_pushbuffer_chunk_t *c
         set_chunk(pushbuffer, chunk, pushbuffer->available_chunks);
         chunk->next_push_start = 0;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pushbuffer_destroy(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (pushbuffer == NULL)
         return;
 
@@ -360,23 +361,23 @@ void uvm_pushbuffer_destroy(uvm_pushbuffer_t *pushbuffer)
 
     uvm_rm_mem_free(pushbuffer->memory);
     uvm_kvfree(pushbuffer);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pushbuffer_chunk_t *offset_to_chunk(uvm_pushbuffer_t *pushbuffer, NvU32 offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(offset < UVM_PUSHBUFFER_SIZE);
     return &pushbuffer->chunks[offset / UVM_PUSHBUFFER_CHUNK_SIZE];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pushbuffer_chunk_t *gpfifo_to_chunk(uvm_pushbuffer_t *pushbuffer, uvm_gpfifo_entry_t *gpfifo)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_chunk_t *chunk = offset_to_chunk(pushbuffer, gpfifo->pushbuffer_offset);
     UVM_ASSERT(offset_to_chunk(pushbuffer, gpfifo->pushbuffer_offset + gpfifo->pushbuffer_size - 1) == chunk);
     return chunk;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pushbuffer_mark_completed(uvm_pushbuffer_t *pushbuffer, uvm_gpfifo_entry_t *gpfifo)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_chunk_t *chunk = gpfifo_to_chunk(pushbuffer, gpfifo);
     uvm_push_info_t *push_info = gpfifo->push_info;
     bool need_to_update_chunk = false;
@@ -402,25 +403,25 @@ void uvm_pushbuffer_mark_completed(uvm_pushbuffer_t *pushbuffer, uvm_gpfifo_entr
         update_chunk(pushbuffer, chunk);
 
     uvm_spin_unlock(&pushbuffer->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_pushbuffer_get_offset_for_push(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 offset = (char*)push->begin - (char *)uvm_rm_mem_get_cpu_va(pushbuffer->memory);
 
     UVM_ASSERT(((NvU64)offset) % sizeof(NvU32) == 0);
 
     return offset;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_pushbuffer_get_gpu_va_for_push(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pushbuffer_base = uvm_rm_mem_get_gpu_va(pushbuffer->memory, uvm_push_get_gpu(push));
     return pushbuffer_base + uvm_pushbuffer_get_offset_for_push(pushbuffer, push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pushbuffer_end_push(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push, uvm_gpfifo_entry_t *gpfifo)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pushbuffer_chunk_t *chunk = gpfifo_to_chunk(pushbuffer, gpfifo);
 
     uvm_assert_spinlock_locked(&push->channel->pool->lock);
@@ -440,10 +441,10 @@ void uvm_pushbuffer_end_push(uvm_pushbuffer_t *pushbuffer, uvm_push_t *push, uvm
     // while the concurrent pushes sema has a higher lock order. To keep the
     // code structure simple, just up out of order here.
     uvm_up_out_of_order(&pushbuffer->concurrent_pushes_sema);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_pushbuffer_has_space(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool has_space;
 
     uvm_spin_lock(&pushbuffer->lock);
@@ -453,10 +454,10 @@ bool uvm_pushbuffer_has_space(uvm_pushbuffer_t *pushbuffer)
     uvm_spin_unlock(&pushbuffer->lock);
 
     return has_space;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pushbuffer_print_common(uvm_pushbuffer_t *pushbuffer, struct seq_file *s)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     UVM_SEQ_OR_DBG_PRINT(s, "Pushbuffer for GPU %s\n", pushbuffer->channel_manager->gpu->name);
@@ -477,9 +478,9 @@ void uvm_pushbuffer_print_common(uvm_pushbuffer_t *pushbuffer, struct seq_file *
     }
 
     uvm_spin_unlock(&pushbuffer->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pushbuffer_print(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_pushbuffer_print_common(pushbuffer, NULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

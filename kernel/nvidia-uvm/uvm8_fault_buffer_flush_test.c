@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -30,7 +31,7 @@
 #include "uvm8_va_space.h"
 
 NV_STATUS uvm8_test_fault_buffer_flush(UVM_TEST_FAULT_BUFFER_FLUSH_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_gpu_t *gpu;
@@ -66,4 +67,4 @@ NV_STATUS uvm8_test_fault_buffer_flush(UVM_TEST_FAULT_BUFFER_FLUSH_PARAMS *param
 out:
     uvm_global_mask_release(&retained_gpus);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

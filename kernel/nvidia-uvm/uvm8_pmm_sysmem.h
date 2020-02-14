@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017 NVIDIA Corporation
 
@@ -83,7 +84,7 @@ static NV_STATUS uvm_pmm_sysmem_mappings_add_gpu_chunk_mapping(uvm_pmm_sysmem_ma
                                                                NvU64 region_size,
                                                                uvm_va_block_t *va_block,
                                                                uvm_gpu_id_t owner)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_pmm_sysmem_mappings_indirect_supported())
         return NV_OK;
 
@@ -93,7 +94,7 @@ static NV_STATUS uvm_pmm_sysmem_mappings_add_gpu_chunk_mapping(uvm_pmm_sysmem_ma
                                                    region_size,
                                                    va_block,
                                                    owner);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // If the GPU used to initialize sysmem_mappings supports access counters, the
@@ -102,10 +103,10 @@ static NV_STATUS uvm_pmm_sysmem_mappings_add_gpu_chunk_mapping(uvm_pmm_sysmem_ma
 void uvm_pmm_sysmem_mappings_remove_gpu_mapping(uvm_pmm_sysmem_mappings_t *sysmem_mappings, NvU64 dma_addr);
 
 static void uvm_pmm_sysmem_mappings_remove_gpu_chunk_mapping(uvm_pmm_sysmem_mappings_t *sysmem_mappings, NvU64 dma_addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_pmm_sysmem_mappings_indirect_supported())
         uvm_pmm_sysmem_mappings_remove_gpu_mapping(sysmem_mappings, dma_addr);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Like uvm_pmm_sysmem_mappings_remove_gpu_mapping but it doesn't assert if the
 // mapping doesn't exist. See uvm_va_block_evict_chunks for more information.
@@ -121,10 +122,10 @@ void uvm_pmm_sysmem_mappings_reparent_gpu_mapping(uvm_pmm_sysmem_mappings_t *sys
 static void uvm_pmm_sysmem_mappings_reparent_gpu_chunk_mapping(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                                NvU64 dma_addr,
                                                                uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_pmm_sysmem_mappings_indirect_supported())
         uvm_pmm_sysmem_mappings_reparent_gpu_mapping(sysmem_mappings, dma_addr, va_block);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // If the GPU used to initialize sysmem_mappings supports access counters, the
 // mapping for the region starting at dma_addr is split into regions of
@@ -137,12 +138,12 @@ NV_STATUS uvm_pmm_sysmem_mappings_split_gpu_mappings(uvm_pmm_sysmem_mappings_t *
 static NV_STATUS uvm_pmm_sysmem_mappings_split_gpu_chunk_mappings(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                                   NvU64 dma_addr,
                                                                   NvU64 new_region_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_pmm_sysmem_mappings_indirect_supported())
         return NV_OK;
 
     return uvm_pmm_sysmem_mappings_split_gpu_mappings(sysmem_mappings, dma_addr, new_region_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // If the GPU used to initialize sysmem_mappings supports access counters, all
 // the mappings within the region [dma_addr, dma_addr + new_region_size) are
@@ -156,10 +157,10 @@ void uvm_pmm_sysmem_mappings_merge_gpu_mappings(uvm_pmm_sysmem_mappings_t *sysme
 static void uvm_pmm_sysmem_mappings_merge_gpu_chunk_mappings(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                              NvU64 dma_addr,
                                                              NvU64 new_region_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_pmm_sysmem_mappings_indirect_supported())
         uvm_pmm_sysmem_mappings_merge_gpu_mappings(sysmem_mappings, dma_addr, new_region_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Obtain the {va_block, virt_addr} information for the mappings in the given
 // [dma_addr:dma_addr + region_size) range. dma_addr and region_size must be

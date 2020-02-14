@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2013-2019 NVIDIA Corporation
 
@@ -35,9 +36,9 @@ module_param(uvm_debug_prints, int, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(uvm_debug_prints, "Enable uvm debug prints.");
 
 bool uvm_debug_prints_enabled()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_debug_prints != 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This parameter allows a program in user mode to call the kernel tests
 // defined in this module. This parameter should only be used for testing and
@@ -52,7 +53,7 @@ MODULE_PARM_DESC(uvm_enable_builtin_tests,
 // Convert kernel errno codes to corresponding NV_STATUS
 //
 NV_STATUS errno_to_nv_status(int errnoCode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (errnoCode < 0)
         errnoCode = -errnoCode;
 
@@ -111,11 +112,11 @@ NV_STATUS errno_to_nv_status(int errnoCode)
         default:
             return NV_ERR_GENERIC;
     };
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns POSITIVE errno
 int nv_status_to_errno(NV_STATUS status)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (status) {
         case NV_OK:
             return 0;
@@ -177,21 +178,21 @@ int nv_status_to_errno(NV_STATUS status)
             UVM_ASSERT_MSG(0, "No errno conversion set up for NV_STATUS %s\n", nvstatusToString(status));
             return EINVAL;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 //
 // This routine retrieves the process ID of current, but makes no attempt to
 // refcount or lock the pid in place.
 //
 unsigned uvm_get_stale_process_id(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (unsigned)task_tgid_vnr(current);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 unsigned uvm_get_stale_thread_id(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (unsigned)task_pid_vnr(current);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 //
 // A simple security rule for allowing access to UVM user space memory: if you
@@ -200,18 +201,18 @@ unsigned uvm_get_stale_thread_id(void)
 // without opening up any security holes.
 //
 NvBool uvm_user_id_security_check(uid_t euidTarget)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (NV_CURRENT_EUID() == euidTarget) ||
            (UVM_ROOT_UID == euidTarget);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void on_uvm_assert(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     (void)NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_spin_loop(uvm_spin_loop_t *spin)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 curr = NV_GETTIME();
 
     // This schedule() is required for functionality, not just system
@@ -243,5 +244,5 @@ NV_STATUS uvm_spin_loop(uvm_spin_loop_t *spin)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 

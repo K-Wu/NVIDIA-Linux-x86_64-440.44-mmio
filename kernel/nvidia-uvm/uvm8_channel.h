@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -244,15 +245,15 @@ NV_STATUS uvm_channel_manager_create_common(uvm_gpu_t *gpu, bool with_procfs, uv
 
 // Create a channel manager for the GPU with procfs
 static NV_STATUS uvm_channel_manager_create(uvm_gpu_t *gpu, uvm_channel_manager_t **manager_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_channel_manager_create_common(gpu, true, manager_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a channel manager for the GPU without procfs
 static NV_STATUS uvm_channel_manager_create_no_procfs(uvm_gpu_t *gpu, uvm_channel_manager_t **manager_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_channel_manager_create_common(gpu, false, manager_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Destroy the channel manager
 void uvm_channel_manager_destroy(uvm_channel_manager_t *channel_manager);
@@ -299,9 +300,9 @@ uvm_gpu_semaphore_t *uvm_channel_get_tracking_semaphore(uvm_channel_t *channel);
 
 // Channel's index within the manager's channel array.
 static unsigned uvm_channel_get_index(const uvm_channel_manager_t *channel_manager, const uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return channel - channel_manager->channels;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check whether the channel completed a value
 bool uvm_channel_is_value_completed(uvm_channel_t *channel, NvU64 value);
@@ -344,35 +345,35 @@ const char *uvm_channel_type_to_string(uvm_channel_type_t channel_type);
 void uvm_channel_print_pending_pushes(uvm_channel_t *channel);
 
 static uvm_gpu_t *uvm_channel_get_gpu(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return channel->pool->manager->gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_channel_update_progress_all(uvm_channel_t *channel);
 
 // Helper to get the channel at the given index
 // Returns NULL if index is greater or equal than the number of channels.
 static uvm_channel_t *uvm_channel_get(uvm_channel_manager_t *manager, unsigned index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const unsigned num_channels = manager->num_channels;
 
     return (index < num_channels) ? manager->channels + index : NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper to get the successor of a given channel.
 // Returns NULL if there is no successor, or the successor's index is equal
 // or greater than the outer limit
 static uvm_channel_t *uvm_channel_get_next(uvm_channel_manager_t *manager, uvm_channel_t *channel, unsigned outer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const unsigned next_index = uvm_channel_get_index(manager, channel) + 1;
 
     return (next_index < outer) ? uvm_channel_get(manager, next_index) : NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_channel_t *uvm_channel_first(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_channel_get(manager, 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper to iterate over the channels in a certain range.
 // If the iterator body adds or removes channels to the manager, the behavior

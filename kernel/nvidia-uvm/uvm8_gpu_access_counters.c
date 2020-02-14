@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017-2019 NVIDIA Corporation
 
@@ -116,19 +117,19 @@ static uvm_perf_module_t g_module_access_counters;
 // This information is allocated at VA space creation and freed during VA space
 // destruction.
 static va_space_access_counters_info_t *va_space_access_counters_info_get_or_null(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_perf_module_type_data(va_space->perf_modules_data, UVM_PERF_MODULE_TYPE_ACCESS_COUNTERS);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the access counters tracking struct for the given VA space. It asserts
 // that the information has been previously created.
 static va_space_access_counters_info_t *va_space_access_counters_info_get(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_access_counters_info_t *va_space_access_counters = va_space_access_counters_info_get_or_null(va_space);
     UVM_ASSERT(va_space_access_counters);
 
     return va_space_access_counters;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Whether access counter migrations are enabled or not. The policy is as
 // follows:
@@ -136,7 +137,7 @@ static va_space_access_counters_info_t *va_space_access_counters_info_get(uvm_va
 // - MOMC migrations are disabled by default on all systems
 // - Users can override this policy by specifying on/off
 static bool is_migration_enabled(uvm_access_counter_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int val;
     if (type == UVM_ACCESS_COUNTER_TYPE_MIMC) {
         val = uvm_perf_access_counter_mimc_migration_enable;
@@ -156,13 +157,13 @@ static bool is_migration_enabled(uvm_access_counter_type_t type)
         return false;
 
     return g_uvm_global.ats.supported;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create the access counters tracking struct for the given VA space
 //
 // VA space lock needs to be held in write mode
 static va_space_access_counters_info_t *va_space_access_counters_info_create(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_access_counters_info_t *va_space_access_counters;
     uvm_assert_rwsem_locked_write(&va_space->lock);
 
@@ -183,13 +184,13 @@ static va_space_access_counters_info_t *va_space_access_counters_info_create(uvm
     }
 
     return va_space_access_counters;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Destroy the access counters tracking struct for the given VA space
 //
 // VA space lock needs to be in write mode
 static void va_space_access_counters_info_destroy(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_access_counters_info_t *va_space_access_counters = va_space_access_counters_info_get_or_null(va_space);
     uvm_assert_rwsem_locked_write(&va_space->lock);
 
@@ -197,10 +198,10 @@ static void va_space_access_counters_info_destroy(uvm_va_space_t *va_space)
         uvm_perf_module_type_unset_data(va_space->perf_modules_data, UVM_PERF_MODULE_TYPE_ACCESS_COUNTERS);
         uvm_kvfree(va_space_access_counters);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS config_granularity_to_bytes(UVM_ACCESS_COUNTER_GRANULARITY granularity, NvU64 *bytes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (granularity) {
         case UVM_ACCESS_COUNTER_GRANULARITY_64K:
             *bytes = 64 * 1024ULL;
@@ -219,12 +220,12 @@ static NV_STATUS config_granularity_to_bytes(UVM_ACCESS_COUNTER_GRANULARITY gran
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Clear the given access counter and add it to the per-GPU clear tracker
 static NV_STATUS access_counter_clear_targeted(uvm_gpu_t *gpu,
                                                const uvm_access_counter_buffer_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
@@ -259,11 +260,11 @@ static NV_STATUS access_counter_clear_targeted(uvm_gpu_t *gpu,
     uvm_tracker_remove_completed(&access_counters->clear_tracker);
 
     return uvm_tracker_add_push_safe(&access_counters->clear_tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Clear all access counters and add the operation to the per-GPU clear tracker
 static NV_STATUS access_counter_clear_all(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
@@ -286,17 +287,17 @@ static NV_STATUS access_counter_clear_all(uvm_gpu_t *gpu)
     uvm_tracker_remove_completed(&access_counters->clear_tracker);
 
     return uvm_tracker_add_push_safe(&access_counters->clear_tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const uvm_gpu_access_counter_type_config_t *
 get_config_for_type(const uvm_access_counter_buffer_info_t *access_counters, uvm_access_counter_type_t counter_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return counter_type == UVM_ACCESS_COUNTER_TYPE_MIMC? &(access_counters)->current_config.mimc :
                                                          &(access_counters)->current_config.momc;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_gpu_access_counters_pending(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->access_counters_supported);
 
     // Fast path 1: we left some notifications unserviced in the buffer in the last pass
@@ -315,14 +316,14 @@ bool uvm_gpu_access_counters_pending(uvm_gpu_t *gpu)
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Initialize the configuration and pre-compute some required values for the
 // given access counter type
 static void init_access_counter_types_config(const UvmGpuAccessCntrConfig *config,
                                              uvm_access_counter_type_t counter_type,
                                              uvm_gpu_access_counter_type_config_t *counter_type_config)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU64 tracking_size = 0;
     UVM_ACCESS_COUNTER_GRANULARITY granularity = counter_type == UVM_ACCESS_COUNTER_TYPE_MIMC? config->mimcGranularity:
@@ -351,10 +352,10 @@ static void init_access_counter_types_config(const UvmGpuAccessCntrConfig *confi
     counter_type_config->sub_granularity_regions_per_translation =
         max(counter_type_config->translation_size / counter_type_config->sub_granularity_region_size, 1ULL);
     UVM_ASSERT(counter_type_config->sub_granularity_regions_per_translation <= UVM_SUB_GRANULARITY_REGIONS);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_init_access_counters(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
     uvm_access_counter_service_batch_context_t *batch_context = &access_counters->batch_service_context;
@@ -477,10 +478,10 @@ fail:
     uvm_gpu_deinit_access_counters(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_deinit_access_counters(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
     uvm_access_counter_service_batch_context_t *batch_context = &access_counters->batch_service_context;
 
@@ -503,10 +504,10 @@ void uvm_gpu_deinit_access_counters(uvm_gpu_t *gpu)
     batch_context->virt.notifications = NULL;
     batch_context->phys.notifications = NULL;
     batch_context->phys.translations = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_gpu_access_counters_required(const uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!gpu->access_counters_supported)
         return false;
 
@@ -514,13 +515,13 @@ bool uvm_gpu_access_counters_required(const uvm_gpu_t *gpu)
         return true;
 
     return is_migration_enabled(UVM_ACCESS_COUNTER_TYPE_MIMC) || is_migration_enabled(UVM_ACCESS_COUNTER_TYPE_MOMC);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function enables access counters with the given configuration and takes
 // ownership from RM. The function also stores the new configuration within the
 // uvm_gpu_t struct.
 static NV_STATUS access_counters_take_ownership(uvm_gpu_t *gpu, UvmGpuAccessCntrConfig *config)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status, disable_status;
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
 
@@ -563,12 +564,12 @@ error:
     UVM_ASSERT(disable_status == NV_OK);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // If ownership is yielded as part of reconfiguration, the access counters
 // handling refcount may not be 0
 static void access_counters_yield_ownership(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
 
@@ -583,12 +584,12 @@ static void access_counters_yield_ownership(uvm_gpu_t *gpu)
     status = uvm_rm_locked_call(nvUvmInterfaceDisableAccessCntr(gpu->rm_device,
                                                                 &access_counters->rm_info));
     UVM_ASSERT(status == NV_OK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Increment the refcount of access counter enablement. If this is the first
 // reference, enable the HW feature.
 static NV_STATUS gpu_access_counters_enable(uvm_gpu_t *gpu, UvmGpuAccessCntrConfig *config)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(mutex_is_locked(&gpu->isr.access_counters.service_lock.m));
     UVM_ASSERT(gpu->access_counters_supported);
     UVM_ASSERT(gpu->access_counter_buffer_info.rm_info.accessCntrBufferHandle);
@@ -605,23 +606,23 @@ static NV_STATUS gpu_access_counters_enable(uvm_gpu_t *gpu, UvmGpuAccessCntrConf
 
     ++gpu->isr.access_counters.handling_ref_count;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Decrement the refcount of access counter enablement. If this is the last
 // reference, disable the HW feature.
 static void gpu_access_counters_disable(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(mutex_is_locked(&gpu->isr.access_counters.service_lock.m));
     UVM_ASSERT(gpu->access_counters_supported);
     UVM_ASSERT(gpu->isr.access_counters.handling_ref_count > 0);
 
     if (--gpu->isr.access_counters.handling_ref_count == 0)
         access_counters_yield_ownership(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Invoked during registration of the GPU in the VA space
 NV_STATUS uvm_gpu_access_counters_enable(uvm_gpu_t *gpu, uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     UVM_ASSERT(gpu->access_counters_supported);
@@ -654,10 +655,10 @@ NV_STATUS uvm_gpu_access_counters_enable(uvm_gpu_t *gpu, uvm_va_space_t *va_spac
     uvm_gpu_access_counters_isr_unlock(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counters_disable(uvm_gpu_t *gpu, uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->access_counters_supported);
 
     uvm_gpu_access_counters_isr_lock(gpu);
@@ -672,10 +673,10 @@ void uvm_gpu_access_counters_disable(uvm_gpu_t *gpu, uvm_va_space_t *va_space)
     }
 
     uvm_gpu_access_counters_isr_unlock(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void write_get(uvm_gpu_t *gpu, NvU32 get)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
 
     UVM_ASSERT(mutex_is_locked(&gpu->isr.access_counters.service_lock.m));
@@ -688,10 +689,10 @@ static void write_get(uvm_gpu_t *gpu, NvU32 get)
 
     // Update get pointer on the GPU
     UVM_GPU_WRITE_ONCE(*access_counters->rm_info.pAccessCntrBufferGet, get);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void access_counter_buffer_flush_locked(uvm_gpu_t *gpu, uvm_gpu_buffer_flush_mode_t flush_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 get;
     NvU32 put;
     uvm_spin_loop_t spin;
@@ -722,10 +723,10 @@ static void access_counter_buffer_flush_locked(uvm_gpu_t *gpu, uvm_gpu_buffer_fl
     }
 
     write_get(gpu, get);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counter_buffer_flush(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->access_counters_supported);
 
     // Disables access counter interrupts and notification servicing
@@ -735,11 +736,11 @@ void uvm_gpu_access_counter_buffer_flush(uvm_gpu_t *gpu)
         access_counter_buffer_flush_locked(gpu, UVM_GPU_BUFFER_FLUSH_MODE_UPDATE_PUT);
 
     uvm_gpu_access_counters_isr_unlock(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline int cmp_access_counter_instance_ptr(const uvm_access_counter_buffer_entry_t *a,
                                                   const uvm_access_counter_buffer_entry_t *b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result;
 
     result = uvm_gpu_phys_addr_cmp(a->virtual_info.instance_ptr, b->virtual_info.instance_ptr);
@@ -748,12 +749,12 @@ static inline int cmp_access_counter_instance_ptr(const uvm_access_counter_buffe
     if (result != 0)
         return result;
     return UVM_CMP_DEFAULT(a->virtual_info.ve_id, b->virtual_info.ve_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sort comparator for pointers to GVA access counter notification buffer
 // entries that sorts by instance pointer
 static int cmp_sort_virt_notifications_by_instance_ptr(const void *_a, const void *_b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const uvm_access_counter_buffer_entry_t *a = *(const uvm_access_counter_buffer_entry_t **)_a;
     const uvm_access_counter_buffer_entry_t *b = *(const uvm_access_counter_buffer_entry_t **)_b;
 
@@ -761,12 +762,12 @@ static int cmp_sort_virt_notifications_by_instance_ptr(const void *_a, const voi
     UVM_ASSERT(b->address.is_virtual);
 
     return cmp_access_counter_instance_ptr(a, b);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sort comparator for pointers to GPA access counter notification buffer
 // entries that sorts by physical address' aperture
 static int cmp_sort_phys_notifications_by_processor_id(const void *_a, const void *_b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const uvm_access_counter_buffer_entry_t *a = *(const uvm_access_counter_buffer_entry_t **)_a;
     const uvm_access_counter_buffer_entry_t *b = *(const uvm_access_counter_buffer_entry_t **)_b;
 
@@ -775,7 +776,7 @@ static int cmp_sort_phys_notifications_by_processor_id(const void *_a, const voi
 
     return UVM_CMP_DEFAULT(uvm_id_value(a->physical_info.resident_id),
                            uvm_id_value(b->physical_info.resident_id));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -791,7 +792,7 @@ typedef enum
 static NvU32 fetch_access_counter_buffer_entries(uvm_gpu_t *gpu,
                                                  uvm_access_counter_service_batch_context_t *batch_context,
                                                  notification_fetch_mode_t fetch_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 get;
     NvU32 put;
     NvU32 notification_index;
@@ -894,11 +895,11 @@ done:
     write_get(gpu, get);
 
     return notification_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void translate_virt_notifications_instance_ptrs(uvm_gpu_t *gpu,
                                                        uvm_access_counter_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NV_STATUS status;
 
@@ -920,14 +921,14 @@ static void translate_virt_notifications_instance_ptrs(uvm_gpu_t *gpu,
             current_entry->virtual_info.va_space = batch_context->virt.notifications[i - 1]->virtual_info.va_space;
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // GVA notifications provide an instance_ptr and ve_id that can be directly
 // translated to a VA space. In order to minimize translations, we sort the
 // entries by instance_ptr.
 static void preprocess_virt_notifications(uvm_gpu_t *gpu,
                                           uvm_access_counter_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!batch_context->virt.is_single_instance_ptr) {
         // Sort by instance_ptr
         sort(batch_context->virt.notifications,
@@ -938,11 +939,11 @@ static void preprocess_virt_notifications(uvm_gpu_t *gpu,
     }
 
     translate_virt_notifications_instance_ptrs(gpu, batch_context);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_virt_notifications(uvm_gpu_t *gpu,
                                             uvm_access_counter_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // TODO: Bug 1990466: Service virtual notifications. Entries with NULL
     // va_space are simply dropped.
     if (uvm_enable_builtin_tests) {
@@ -957,14 +958,14 @@ static NV_STATUS service_virt_notifications(uvm_gpu_t *gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // GPA notifications provide a physical address and an aperture. Sort
 // accesses by aperture to try to coalesce operations on the same target
 // processor.
 static void preprocess_phys_notifications(uvm_gpu_t *gpu,
                                           uvm_access_counter_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!batch_context->phys.is_single_aperture) {
         // Sort by instance_ptr
         sort(batch_context->phys.notifications,
@@ -973,14 +974,14 @@ static void preprocess_phys_notifications(uvm_gpu_t *gpu,
              cmp_sort_phys_notifications_by_processor_id,
              NULL);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_va_block_locked(uvm_processor_id_t processor,
                                          uvm_va_block_t *va_block,
                                          uvm_va_block_retry_t *va_block_retry,
                                          uvm_service_block_context_t *service_context,
                                          uvm_page_mask_t *accessed_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space;
     uvm_range_group_range_iter_t iter;
@@ -1111,13 +1112,13 @@ static NV_STATUS service_va_block_locked(uvm_processor_id_t processor,
     ++service_context->num_retries;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void reverse_mappings_to_va_block_page_mask(uvm_va_block_t *va_block,
                                                    const uvm_reverse_map_t *reverse_mappings,
                                                    size_t num_reverse_mappings,
                                                    uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index;
 
     UVM_ASSERT(page_mask);
@@ -1142,7 +1143,7 @@ static void reverse_mappings_to_va_block_page_mask(uvm_va_block_t *va_block,
 
         uvm_page_mask_region_fill(page_mask, region);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_phys_single_va_block(uvm_gpu_t *gpu,
                                               uvm_access_counter_service_batch_context_t *batch_context,
@@ -1150,7 +1151,7 @@ static NV_STATUS service_phys_single_va_block(uvm_gpu_t *gpu,
                                               const uvm_reverse_map_t *reverse_mappings,
                                               size_t num_reverse_mappings,
                                               bool *clear_counter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index;
     uvm_va_block_t *va_block = reverse_mappings[0].va_block;
     uvm_va_space_t *va_space = NULL;
@@ -1231,7 +1232,7 @@ done:
         uvm_va_block_release(va_block);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_phys_va_blocks(uvm_gpu_t *gpu,
                                         uvm_access_counter_service_batch_context_t *batch_context,
@@ -1239,7 +1240,7 @@ static NV_STATUS service_phys_va_blocks(uvm_gpu_t *gpu,
                                         const uvm_reverse_map_t *reverse_mappings,
                                         size_t num_reverse_mappings,
                                         bool *clear_counter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     size_t index;
 
@@ -1264,7 +1265,7 @@ static NV_STATUS service_phys_va_blocks(uvm_gpu_t *gpu,
         uvm_va_block_release(reverse_mappings[index].va_block);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Iterate over all regions set in the given sub_granularity mask
 #define for_each_sub_granularity_region(region_start, region_end, sub_granularity, config)                       \
@@ -1281,7 +1282,7 @@ static NV_STATUS service_phys_va_blocks(uvm_gpu_t *gpu,
                                            (region_start) + 1))
 
 static bool are_reverse_mappings_on_single_block(const uvm_reverse_map_t *reverse_mappings, size_t num_reverse_mappings)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index;
     uvm_va_block_t *prev_va_block = NULL;
 
@@ -1296,7 +1297,7 @@ static bool are_reverse_mappings_on_single_block(const uvm_reverse_map_t *revers
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Service the given translation range. It will return the count of the reverse
 // mappings found during servicing in num_reverse_mappings, even if the function
@@ -1310,7 +1311,7 @@ static NV_STATUS service_phys_notification_translation(uvm_gpu_t *gpu,
                                                        unsigned long sub_granularity,
                                                        size_t *num_reverse_mappings,
                                                        bool *clear_counter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU32 region_start, region_end;
 
@@ -1362,12 +1363,12 @@ static NV_STATUS service_phys_notification_translation(uvm_gpu_t *gpu,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_phys_notification(uvm_gpu_t *gpu,
                                            uvm_access_counter_service_batch_context_t *batch_context,
                                            const uvm_access_counter_buffer_entry_t *current_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 address;
     NvU64 translation_index;
     uvm_access_counter_buffer_info_t *access_counters = &gpu->access_counter_buffer_info;
@@ -1438,12 +1439,12 @@ static NV_STATUS service_phys_notification(uvm_gpu_t *gpu,
         status = access_counter_clear_targeted(gpu, current_entry);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 2018899: Add statistics for dropped access counter notifications
 static NV_STATUS service_phys_notifications(uvm_gpu_t *gpu,
                                             uvm_access_counter_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     preprocess_phys_notifications(gpu, batch_context);
 
@@ -1460,10 +1461,10 @@ static NV_STATUS service_phys_notifications(uvm_gpu_t *gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_service_access_counters(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_access_counter_service_batch_context_t *batch_context = &gpu->access_counter_buffer_info.batch_service_context;
 
@@ -1495,13 +1496,13 @@ void uvm_gpu_service_access_counters(uvm_gpu_t *gpu)
                       nvstatusToString(status),
                       gpu->name);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const NvU32 g_uvm_access_counters_threshold_max = (1 << 15) - 1;
 
 static NV_STATUS access_counters_config_from_test_params(const UVM_TEST_RECONFIGURE_ACCESS_COUNTERS_PARAMS *params,
                                                          UvmGpuAccessCntrConfig *config)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 tracking_size;
     memset(config, 0, sizeof(*config));
 
@@ -1526,17 +1527,17 @@ static NV_STATUS access_counters_config_from_test_params(const UVM_TEST_RECONFIG
     config->threshold = params->threshold;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_space_has_access_counter_migrations(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_access_counters_info_t *va_space_access_counters = va_space_access_counters_info_get(va_space);
 
     return atomic_read(&va_space_access_counters->params.enable_mimc_migrations);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_access_counters_init()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_module_init("perf_access_counters",
                          UVM_PERF_MODULE_TYPE_ACCESS_COUNTERS,
                          g_callbacks_access_counters,
@@ -1544,14 +1545,14 @@ NV_STATUS uvm_perf_access_counters_init()
                          &g_module_access_counters);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_access_counters_exit()
-{
-}
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_access_counters_load(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_access_counters_info_t *va_space_access_counters;
     NV_STATUS status;
 
@@ -1564,18 +1565,18 @@ NV_STATUS uvm_perf_access_counters_load(uvm_va_space_t *va_space)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_access_counters_unload(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_module_unload(&g_module_access_counters, va_space);
 
     va_space_access_counters_info_destroy(va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_access_counters_enabled_by_default(UVM_TEST_ACCESS_COUNTERS_ENABLED_BY_DEFAULT_PARAMS *params,
                                                        struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_gpu_t *gpu = NULL;
 
@@ -1588,11 +1589,11 @@ NV_STATUS uvm8_test_access_counters_enabled_by_default(UVM_TEST_ACCESS_COUNTERS_
     uvm_gpu_release(gpu);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_reconfigure_access_counters(UVM_TEST_RECONFIGURE_ACCESS_COUNTERS_PARAMS *params,
                                                 struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu = NULL;
     UvmGpuAccessCntrConfig config = {0};
@@ -1702,10 +1703,10 @@ exit_release_gpu:
     uvm_gpu_release(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_reset_access_counters(UVM_TEST_RESET_ACCESS_COUNTERS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu = NULL;
     uvm_access_counter_buffer_info_t *access_counters;
@@ -1763,10 +1764,10 @@ exit_release_gpu:
     uvm_gpu_release(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counters_set_ignore(uvm_gpu_t *gpu, bool do_ignore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool change_intr_state = false;
 
     if (!gpu->access_counters_supported)
@@ -1801,10 +1802,10 @@ void uvm_gpu_access_counters_set_ignore(uvm_gpu_t *gpu, bool do_ignore)
     }
 
     uvm_gpu_access_counters_isr_unlock(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_set_ignore_access_counters(UVM_TEST_SET_IGNORE_ACCESS_COUNTERS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu = NULL;
@@ -1820,4 +1821,4 @@ NV_STATUS uvm8_test_set_ignore_access_counters(UVM_TEST_SET_IGNORE_ACCESS_COUNTE
 
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

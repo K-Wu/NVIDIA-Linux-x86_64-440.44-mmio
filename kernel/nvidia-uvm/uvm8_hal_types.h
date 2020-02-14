@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -53,16 +54,16 @@ typedef enum
 const char *uvm_aperture_string(uvm_aperture_t aperture);
 
 static inline NvU32 UVM_APERTURE_PEER_ID(uvm_aperture_t aperture)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(aperture < UVM_APERTURE_PEER_MAX);
     return (NvU32)aperture;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline uvm_aperture_t UVM_APERTURE_PEER(NvU32 id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(id < (NvU32)UVM_APERTURE_PEER_MAX);
     return (uvm_aperture_t)id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // A physical GPU address
 typedef struct
@@ -74,19 +75,19 @@ typedef struct
 
 // Create a physical GPU address
 static uvm_gpu_phys_address_t uvm_gpu_phys_address(uvm_aperture_t aperture, NvU64 address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (uvm_gpu_phys_address_t){ address, aperture };
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compare two gpu physical addresses
 static int uvm_gpu_phys_addr_cmp(uvm_gpu_phys_address_t a, uvm_gpu_phys_address_t b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result = UVM_CMP_DEFAULT(a.aperture, b.aperture);
     if (result != 0)
         return result;
 
     return UVM_CMP_DEFAULT(a.address, b.address);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // A physical or virtual address directly accessible by a GPU.
 // This implies that the address already went through identity mapping and IOMMU
@@ -106,39 +107,39 @@ typedef struct
 
 // Create a virtual GPU address
 static uvm_gpu_address_t uvm_gpu_address_virtual(NvU64 va)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_address_t address = {0};
     address.address = va;
     address.aperture = UVM_APERTURE_MAX;
     address.is_virtual = true;
     return address;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a physical GPU address
 static uvm_gpu_address_t uvm_gpu_address_physical(uvm_aperture_t aperture, NvU64 pa)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_address_t address = {0};
     address.aperture = aperture;
     address.address = pa;
     return address;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a GPU address from a physical GPU address
 static uvm_gpu_address_t uvm_gpu_address_from_phys(uvm_gpu_phys_address_t phys_address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_address_physical(phys_address.aperture, phys_address.address);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const char *uvm_gpu_address_aperture_string(uvm_gpu_address_t addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (addr.is_virtual)
         return "VIRTUAL";
     return uvm_aperture_string(addr.aperture);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compare two gpu addresses
 static int uvm_gpu_addr_cmp(uvm_gpu_address_t a, uvm_gpu_address_t b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result = UVM_CMP_DEFAULT(a.is_virtual, b.is_virtual);
     if (result != 0)
         return result;
@@ -152,7 +153,7 @@ static int uvm_gpu_addr_cmp(uvm_gpu_address_t a, uvm_gpu_address_t b)
 
         return uvm_gpu_phys_addr_cmp(phys_a, phys_b);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // For processors with no concept of an atomic fault (the CPU and pre-Pascal
 // GPUs), UVM_PROT_READ_WRITE and UVM_PROT_READ_WRITE_ATOMIC are
@@ -193,27 +194,27 @@ typedef enum
 const char *uvm_fault_access_type_string(uvm_fault_access_type_t fault_access_type);
 
 static NvU32 uvm_fault_access_type_mask_bit(uvm_fault_access_type_t fault_access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_FAULT_ACCESS_TYPE_COUNT >= 32);
 
     UVM_ASSERT(fault_access_type >= 0);
     UVM_ASSERT(fault_access_type < UVM_FAULT_ACCESS_TYPE_COUNT);
 
     return (NvU32)1 << fault_access_type;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_fault_access_type_mask_test(NvU32 mask, uvm_fault_access_type_t fault_access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_fault_access_type_mask_bit(fault_access_type) & mask;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_fault_access_type_mask_set(NvU32 *mask, uvm_fault_access_type_t fault_access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     *mask |= uvm_fault_access_type_mask_bit(fault_access_type);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_fault_access_type_t uvm_fault_access_type_mask_highest(NvU32 mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int pos;
 
     UVM_ASSERT((1 << UVM_FAULT_ACCESS_TYPE_COUNT) > mask);
@@ -223,10 +224,10 @@ static uvm_fault_access_type_t uvm_fault_access_type_mask_highest(NvU32 mask)
     UVM_ASSERT(pos < UVM_FAULT_ACCESS_TYPE_COUNT);
 
     return pos;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_fault_access_type_t uvm_fault_access_type_mask_lowest(NvU32 mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int pos;
 
     UVM_ASSERT((1 << UVM_FAULT_ACCESS_TYPE_COUNT) > mask);
@@ -236,7 +237,7 @@ static uvm_fault_access_type_t uvm_fault_access_type_mask_lowest(NvU32 mask)
     UVM_ASSERT(pos < UVM_FAULT_ACCESS_TYPE_COUNT);
 
     return pos;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -425,11 +426,11 @@ typedef enum
 } uvm_fault_replay_type_t;
 
 static uvm_membar_t uvm_membar_max(uvm_membar_t membar_1, uvm_membar_t membar_2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_MEMBAR_NONE >= UVM_MEMBAR_GPU);
     BUILD_BUG_ON(UVM_MEMBAR_GPU >= UVM_MEMBAR_SYS);
     return max(membar_1, membar_2);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -505,7 +506,7 @@ struct uvm_access_counter_buffer_entry_struct
 };
 
 static uvm_prot_t uvm_fault_access_type_to_prot(uvm_fault_access_type_t access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (access_type) {
         case UVM_FAULT_ACCESS_TYPE_ATOMIC_STRONG:
             return UVM_PROT_READ_WRITE_ATOMIC;
@@ -519,6 +520,6 @@ static uvm_prot_t uvm_fault_access_type_to_prot(uvm_fault_access_type_t access_t
             // a mapping with, at least, READ_ONLY access permission
             return UVM_PROT_READ_ONLY;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // __UVM8_HAL_TYPES_H__

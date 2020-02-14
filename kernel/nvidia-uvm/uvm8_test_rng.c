@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -36,15 +37,15 @@
 // but they aren't available on kernels < 2.6.35.
 
 void uvm_test_rng_init(uvm_test_rng_t *rng, NvU32 seed)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rng->z     = 362436069;
     rng->w     = 521288629;
     rng->jcong = 380116160;
     rng->jsr   = seed;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_test_rng_32(uvm_test_rng_t *rng)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned int mwc;
 
     rng->z = 36969*(rng->z & 65535) + (rng->z >> 16);
@@ -60,57 +61,57 @@ NvU32 uvm_test_rng_32(uvm_test_rng_t *rng)
     mwc = (rng->z << 16) + rng->w;
 
     return (mwc ^ rng->jcong) + rng->jsr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_test_rng_64(uvm_test_rng_t *rng)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 val64;
     val64 = uvm_test_rng_32(rng);
     val64 <<= 32;
     val64 |= uvm_test_rng_32(rng);
     return val64;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvUPtr uvm_test_rng_ptr(uvm_test_rng_t *rng)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (sizeof(NvUPtr) == sizeof(NvU32))
         return uvm_test_rng_32(rng);
     return (NvUPtr)uvm_test_rng_64(rng);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // These range-based computations are subject to modulo bias, depending on the
 // range. As described above, this is good enough for testing purposes.
 NvU32 uvm_test_rng_range_32(uvm_test_rng_t *rng, NvU32 lo, NvU32 hi)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (lo == 0 && hi == ~0U)
         return uvm_test_rng_32(rng);
     return lo + (uvm_test_rng_32(rng) % (hi - lo + 1));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_test_rng_range_64(uvm_test_rng_t *rng, NvU64 lo, NvU64 hi)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (lo == 0 && hi == ~0ULL)
         return uvm_test_rng_64(rng);
     return lo + (uvm_test_rng_64(rng) % (hi - lo + 1));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvUPtr uvm_test_rng_range_ptr(uvm_test_rng_t *rng, NvUPtr lo, NvUPtr hi)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (sizeof(NvUPtr) == sizeof(NvU32))
         return uvm_test_rng_range_32(rng, lo, hi);
     return (NvUPtr)uvm_test_rng_range_64(rng, lo, hi);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // Logarithmic distribution
 
 NvU64 uvm_test_rng_log64(uvm_test_rng_t *rng)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_test_rng_range_log64(rng, 0, ~0ULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_test_rng_range_log64(uvm_test_rng_t *rng, NvU64 lo, NvU64 hi)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 log2_lo, log2_hi, rand_exp;
     NvU64 rand_lo, rand_hi;
 
@@ -158,10 +159,10 @@ NvU64 uvm_test_rng_range_log64(uvm_test_rng_t *rng, NvU64 lo, NvU64 hi)
     rand_hi = min(rand_hi, hi);
 
     return uvm_test_rng_range_64(rng, rand_lo, rand_hi);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_test_rng_memset(uvm_test_rng_t *rng, void *ptr, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // This implementation is optimized to generate as few random numbers as
     // possible, and to write to memory in natively-aligned chunks. This means
     // the code is somewhat ugly because it has to handle all starting
@@ -203,7 +204,7 @@ void uvm_test_rng_memset(uvm_test_rng_t *rng, void *ptr, size_t size)
             val >>= 8;
         } while (p.p8 < p_end.p8);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // -------- Unit test --------
 
@@ -277,7 +278,7 @@ static const NvU64 test_vals_log64[] =
 };
 
 NV_STATUS uvm8_test_rng_sanity(UVM_TEST_RNG_SANITY_PARAMS *params, struct file *file)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_test_rng_t rng;
     size_t i, j;
     NvU32 seed = 0;
@@ -337,4 +338,4 @@ NV_STATUS uvm8_test_rng_sanity(UVM_TEST_RNG_SANITY_PARAMS *params, struct file *
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

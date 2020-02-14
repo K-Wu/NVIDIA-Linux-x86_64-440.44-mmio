@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -87,11 +88,11 @@ typedef struct
 
 // Obtain the descriptor of module-allocated data for the given module type
 static inline void *uvm_perf_module_type_data(uvm_perf_module_data_desc_t *modules_data, uvm_perf_module_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(type >= UVM_PERF_MODULE_FIRST_TYPE && type < UVM_PERF_MODULE_TYPE_COUNT);
 
     return modules_data[type].data;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_module_type_set_data(uvm_perf_module_data_desc_t *modules_data, void *data, uvm_perf_module_type_t type);
 

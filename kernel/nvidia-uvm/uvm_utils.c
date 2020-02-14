@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2013 NVIDIA Corporation
 
@@ -60,15 +61,15 @@
 //
 
 static char UvmDigitToHex(unsigned value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (value >= 10)
         return value - 10 + 'a';
     else
         return value + '0';
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 int format_uuid_to_buffer(char * buffer, unsigned bufferLength, const NvProcessorUuid * pUuidStruct)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     char * str = buffer+8;
     unsigned i, dashMask = 1 << 4 | 1 << 6 | 1 << 8 | 1 << 10;
 
@@ -86,4 +87,4 @@ int format_uuid_to_buffer(char * buffer, unsigned bufferLength, const NvProcesso
     }
     *str = 0;
     return (int)(str-buffer);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

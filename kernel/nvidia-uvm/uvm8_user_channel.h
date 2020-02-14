@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -211,9 +212,9 @@ struct uvm_user_channel_struct
 // If another thread called uvm_user_channel_detach in the meantime,
 // user_channel->gpu_va_space will be NULL.
 static inline void uvm_user_channel_retain(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     nv_kref_get(&user_channel->kref);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This only frees the user channel object itself, so the user channel must have
 // been detached and destroyed prior to the final release.

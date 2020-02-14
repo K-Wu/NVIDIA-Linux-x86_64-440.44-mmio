@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -530,27 +531,27 @@ NV_STATUS uvm_va_block_create(uvm_va_range_t *va_range,
 void uvm_va_block_destroy(nv_kref_t *kref);
 
 static inline void uvm_va_block_retain(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     nv_kref_get(&va_block->kref);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline void uvm_va_block_release(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (va_block) {
         // The calling thread shouldn't be holding the block's mutex when
         // releasing the block as it might get destroyed.
         uvm_assert_unlocked_order(UVM_LOCK_ORDER_VA_BLOCK);
         nv_kref_put(&va_block->kref, uvm_va_block_destroy);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Same as uvm_va_block_release but the caller may be holding the VA block lock.
 // The caller must ensure that the refcount will not get to zero in this call.
 static inline void uvm_va_block_release_no_destroy(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int destroyed = nv_kref_put(&va_block->kref, uvm_va_block_destroy);
     UVM_ASSERT(!destroyed);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Dynamic cache-based allocation for uvm_va_block_context_t. The mm field is
 // filled out with current->mm by default, since that mm is always safe to use.
@@ -558,7 +559,7 @@ uvm_va_block_context_t *uvm_va_block_context_alloc(void);
 void uvm_va_block_context_free(uvm_va_block_context_t *va_block_context);
 
 static void uvm_va_block_context_init(uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(va_block_context);
 
     // Write garbage into the VA Block context to ensure that the UVM code
@@ -569,7 +570,7 @@ static void uvm_va_block_context_init(uvm_va_block_context_t *va_block_context)
     // current->mm is always safe to use. The caller might have more information
     // so it may overwrite this with another mm.
     va_block_context->mm = current->mm;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1766480: Using only page masks instead of a combination of regions
 //       and page masks could simplify the below APIs and their implementations
@@ -1000,26 +1001,26 @@ NV_STATUS uvm_va_block_service_locked(uvm_processor_id_t processor_id, uvm_va_bl
 // Size of the block in bytes. Guaranteed to be a page-aligned value between
 // PAGE_SIZE and UVM_VA_BLOCK_SIZE.
 static inline NvU64 uvm_va_block_size(uvm_va_block_t *block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 size = block->end - block->start + 1;
     UVM_ASSERT(PAGE_ALIGNED(size));
     UVM_ASSERT(size >= PAGE_SIZE);
     UVM_ASSERT(size <= UVM_VA_BLOCK_SIZE);
     return size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Number of pages with PAGE_SIZE in the block
 static inline size_t uvm_va_block_num_cpu_pages(uvm_va_block_t *block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_size(block) / PAGE_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // VA of the given page using CPU page size. page_index must be valid
 static inline NvU64 uvm_va_block_cpu_page_address(uvm_va_block_t *block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_index < uvm_va_block_num_cpu_pages(block));
     return block->start + PAGE_SIZE * page_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the page physical address on the given GPU
 //
@@ -1027,19 +1028,19 @@ static inline NvU64 uvm_va_block_cpu_page_address(uvm_va_block_t *block, uvm_pag
 uvm_gpu_phys_address_t uvm_va_block_gpu_phys_page_address(uvm_va_block_t *va_block, uvm_page_index_t page_index, uvm_gpu_t *gpu);
 
 static bool uvm_va_block_contains_address(uvm_va_block_t *block, NvU64 address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return address >= block->start && address <= block->end;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Obtain a pointer to the uvm_va_block_test_t structure for the given VA
 // block. If uvm_enable_builtin_tests is unset, NULL will be returned.
 static uvm_va_block_test_t *uvm_va_block_get_test(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_enable_builtin_tests)
         return &container_of(va_block, uvm_va_block_wrapper_t, block)->test;
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the page residency mask for a processor if it's known to be there.
 //
@@ -1156,11 +1157,11 @@ NV_STATUS uvm8_test_va_residency_info(UVM_TEST_VA_RESIDENCY_INFO_PARAMS *params,
 
 // Compute the offset in system pages of addr from the start of va_block.
 static uvm_page_index_t uvm_va_block_cpu_page_index(uvm_va_block_t *va_block, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(addr >= va_block->start);
     UVM_ASSERT(addr <= va_block->end);
     return (addr - va_block->start) / PAGE_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Computes the size and index in the gpu_state chunks array of the GPU chunk
 // which corresponds to the given page_index of the VA region.
@@ -1188,53 +1189,53 @@ NV_STATUS uvm_va_block_set_cancel(uvm_va_block_t *va_block, uvm_gpu_t *gpu);
 //
 
 static uvm_va_block_region_t uvm_va_block_region(uvm_page_index_t first, uvm_page_index_t outer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(PAGES_PER_UVM_VA_BLOCK >= (1 << (sizeof(first) * 8)));
 
     UVM_ASSERT(first <= outer);
 
     return (uvm_va_block_region_t){ .first = first, .outer = outer };
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t uvm_va_block_region_for_page(uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_region(page_index, page_index + 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static size_t uvm_va_block_region_num_pages(uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return region.outer - region.first;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_va_block_region_size(uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_region_num_pages(region) * PAGE_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_va_block_region_start(uvm_va_block_t *va_block, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return va_block->start + region.first * PAGE_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_va_block_region_end(uvm_va_block_t *va_block, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return va_block->start + region.outer * PAGE_SIZE - 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_va_block_region_contains_region(uvm_va_block_region_t region, uvm_va_block_region_t subregion)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return subregion.first >= region.first && subregion.outer <= region.outer;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_va_block_region_contains_page(uvm_va_block_region_t region, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_region_contains_region(region, uvm_va_block_region_for_page(page_index));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a block range from a va block and start and end virtual addresses
 // within the block.
 static uvm_va_block_region_t uvm_va_block_region_from_start_end(uvm_va_block_t *va_block, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t region;
 
     UVM_ASSERT(start < end);
@@ -1247,155 +1248,155 @@ static uvm_va_block_region_t uvm_va_block_region_from_start_end(uvm_va_block_t *
     region.outer = uvm_va_block_cpu_page_index(va_block, end) + 1;
 
     return region;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t uvm_va_block_region_from_start_size(uvm_va_block_t *va_block, NvU64 start, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_region_from_start_end(va_block, start, start + size - 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t uvm_va_block_region_from_block(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_region(0, uvm_va_block_num_cpu_pages(va_block));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_test(const uvm_page_mask_t *mask, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_index < PAGES_PER_UVM_VA_BLOCK);
 
     return test_bit(page_index, mask->bitmap);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_test_and_set(uvm_page_mask_t *mask, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_index < PAGES_PER_UVM_VA_BLOCK);
 
     return __test_and_set_bit(page_index, mask->bitmap);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_test_and_clear(uvm_page_mask_t *mask, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_index < PAGES_PER_UVM_VA_BLOCK);
 
     return __test_and_clear_bit(page_index, mask->bitmap);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_set(uvm_page_mask_t *mask, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_index < PAGES_PER_UVM_VA_BLOCK);
 
     __set_bit(page_index, mask->bitmap);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_clear(uvm_page_mask_t *mask, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_index < PAGES_PER_UVM_VA_BLOCK);
 
     __clear_bit(page_index, mask->bitmap);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_region_test(const uvm_page_mask_t *mask,
                                       uvm_va_block_region_t region,
                                       uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_va_block_region_contains_page(region, page_index))
         return false;
 
     return !mask || uvm_page_mask_test(mask, page_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 uvm_page_mask_region_weight(const uvm_page_mask_t *mask, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 weight_before = 0;
 
     if (region.first > 0)
         weight_before = bitmap_weight(mask->bitmap, region.first);
 
     return bitmap_weight(mask->bitmap, region.outer) - weight_before;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_region_empty(const uvm_page_mask_t *mask, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return find_next_bit(mask->bitmap, region.outer, region.first) == region.outer;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_region_full(const uvm_page_mask_t *mask, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return find_next_zero_bit(mask->bitmap, region.outer, region.first) == region.outer;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_region_fill(uvm_page_mask_t *mask, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_set(mask->bitmap, region.first, region.outer - region.first);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_region_clear(uvm_page_mask_t *mask, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_clear(mask->bitmap, region.first, region.outer - region.first);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_region_clear_outside(uvm_page_mask_t *mask, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (region.first > 0)
         bitmap_clear(mask->bitmap, 0, region.first);
     if (region.outer < PAGES_PER_UVM_VA_BLOCK)
         bitmap_clear(mask->bitmap, region.outer, PAGES_PER_UVM_VA_BLOCK - region.outer);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_zero(uvm_page_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_zero(mask->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_empty(const uvm_page_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_empty(mask->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_full(const uvm_page_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_full(mask->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_and(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in1, const uvm_page_mask_t *mask_in2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_and(mask_out->bitmap, mask_in1->bitmap, mask_in2->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_andnot(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in1, const uvm_page_mask_t *mask_in2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_andnot(mask_out->bitmap, mask_in1->bitmap, mask_in2->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_or(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in1, const uvm_page_mask_t *mask_in2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_or(mask_out->bitmap, mask_in1->bitmap, mask_in2->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_complement(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_complement(mask_out->bitmap, mask_in->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_copy(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_copy(mask_out->bitmap, mask_in->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 uvm_page_mask_weight(const uvm_page_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_weight(mask->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_subset(const uvm_page_mask_t *subset, const uvm_page_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_subset(subset->bitmap, mask->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_init_from_region(uvm_page_mask_t *mask_out,
                                            uvm_va_block_region_t region,
                                            const uvm_page_mask_t *mask_in)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_mask_zero(mask_out);
     uvm_page_mask_region_fill(mask_out, region);
 
@@ -1403,27 +1404,27 @@ static bool uvm_page_mask_init_from_region(uvm_page_mask_t *mask_out,
         return uvm_page_mask_and(mask_out, mask_out, mask_in);
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_shift_right(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in, unsigned shift)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_shift_right(mask_out->bitmap, mask_in->bitmap, shift, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_shift_left(uvm_page_mask_t *mask_out, const uvm_page_mask_t *mask_in, unsigned shift)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_shift_left(mask_out->bitmap, mask_in->bitmap, shift, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_page_mask_intersects(const uvm_page_mask_t *mask1, const uvm_page_mask_t *mask2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return bitmap_intersects(mask1->bitmap, mask2->bitmap, PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Print the given page mask on the given buffer using hex symbols. The
 // minimum required size of the buffer is UVM_PAGE_MASK_PRINT_MIN_BUFFER_SIZE.
 static void uvm_page_mask_print(const uvm_page_mask_t *mask, char *buffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // There are two cases, which depend on PAGE_SIZE
     if (PAGES_PER_UVM_VA_BLOCK > 32) {
         NvLength current_long_idx = UVM_PAGE_MASK_WORDS - 1;
@@ -1450,11 +1451,11 @@ static void uvm_page_mask_print(const uvm_page_mask_t *mask, char *buffer)
         // For 64KB pages, a single print suffices
         sprintf(buffer, "%08x", value);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t uvm_va_block_first_subregion_in_mask(uvm_va_block_region_t region,
                                                                   const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t subregion;
 
     if (!page_mask)
@@ -1463,12 +1464,12 @@ static uvm_va_block_region_t uvm_va_block_first_subregion_in_mask(uvm_va_block_r
     subregion.first = find_next_bit(page_mask->bitmap, region.outer, region.first);
     subregion.outer = find_next_zero_bit(page_mask->bitmap, region.outer, subregion.first + 1);
     return subregion;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t uvm_va_block_next_subregion_in_mask(uvm_va_block_region_t region,
                                                                  const uvm_page_mask_t *page_mask,
                                                                  uvm_va_block_region_t previous_subregion)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t subregion;
 
     if (!page_mask) {
@@ -1480,7 +1481,7 @@ static uvm_va_block_region_t uvm_va_block_next_subregion_in_mask(uvm_va_block_re
     subregion.first = find_next_bit(page_mask->bitmap, region.outer, previous_subregion.outer + 1);
     subregion.outer = find_next_zero_bit(page_mask->bitmap, region.outer, subregion.first + 1);
     return subregion;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Iterate over contiguous subregions of the region given by the page mask.
 // If the page mask is NULL then it behaves as if it was a fully set mask and
@@ -1492,17 +1493,17 @@ static uvm_va_block_region_t uvm_va_block_next_subregion_in_mask(uvm_va_block_re
 
 static uvm_page_index_t uvm_va_block_first_page_in_mask(uvm_va_block_region_t region,
                                                         const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (page_mask)
         return find_next_bit(page_mask->bitmap, region.outer, region.first);
     else
         return region.first;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_page_index_t uvm_va_block_next_page_in_mask(uvm_va_block_region_t region,
                                                        const uvm_page_mask_t *page_mask,
                                                        uvm_page_index_t previous_page)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (page_mask) {
         return find_next_bit(page_mask->bitmap, region.outer, previous_page + 1);
     }
@@ -1510,21 +1511,21 @@ static uvm_page_index_t uvm_va_block_next_page_in_mask(uvm_va_block_region_t reg
         UVM_ASSERT(previous_page < region.outer);
         return previous_page + 1;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_page_index_t uvm_va_block_first_unset_page_in_mask(uvm_va_block_region_t region,
                                                               const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (page_mask)
         return find_next_zero_bit(page_mask->bitmap, region.outer, region.first);
     else
         return region.first;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_page_index_t uvm_va_block_next_unset_page_in_mask(uvm_va_block_region_t region,
                                                              const uvm_page_mask_t *page_mask,
                                                              uvm_page_index_t previous_page)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (page_mask) {
         return find_next_zero_bit(page_mask->bitmap, region.outer, previous_page + 1);
     }
@@ -1532,18 +1533,18 @@ static uvm_page_index_t uvm_va_block_next_unset_page_in_mask(uvm_va_block_region
         UVM_ASSERT(previous_page < region.outer);
         return previous_page + 1;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_reverse_map_start(const uvm_reverse_map_t *reverse_map)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_cpu_page_address(reverse_map->va_block, reverse_map->region.first);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_reverse_map_end(const uvm_reverse_map_t *reverse_map)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_cpu_page_address(reverse_map->va_block, reverse_map->region.first) +
            uvm_va_block_region_size(reverse_map->region) - 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Iterate over contiguous pages of the region given by the page mask.
 // If the page mask is NULL then it behaves as if it was a fully set mask and
@@ -1579,22 +1580,22 @@ static NvU64 uvm_reverse_map_end(const uvm_reverse_map_t *reverse_map)
     for_each_va_block_page_in_region((page_index), uvm_va_block_region_from_block(va_block))
 
 static void uvm_va_block_bitmap_tree_init_from_page_count(uvm_va_block_bitmap_tree_t *bitmap_tree, size_t page_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bitmap_tree->leaf_count  = page_count;
     bitmap_tree->level_count = ilog2(roundup_pow_of_two(page_count)) + 1;
     uvm_page_mask_zero(&bitmap_tree->pages);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_block_bitmap_tree_init(uvm_va_block_bitmap_tree_t *bitmap_tree, uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t num_pages = uvm_va_block_num_cpu_pages(va_block);
     uvm_va_block_bitmap_tree_init_from_page_count(bitmap_tree, num_pages);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_block_bitmap_tree_iter_init(const uvm_va_block_bitmap_tree_t *bitmap_tree,
                                                uvm_page_index_t page_index,
                                                uvm_va_block_bitmap_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(bitmap_tree->level_count > 0);
     UVM_ASSERT_MSG(page_index < bitmap_tree->leaf_count,
                    "%zd vs %zd",
@@ -1603,11 +1604,11 @@ static void uvm_va_block_bitmap_tree_iter_init(const uvm_va_block_bitmap_tree_t 
 
     iter->level_idx = bitmap_tree->level_count - 1;
     iter->node_idx  = page_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t uvm_va_block_bitmap_tree_iter_get_range(const uvm_va_block_bitmap_tree_t *bitmap_tree,
                                                                      const uvm_va_block_bitmap_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU16 range_leaves = uvm_perf_tree_iter_leaf_range(bitmap_tree, iter);
     NvU16 range_start = uvm_perf_tree_iter_leaf_range_start(bitmap_tree, iter);
     uvm_va_block_region_t subregion = uvm_va_block_region(range_start, range_start + range_leaves);
@@ -1616,15 +1617,15 @@ static uvm_va_block_region_t uvm_va_block_bitmap_tree_iter_get_range(const uvm_v
     UVM_ASSERT(iter->level_idx < bitmap_tree->level_count);
 
     return subregion;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU16 uvm_va_block_bitmap_tree_iter_get_count(const uvm_va_block_bitmap_tree_t *bitmap_tree,
                                                      const uvm_va_block_bitmap_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t subregion = uvm_va_block_bitmap_tree_iter_get_range(bitmap_tree, iter);
 
     return uvm_page_mask_region_weight(&bitmap_tree->pages, subregion);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define uvm_va_block_bitmap_tree_traverse_counters(counter,tree,page,iter)                             \
     for (uvm_va_block_bitmap_tree_iter_init((tree), (page), (iter)),                                   \
@@ -1717,12 +1718,12 @@ NvU32 uvm_va_block_page_size_gpu(uvm_va_block_t *va_block, uvm_gpu_id_t gpu_id, 
 static NvU32 uvm_va_block_page_size_processor(uvm_va_block_t *va_block,
                                               uvm_processor_id_t processor_id,
                                               uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_CPU(processor_id))
         return uvm_va_block_page_size_cpu(va_block, page_index);
     else
         return uvm_va_block_page_size_gpu(va_block, processor_id, page_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the big page size for the GPU VA space of the block
 NvU32 uvm_va_block_gpu_big_page_size(uvm_va_block_t *va_block, uvm_gpu_t *gpu);
@@ -1733,9 +1734,9 @@ size_t uvm_va_block_num_big_pages(uvm_va_block_t *va_block, NvU32 big_page_size)
 // Returns the number of big pages in the VA block for the big page size on the
 // given GPU
 static size_t uvm_va_block_gpu_num_big_pages(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_num_big_pages(va_block, uvm_va_block_gpu_big_page_size(va_block, gpu));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the start address of the given big page index and big page size
 NvU64 uvm_va_block_big_page_addr(uvm_va_block_t *va_block, size_t big_page_index, NvU32 big_page_size);

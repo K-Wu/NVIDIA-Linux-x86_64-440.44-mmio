@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -92,7 +93,7 @@ static unsigned g_uvm_perf_prefetch_min_faults;
 static void prefetch_block_destroy_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data);
 
 static uvm_va_block_region_t compute_prefetch_region(uvm_page_index_t page_index, block_prefetch_info_t *prefetch_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU16 counter;
     uvm_va_block_bitmap_tree_iter_t iter;
     uvm_va_block_bitmap_tree_t *bitmap_tree = &prefetch_info->bitmap_tree;
@@ -118,7 +119,7 @@ static uvm_va_block_region_t compute_prefetch_region(uvm_page_index_t page_index
     }
 
     return prefetch_region;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Performance heuristics module for prefetch
 static uvm_perf_module_t g_module_prefetch;
@@ -131,23 +132,23 @@ static uvm_perf_module_event_callback_desc_t g_callbacks_prefetch[] = {
 
 // Get the prefetch detection struct for the given block
 static block_prefetch_info_t *prefetch_info_get(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_perf_module_type_data(va_block->perf_modules_data, UVM_PERF_MODULE_TYPE_PREFETCH);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void prefetch_info_destroy(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_prefetch_info_t *prefetch_info = prefetch_info_get(va_block);
     if (prefetch_info) {
         kmem_cache_free(g_prefetch_info_cache, prefetch_info);
         uvm_perf_module_type_unset_data(va_block->perf_modules_data, UVM_PERF_MODULE_TYPE_PREFETCH);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the prefetch detection struct for the given block or create it if it
 // does not exist
 static block_prefetch_info_t *prefetch_info_get_create(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_prefetch_info_t *prefetch_info = prefetch_info_get(va_block);
     if (!prefetch_info) {
         // Create some ghost leaves so we can align the tree to big page boundary. We use the
@@ -184,26 +185,26 @@ fail:
     prefetch_info_destroy(va_block);
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void grow_fault_granularity_if_no_thrashing(block_prefetch_info_t *prefetch_info,
                                                    uvm_va_block_region_t region,
                                                    const uvm_page_mask_t *faulted_pages,
                                                    const uvm_page_mask_t *thrashing_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_page_mask_region_empty(faulted_pages, region) &&
         (!thrashing_pages || uvm_page_mask_region_empty(thrashing_pages, region))) {
         region.first += prefetch_info->region.first;
         region.outer += prefetch_info->region.first;
         uvm_page_mask_region_fill(&prefetch_info->bitmap_tree.pages, region);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void grow_fault_granularity(uvm_va_block_t *va_block,
                                    block_prefetch_info_t *prefetch_info,
                                    const uvm_page_mask_t *faulted_pages,
                                    const uvm_page_mask_t *thrashing_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t num_big_pages;
     size_t big_page_index;
     uvm_va_block_region_t block_region = uvm_va_block_region_from_block(va_block);
@@ -232,7 +233,7 @@ static void grow_fault_granularity(uvm_va_block_t *va_block,
 
         grow_fault_granularity_if_no_thrashing(prefetch_info, suffix_region, faulted_pages, thrashing_pages);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Within a block we only allow prefetching to a single processor. Therefore, if two processors
 // are accessing non-overlapping regions within the same block they won't benefit from
@@ -244,7 +245,7 @@ void uvm_perf_prefetch_prenotify_fault_migrations(uvm_va_block_t *va_block,
                                                   uvm_processor_id_t new_residency,
                                                   const uvm_page_mask_t *faulted_pages,
                                                   uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     block_prefetch_info_t *prefetch_info;
     const uvm_page_mask_t *resident_mask = NULL;
@@ -371,11 +372,11 @@ done:
 
     prefetch_info->fault_migrations_to_last_proc += uvm_page_mask_region_weight(faulted_pages, region);
     prefetch_info->pending_prefetch_pages = uvm_page_mask_weight(&prefetch_info->prefetch_pages);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_perf_prefetch_hint_t uvm_perf_prefetch_get_hint(uvm_va_block_t *va_block,
                                                     const uvm_page_mask_t *new_residency_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_prefetch_hint_t ret = UVM_PERF_PREFETCH_HINT_NONE();
     block_prefetch_info_t *prefetch_info;
     uvm_va_space_t *va_space = va_block->va_range->va_space;
@@ -419,10 +420,10 @@ uvm_perf_prefetch_hint_t uvm_perf_prefetch_get_hint(uvm_va_block_t *va_block,
     }
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void prefetch_block_destroy_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
 
     UVM_ASSERT(g_uvm_perf_prefetch_enable);
@@ -442,26 +443,26 @@ void prefetch_block_destroy_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t 
         return;
 
     prefetch_info_destroy(va_block);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_prefetch_load(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!g_uvm_perf_prefetch_enable)
         return NV_OK;
 
     return uvm_perf_module_load(&g_module_prefetch, va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_prefetch_unload(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!g_uvm_perf_prefetch_enable)
         return;
 
     uvm_perf_module_unload(&g_module_prefetch, va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_prefetch_init()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_uvm_perf_prefetch_enable = uvm_perf_prefetch_enable != 0;
 
     if (!g_uvm_perf_prefetch_enable)
@@ -496,18 +497,18 @@ NV_STATUS uvm_perf_prefetch_init()
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_prefetch_exit()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!g_uvm_perf_prefetch_enable)
         return;
 
     kmem_cache_destroy_safe(&g_prefetch_info_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_set_page_prefetch_policy(UVM_TEST_SET_PAGE_PREFETCH_POLICY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     if (params->policy >= UVM_TEST_PAGE_PREFETCH_POLICY_MAX)
@@ -523,4 +524,4 @@ NV_STATUS uvm8_test_set_page_prefetch_policy(UVM_TEST_SET_PAGE_PREFETCH_POLICY_P
     uvm_va_space_up_write(va_space);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

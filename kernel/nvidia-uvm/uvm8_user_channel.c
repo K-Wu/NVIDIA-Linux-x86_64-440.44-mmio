@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -41,7 +42,7 @@
 
 // Sort channel resources from highest to lowest alignments
 static int resource_align_high_cmp(const void *a, const void *b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const UvmGpuChannelResourceInfo *resource_a = a;
     const UvmGpuChannelResourceInfo *resource_b = b;
 
@@ -50,10 +51,10 @@ static int resource_align_high_cmp(const void *a, const void *b)
     if (resource_a->alignment < resource_b->alignment)
         return 1;
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS get_rm_channel_resources(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmGpuChannelResourceInfo *resources = NULL;
     uvm_gpu_va_space_t *gpu_va_space = user_channel->gpu_va_space;
     NV_STATUS status;
@@ -100,7 +101,7 @@ static NV_STATUS get_rm_channel_resources(uvm_user_channel_t *user_channel)
 error:
     uvm_kvfree(resources);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_user_channel_create(uvm_va_space_t *va_space,
                                          const NvProcessorUuid *uuid,
@@ -108,7 +109,7 @@ static NV_STATUS uvm_user_channel_create(uvm_va_space_t *va_space,
                                          uvm_user_channel_t **out_channel,
                                          NvU64 base,
                                          NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmGpuChannelInstanceInfo channel_info;
     uvm_user_channel_t *user_channel = NULL;
     NV_STATUS status = NV_OK;
@@ -214,10 +215,10 @@ error:
     user_channel->gpu_va_space = NULL;
     uvm_user_channel_destroy_detached(user_channel);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_user_channel_t *find_user_channel(uvm_va_space_t *va_space, uvm_rm_user_object_t *user_rm_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *user_channel;
     uvm_gpu_va_space_t *gpu_va_space;
 
@@ -233,7 +234,7 @@ static uvm_user_channel_t *find_user_channel(uvm_va_space_t *va_space, uvm_rm_us
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Find a pre-existing channel VA range which already maps this rm_descriptor.
 // The criteria are:
@@ -241,7 +242,7 @@ static uvm_user_channel_t *find_user_channel(uvm_va_space_t *va_space, uvm_rm_us
 // 2) rm_descriptor must match
 // 3) new_user_channel's TSG matches existing mappings
 static uvm_va_range_t *find_va_range(uvm_user_channel_t *new_user_channel, NvP64 rm_descriptor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = new_user_channel->gpu_va_space;
     uvm_va_range_t *range;
 
@@ -260,12 +261,12 @@ static uvm_va_range_t *find_va_range(uvm_user_channel_t *new_user_channel, NvP64
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Find an unallocated VA region of the given size and alignment witin the range
 // [base, end]. base must not be 0. If no such region exists, 0 is returned.
 static NvU64 find_va_in_range(uvm_va_space_t *va_space, NvU64 base, NvU64 end, NvU64 size, NvU64 alignment)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 curr_start = base, curr_end;
     uvm_va_range_t *va_range;
 
@@ -291,14 +292,14 @@ static NvU64 find_va_in_range(uvm_va_space_t *va_space, NvU64 base, NvU64 end, N
         // Advance to the next available slot
         curr_start = va_range->node.end + 1;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Allocate or reuse a VA range for the given channel resource, but don't map
 // it. If a new VA range is allocated, the VA used is the first unallocated VA
 // in the range [base, end] which has the appropriate alignment and size for the
 // given resource.
 static NV_STATUS create_va_range(uvm_user_channel_t *user_channel, NvU64 base, NvU64 end, NvU32 resource_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = user_channel->gpu_va_space;
     UvmGpuChannelResourceInfo *resource = &user_channel->resources[resource_index];
     UvmGpuMemoryInfo *mem_info = &resource->resourceInfo;
@@ -365,10 +366,10 @@ error:
         uvm_va_range_destroy(range, NULL);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void destroy_va_ranges(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
 
     if (!user_channel || !user_channel->va_ranges)
@@ -396,13 +397,13 @@ static void destroy_va_ranges(uvm_user_channel_t *user_channel)
 
     uvm_kvfree(user_channel->va_ranges);
     user_channel->va_ranges = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Channels need virtual allocations to operate, but we don't know about them.
 // This function carves out a chunk within [base, end] for each allocation for
 // later mapping.
 static NV_STATUS create_va_ranges(uvm_user_channel_t *user_channel, NvU64 base, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NV_STATUS status;
 
@@ -421,12 +422,12 @@ static NV_STATUS create_va_ranges(uvm_user_channel_t *user_channel, NvU64 base, 
 error:
     destroy_va_ranges(user_channel);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // "Binding" the resouces tells RM the virtual address of each allocation so it
 // can in turn tell the HW where they are.
 static NV_STATUS bind_channel_resources(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmGpuChannelResourceBindParams *resource_va_list = NULL;
     NV_STATUS status = NV_OK;
     NvU32 i;
@@ -469,13 +470,13 @@ static NV_STATUS bind_channel_resources(uvm_user_channel_t *user_channel)
 out:
     uvm_kvfree(resource_va_list);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Map the already-created VA ranges by getting the PTEs for each allocation
 // from RM. The caller is responsible for destroying the VA ranges if the
 // mappings fail.
 static NV_STATUS uvm_user_channel_map_resources(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_t tracker = UVM_TRACKER_INIT();
     NvU32 i;
     NV_STATUS status = NV_OK, tracker_status;
@@ -519,10 +520,10 @@ static NV_STATUS uvm_user_channel_map_resources(uvm_user_channel_t *user_channel
     // map operations happening during the subsequent destroy.
     tracker_status = uvm_tracker_wait_deinit(&tracker);
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_register_channel_under_write(uvm_user_channel_t *user_channel, NvU64 base, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = user_channel->gpu_va_space;
     uvm_va_space_t *va_space = gpu_va_space->va_space;
     NV_STATUS status;
@@ -572,14 +573,14 @@ static NV_STATUS uvm_register_channel_under_write(uvm_user_channel_t *user_chann
     list_add(&user_channel->list_node, &gpu_va_space->registered_channels);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_register_channel(uvm_va_space_t *va_space,
                                       const NvProcessorUuid *uuid,
                                       uvm_rm_user_object_t *user_rm_channel,
                                       NvU64 base,
                                       NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
     uvm_gpu_va_space_t *gpu_va_space;
@@ -706,10 +707,10 @@ error_under_read:
     uvm_user_channel_release(user_channel);
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_register_channel(UVM_REGISTER_CHANNEL_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_rm_user_object_t user_rm_channel =
     {
@@ -718,25 +719,25 @@ NV_STATUS uvm_api_register_channel(UVM_REGISTER_CHANNEL_PARAMS *params, struct f
         .user_object   = params->hChannel
     };
     return uvm_register_channel(va_space, &params->gpuUuid, &user_rm_channel, params->base, params->length);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void free_user_channel(nv_kref_t *nv_kref)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *user_channel = container_of(nv_kref, uvm_user_channel_t, kref);
     UVM_ASSERT(!user_channel->gpu_va_space);
     UVM_ASSERT(!user_channel->va_ranges);
     UVM_ASSERT(!atomic_read(&user_channel->is_bound));
     uvm_kvfree(user_channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_user_channel_release(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (user_channel)
         nv_kref_put(&user_channel->kref, free_user_channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_user_channel_stop(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = user_channel->gpu_va_space->va_space;
 
     if (!user_channel->rm_retained_channel)
@@ -763,10 +764,10 @@ void uvm_user_channel_stop(uvm_user_channel_t *user_channel)
     // Multiple threads could perform this set concurrently, but is_bound never
     // transitions back to 1 after being set to 0 so that's not a problem.
     atomic_set(&user_channel->is_bound, 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_user_channel_detach(uvm_user_channel_t *user_channel, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_gpu_va_space_t *gpu_va_space;
 
@@ -806,10 +807,10 @@ void uvm_user_channel_detach(uvm_user_channel_t *user_channel, struct list_head 
     destroy_va_ranges(user_channel);
 
     user_channel->gpu_va_space = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_user_channel_destroy_detached(uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Check that this channel was already detached
     UVM_ASSERT(user_channel->gpu_va_space == NULL);
 
@@ -835,10 +836,10 @@ void uvm_user_channel_destroy_detached(uvm_user_channel_t *user_channel)
         uvm_rm_locked_call_void(nvUvmInterfaceReleaseChannel(user_channel->rm_retained_channel));
 
     uvm_user_channel_release(user_channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_unregister_channel(uvm_va_space_t *va_space, uvm_rm_user_object_t *user_rm_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = NULL;
     uvm_user_channel_t *user_channel = NULL;
     NV_STATUS status = NV_OK;
@@ -887,10 +888,10 @@ static NV_STATUS uvm_unregister_channel(uvm_va_space_t *va_space, uvm_rm_user_ob
     uvm_user_channel_release(user_channel);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_unregister_channel(UVM_UNREGISTER_CHANNEL_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_rm_user_object_t user_rm_channel =
     {
@@ -899,12 +900,12 @@ NV_STATUS uvm_api_unregister_channel(UVM_UNREGISTER_CHANNEL_PARAMS *params, stru
         .user_object   = params->hChannel
     };
     return uvm_unregister_channel(va_space, &user_rm_channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_check_channel_va_space_get_info(uvm_va_space_t *va_space,
                                                            UVM_TEST_CHECK_CHANNEL_VA_SPACE_PARAMS *params,
                                                            UvmGpuChannelInstanceInfo *channel_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_gpu_va_space_t *gpu_va_space;
     void *rm_retained_channel;
@@ -938,10 +939,10 @@ static NV_STATUS uvm8_test_check_channel_va_space_get_info(uvm_va_space_t *va_sp
 out:
     uvm_va_space_up_read_rm(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_check_channel_va_space(UVM_TEST_CHECK_CHANNEL_VA_SPACE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct file *va_space_filp;
     uvm_va_space_t *va_space = NULL;
     uvm_va_space_t *channel_va_space;
@@ -1023,4 +1024,4 @@ out:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

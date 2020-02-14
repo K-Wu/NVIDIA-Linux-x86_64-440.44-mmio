@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -28,7 +29,7 @@
 #include "uvm8_kvmalloc.h"
 
 static NV_STATUS add_and_test(uvm_gpu_tracking_semaphore_t *tracking_sem, NvU32 increment_by)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 new_value;
     NvU64 completed = uvm_gpu_tracking_semaphore_update_completed_value(tracking_sem);
     new_value = completed + increment_by;
@@ -52,10 +53,10 @@ static NV_STATUS add_and_test(uvm_gpu_tracking_semaphore_t *tracking_sem, NvU32 
     TEST_CHECK_RET(uvm_gpu_tracking_semaphore_is_completed(tracking_sem));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tracking(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_tracking_semaphore_t tracking_sem;
     int i;
@@ -81,12 +82,12 @@ static NV_STATUS test_tracking(uvm_va_space_t *va_space)
 done:
     uvm_gpu_tracking_semaphore_free(&tracking_sem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define NUM_SEMAPHORES_PER_GPU 4096
 
 static NV_STATUS test_alloc(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     uvm_gpu_semaphore_t *semaphores;
@@ -134,11 +135,11 @@ done:
     uvm_kvfree(semaphores);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 NV_STATUS uvm8_test_gpu_semaphore_sanity(UVM_TEST_GPU_SEMAPHORE_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -158,4 +159,4 @@ done:
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

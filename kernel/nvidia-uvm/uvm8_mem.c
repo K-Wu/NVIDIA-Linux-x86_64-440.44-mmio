@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -36,7 +37,7 @@ static uvm_range_allocator_t g_free_ranges;
 static bool g_mem_initialized;
 
 NV_STATUS uvm_mem_global_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_range_allocator_init(UVM_MEM_VA_SIZE, &g_free_ranges);
     if (status != NV_OK)
         return status;
@@ -44,21 +45,21 @@ NV_STATUS uvm_mem_global_init(void)
     g_mem_initialized = true;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_mem_global_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!g_mem_initialized)
         return;
 
     uvm_range_allocator_deinit(&g_free_ranges);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_translate_gpu_attributes(const UvmGpuMappingAttributes *attrs,
                                            uvm_va_space_t *va_space,
                                            uvm_gpu_t **gpu_out,
                                            uvm_mem_gpu_mapping_attrs_t *attrs_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     switch (attrs->gpuMappingType) {
@@ -98,19 +99,19 @@ NV_STATUS uvm_mem_translate_gpu_attributes(const UvmGpuMappingAttributes *attrs,
         *gpu_out = gpu;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_chunk_sizes_mask_t uvm_mem_kernel_chunk_sizes(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Get the mmu mode hal directly as the internal address space tree has not
     // been created yet.
     uvm_mmu_mode_hal_t *hal = gpu->arch_hal->mmu_mode_hal(gpu->big_page.internal_size);
 
     return hal->page_sizes();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 pick_chunk_size(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 biggest_page_size;
     NvU32 chunk_size;
 
@@ -132,10 +133,10 @@ static NvU32 pick_chunk_size(uvm_mem_t *mem)
         chunk_size = max(chunk_size, (NvU32)PAGE_SIZE);
 
     return chunk_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 pick_gpu_page_size(uvm_mem_t *mem, uvm_gpu_t *gpu, uvm_page_tree_t *gpu_page_tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_mem_is_vidmem(mem)) {
         // For vidmem allocations the chunk size is picked out of the supported
         // page sizes and can be used directly.
@@ -151,10 +152,10 @@ static NvU32 pick_gpu_page_size(uvm_mem_t *mem, uvm_gpu_t *gpu, uvm_page_tree_t 
 
     // Otherwise just use 4K.
     return UVM_PAGE_SIZE_4K;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_mem_free_vidmem_chunks(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
 
     UVM_ASSERT(uvm_mem_is_vidmem(mem));
@@ -172,10 +173,10 @@ static void uvm_mem_free_vidmem_chunks(uvm_mem_t *mem)
 
     uvm_kvfree(mem->vidmem.chunks);
     mem->vidmem.chunks = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_mem_free_sysmem_chunks(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
 
     UVM_ASSERT(uvm_mem_is_sysmem(mem));
@@ -191,18 +192,18 @@ static void uvm_mem_free_sysmem_chunks(uvm_mem_t *mem)
 
     uvm_kvfree(mem->sysmem.pages);
     mem->sysmem.pages = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_mem_free_chunks(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_mem_is_sysmem(mem))
         uvm_mem_free_sysmem_chunks(mem);
     else
         uvm_mem_free_vidmem_chunks(mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_alloc_sysmem_chunks(uvm_mem_t *mem, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     size_t i;
     gfp_t gfp_flags = NV_UVM_GFP_FLAGS;
@@ -238,10 +239,10 @@ static NV_STATUS uvm_mem_alloc_sysmem_chunks(uvm_mem_t *mem, size_t size)
 error:
     uvm_mem_free_sysmem_chunks(mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_alloc_vidmem_chunks(uvm_mem_t *mem, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     UVM_ASSERT(uvm_mem_is_vidmem(mem));
@@ -259,26 +260,26 @@ static NV_STATUS uvm_mem_alloc_vidmem_chunks(uvm_mem_t *mem, size_t size)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_alloc_chunks(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_mem_is_sysmem(mem))
         return uvm_mem_alloc_sysmem_chunks(mem, mem->physical_allocation_size);
     else
         return uvm_mem_alloc_vidmem_chunks(mem, mem->physical_allocation_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const char *uvm_mem_physical_source(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_mem_is_vidmem(mem))
         return mem->backing_gpu->name;
     else
         return "CPU";
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_map_kernel(uvm_mem_t *mem, const uvm_global_processor_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NV_STATUS status;
 
@@ -299,10 +300,10 @@ NV_STATUS uvm_mem_map_kernel(uvm_mem_t *mem, const uvm_global_processor_mask_t *
             return status;
     }
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_alloc(uvm_mem_alloc_params_t *params, uvm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_mem_t *mem = NULL;
 
@@ -360,28 +361,28 @@ NV_STATUS uvm_mem_alloc(uvm_mem_alloc_params_t *params, uvm_mem_t **mem_out)
 error:
     uvm_mem_free(mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 reserved_gpu_va(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!mem->is_user_allocation);
     UVM_ASSERT(mem->kernel.range_alloc.aligned_start + mem->physical_allocation_size < gpu->uvm_mem_va_size);
 
     return gpu->uvm_mem_va_base + mem->kernel.range_alloc.aligned_start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static struct page *uvm_mem_cpu_page(uvm_mem_t *mem, NvU64 offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct page *base_page = mem->sysmem.pages[offset / mem->chunk_size];
 
     UVM_ASSERT_MSG(PAGE_ALIGNED(offset), "offset 0x%llx\n", offset);
 
     offset = offset % mem->chunk_size;
     return pfn_to_page(page_to_pfn(base_page) + offset / PAGE_SIZE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_map_cpu_to_sysmem_kernel(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct page **pages = mem->sysmem.pages;
     size_t num_pages = mem->physical_allocation_size / PAGE_SIZE;
 
@@ -409,10 +410,10 @@ static NV_STATUS uvm_mem_map_cpu_to_sysmem_kernel(uvm_mem_t *mem)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_map_cpu_to_vidmem_kernel(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct page **pages;
     size_t num_chunk_pages = mem->chunk_size / PAGE_SIZE;
     size_t num_pages = mem->physical_allocation_size / PAGE_SIZE;
@@ -452,18 +453,18 @@ static NV_STATUS uvm_mem_map_cpu_to_vidmem_kernel(uvm_mem_t *mem)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_map_cpu_kernel(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_mem_is_sysmem(mem))
         return uvm_mem_map_cpu_to_sysmem_kernel(mem);
     else
         return uvm_mem_map_cpu_to_vidmem_kernel(mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_mem_unmap_cpu_kernel(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!mem->is_user_allocation);
     UVM_ASSERT(mem->kernel.cpu_addr != NULL);
     if (!uvm_mem_is_sysmem(mem)) {
@@ -473,10 +474,10 @@ static void uvm_mem_unmap_cpu_kernel(uvm_mem_t *mem)
 
     vunmap(mem->kernel.cpu_addr);
     mem->kernel.cpu_addr = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_map_cpu_to_sysmem_user(uvm_mem_t *mem, struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 offset;
 
     UVM_ASSERT(uvm_mem_is_sysmem(mem));
@@ -496,10 +497,10 @@ static NV_STATUS uvm_mem_map_cpu_to_sysmem_user(uvm_mem_t *mem, struct vm_area_s
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_map_cpu_to_vidmem_user(uvm_mem_t *mem, struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 offset;
     size_t chunk_index;
     size_t num_chunk_pages = mem->chunk_size / PAGE_SIZE;
@@ -532,18 +533,18 @@ static NV_STATUS uvm_mem_map_cpu_to_vidmem_user(uvm_mem_t *mem, struct vm_area_s
     UVM_ASSERT(offset == mem->physical_allocation_size);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_mem_map_cpu_user(uvm_mem_t *mem, struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_mem_is_sysmem(mem))
         return uvm_mem_map_cpu_to_sysmem_user(mem, vma);
     else
         return uvm_mem_map_cpu_to_vidmem_user(mem, vma);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_mem_unmap_cpu_user(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(mem->is_user_allocation);
     if (!uvm_mem_is_sysmem(mem)) {
         UVM_ASSERT(mem->backing_gpu->numa_info.enabled);
@@ -551,10 +552,10 @@ static void uvm_mem_unmap_cpu_user(uvm_mem_t *mem)
     }
 
     unmap_mapping_range(&mem->user.va_space->mapping, (size_t)mem->user.addr, mem->physical_allocation_size, 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_map_cpu(uvm_mem_t *mem, struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     UVM_ASSERT(mem);
@@ -576,10 +577,10 @@ NV_STATUS uvm_mem_map_cpu(uvm_mem_t *mem, struct vm_area_struct *vma)
 
     uvm_global_processor_mask_set(&mem->mapped_on, UVM_GLOBAL_ID_CPU);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_mem_unmap_cpu(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(mem);
 
     if (!uvm_global_processor_mask_test(&mem->mapped_on, UVM_GLOBAL_ID_CPU)) {
@@ -593,10 +594,10 @@ void uvm_mem_unmap_cpu(uvm_mem_t *mem)
         uvm_mem_unmap_cpu_kernel(mem);
 
     uvm_global_processor_mask_clear(&mem->mapped_on, UVM_GLOBAL_ID_CPU);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void unmap_gpu_sysmem_iommu(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 *dma_addrs = mem->sysmem.dma_addrs[uvm_global_id_gpu_index(gpu->global_id)];
     NvU32 i;
 
@@ -615,10 +616,10 @@ static void unmap_gpu_sysmem_iommu(uvm_mem_t *mem, uvm_gpu_t *gpu)
 
     uvm_kvfree(dma_addrs);
     mem->sysmem.dma_addrs[uvm_global_id_gpu_index(gpu->global_id)] = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS map_gpu_sysmem_iommu(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU64 *dma_addrs;
     size_t i;
@@ -642,10 +643,10 @@ static NV_STATUS map_gpu_sysmem_iommu(uvm_mem_t *mem, uvm_gpu_t *gpu)
 error:
     unmap_gpu_sysmem_iommu(mem, gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_chunk_t *uvm_mem_get_chunk(uvm_mem_t *mem, size_t mem_offset, size_t *offset_in_chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t chunk_index = uvm_div_pow2_64(mem_offset, mem->chunk_size);
 
     if (offset_in_chunk)
@@ -653,17 +654,17 @@ static uvm_gpu_chunk_t *uvm_mem_get_chunk(uvm_mem_t *mem, size_t mem_offset, siz
 
     UVM_ASSERT(uvm_mem_is_vidmem(mem));
     return mem->vidmem.chunks[chunk_index];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_phys_address_t uvm_mem_gpu_physical_vidmem(uvm_mem_t *mem, size_t offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t chunk_offset;
     uvm_gpu_chunk_t *chunk = uvm_mem_get_chunk(mem, offset, &chunk_offset);
     return uvm_gpu_phys_address(UVM_APERTURE_VID, chunk->address + chunk_offset);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_phys_address_t uvm_mem_gpu_physical_sysmem(uvm_mem_t *mem, uvm_gpu_t *gpu, size_t offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 *dma_addrs = mem->sysmem.dma_addrs[uvm_global_id_gpu_index(gpu->global_id)];
     NvU64 dma_addr = dma_addrs[offset / mem->chunk_size];
 
@@ -671,28 +672,28 @@ static uvm_gpu_phys_address_t uvm_mem_gpu_physical_sysmem(uvm_mem_t *mem, uvm_gp
     UVM_ASSERT(uvm_global_processor_mask_test(&mem->mapped_phys_on, gpu->global_id));
 
     return uvm_gpu_phys_address(UVM_APERTURE_SYS, dma_addr + offset % mem->chunk_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool check_mem_range(uvm_mem_t *mem, NvU64 offset, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(size != 0);
     UVM_ASSERT_MSG(UVM_ALIGN_DOWN(offset, mem->chunk_size) == UVM_ALIGN_DOWN(offset + size - 1, mem->chunk_size),
             "offset %llu size %llu page_size %u\n", offset, size, mem->chunk_size);
     UVM_ASSERT_MSG(offset / mem->chunk_size < mem->chunks_count, "offset %llu\n", offset);
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_phys_address_t uvm_mem_gpu_physical(uvm_mem_t *mem, uvm_gpu_t *gpu, NvU64 offset, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(check_mem_range(mem, offset, size));
     if (uvm_mem_is_vidmem(mem))
         return uvm_mem_gpu_physical_vidmem(mem, offset);
     else
         return uvm_mem_gpu_physical_sysmem(mem, gpu, offset);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_address_t uvm_mem_gpu_address_copy(uvm_mem_t *mem, uvm_gpu_t *accessing_gpu, NvU64 offset, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_address_t copy_addr;
     size_t chunk_offset;
     uvm_gpu_chunk_t *chunk;
@@ -708,7 +709,7 @@ uvm_gpu_address_t uvm_mem_gpu_address_copy(uvm_mem_t *mem, uvm_gpu_t *accessing_
     copy_addr = uvm_pmm_gpu_peer_copy_address(&mem->backing_gpu->pmm, chunk, accessing_gpu);
     copy_addr.address += chunk_offset;
     return copy_addr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef struct uvm_mem_pte_maker_data_struct
 {
@@ -717,16 +718,16 @@ typedef struct uvm_mem_pte_maker_data_struct
 } uvm_mem_pte_maker_data_t;
 
 static NvU64 uvm_mem_pte_maker(uvm_page_table_range_vec_t *range_vec, NvU64 offset, void *vp_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mem_pte_maker_data_t *data = (uvm_mem_pte_maker_data_t *)vp_data;
     uvm_page_tree_t *tree = range_vec->tree;
     uvm_gpu_t *gpu = tree->gpu;
     uvm_gpu_phys_address_t phys = uvm_mem_gpu_physical(data->mem, gpu, offset, range_vec->page_size);
     return tree->hal->make_pte(phys.aperture, phys.address, data->attrs->protection, data->attrs->is_volatile, range_vec->page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void unmap_gpu(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_page_table_range_vec_t **range_vec = &mem->range_vecs[uvm_global_id_gpu_index(gpu->global_id)];
     uvm_membar_t tlb_membar = UVM_MEMBAR_SYS;
@@ -740,14 +741,14 @@ static void unmap_gpu(uvm_mem_t *mem, uvm_gpu_t *gpu)
 
     uvm_page_table_range_vec_destroy(*range_vec);
     *range_vec = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS map_gpu(uvm_mem_t *mem,
                          uvm_gpu_t *gpu,
                          NvU64 gpu_va,
                          uvm_page_tree_t *tree,
                          const uvm_mem_gpu_mapping_attrs_t *attrs)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_page_table_range_vec_t **range_vec = &mem->range_vecs[uvm_global_id_gpu_index(gpu->global_id)];
     NvU32 page_size;
@@ -781,10 +782,10 @@ static NV_STATUS map_gpu(uvm_mem_t *mem,
 error:
     unmap_gpu(mem, gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_map_gpu_kernel(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU64 gpu_va;
     uvm_mem_gpu_mapping_attrs_t attrs = {
@@ -809,10 +810,10 @@ NV_STATUS uvm_mem_map_gpu_kernel(uvm_mem_t *mem, uvm_gpu_t *gpu)
     uvm_global_processor_mask_set(&mem->mapped_on, gpu->global_id);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_map_gpu_user(uvm_mem_t *mem, uvm_gpu_t *gpu, const uvm_mem_gpu_mapping_attrs_t *attrs)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_va_space_t *gpu_va_space;
 
@@ -834,10 +835,10 @@ NV_STATUS uvm_mem_map_gpu_user(uvm_mem_t *mem, uvm_gpu_t *gpu, const uvm_mem_gpu
     uvm_global_processor_mask_set(&mem->mapped_on, gpu->global_id);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_mem_unmap_gpu(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(mem);
     UVM_ASSERT(gpu);
 
@@ -848,10 +849,10 @@ void uvm_mem_unmap_gpu(uvm_mem_t *mem, uvm_gpu_t *gpu)
 
     unmap_gpu(mem, gpu);
     uvm_global_processor_mask_clear(&mem->mapped_on, gpu->global_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_mem_map_gpu_phys(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     if (!uvm_mem_is_sysmem(mem))
@@ -869,10 +870,10 @@ NV_STATUS uvm_mem_map_gpu_phys(uvm_mem_t *mem, uvm_gpu_t *gpu)
     uvm_global_processor_mask_set(&mem->mapped_phys_on, gpu->global_id);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_mem_unmap_gpu_phys(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(mem);
     UVM_ASSERT(gpu);
 
@@ -888,10 +889,10 @@ void uvm_mem_unmap_gpu_phys(uvm_mem_t *mem, uvm_gpu_t *gpu)
 
     unmap_gpu_sysmem_iommu(mem, gpu);
     uvm_global_processor_mask_clear(&mem->mapped_phys_on, gpu->global_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_mem_free(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     if (mem == NULL)
@@ -911,30 +912,30 @@ void uvm_mem_free(uvm_mem_t *mem)
     uvm_mem_free_chunks(mem);
 
     uvm_kvfree(mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *uvm_mem_get_cpu_addr_kernel(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!mem->is_user_allocation);
     UVM_ASSERT(uvm_global_processor_mask_test(&mem->mapped_on, UVM_GLOBAL_ID_CPU));
 
     return mem->kernel.cpu_addr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_mem_get_gpu_va_kernel(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!mem->is_user_allocation);
     UVM_ASSERT_MSG(uvm_global_processor_mask_test(&mem->mapped_on, gpu->global_id), "GPU %s\n", gpu->name);
 
     return reserved_gpu_va(mem, gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_address_t uvm_mem_gpu_address_virtual_kernel(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_address_virtual(uvm_mem_get_gpu_va_kernel(mem, gpu));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_address_t uvm_mem_gpu_address_physical(uvm_mem_t *mem, uvm_gpu_t *gpu, NvU64 offset, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_address_from_phys(uvm_mem_gpu_physical(mem, gpu, offset, size));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

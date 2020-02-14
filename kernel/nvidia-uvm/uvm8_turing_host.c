@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017 NVIDIA Corporation
 
@@ -27,7 +28,7 @@
 #include "clc46f.h"
 
 void uvm_hal_turing_host_semaphore_release(uvm_push_t *push, uvm_gpu_semaphore_t *semaphore, NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     NvU64 semaphore_va = uvm_gpu_semaphore_get_gpu_va(semaphore, gpu);
     NV_PUSH_5U(C46F, SEM_ADDR_LO,    NvOffset_LO32(semaphore_va),
@@ -38,10 +39,10 @@ void uvm_hal_turing_host_semaphore_release(uvm_push_t *push, uvm_gpu_semaphore_t
                                      HWCONST(C46F, SEM_EXECUTE, PAYLOAD_SIZE, 32BIT) |
                                      HWCONST(C46F, SEM_EXECUTE, RELEASE_TIMESTAMP, DIS) |
                                      HWCONST(C46F, SEM_EXECUTE, RELEASE_WFI, DIS));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_turing_host_semaphore_acquire(uvm_push_t *push, uvm_gpu_semaphore_t *semaphore, NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     NvU64 semaphore_va = uvm_gpu_semaphore_get_gpu_va(semaphore, gpu);
     NV_PUSH_5U(C46F, SEM_ADDR_LO,    NvOffset_LO32(semaphore_va),
@@ -51,12 +52,12 @@ void uvm_hal_turing_host_semaphore_acquire(uvm_push_t *push, uvm_gpu_semaphore_t
                      SEM_EXECUTE,    HWCONST(C46F, SEM_EXECUTE, OPERATION, ACQ_CIRC_GEQ) |
                                      HWCONST(C46F, SEM_EXECUTE, PAYLOAD_SIZE, 32BIT) |
                                      HWCONST(C46F, SEM_EXECUTE, ACQUIRE_SWITCH_TSG, EN));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_turing_host_clear_faulted_channel_method(uvm_push_t *push,
                                                       uvm_user_channel_t *user_channel,
                                                       const uvm_fault_buffer_entry_t *fault)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 clear_type_value = 0;
 
     UVM_ASSERT(user_channel->gpu->has_clear_faulted_channel_method);
@@ -74,4 +75,4 @@ void uvm_hal_turing_host_clear_faulted_channel_method(uvm_push_t *push,
 
     NV_PUSH_1U(C46F, CLEAR_FAULTED, HWVALUE(C46F, CLEAR_FAULTED, HANDLE, user_channel->clear_faulted_token) |
                                     clear_type_value);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

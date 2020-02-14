@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -28,26 +29,26 @@
 #include "uvm8_va_space.h"
 
 void uvm_perf_module_type_set_data(uvm_perf_module_data_desc_t *modules_data, void *data, uvm_perf_module_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(type >= 0 && type < UVM_PERF_MODULE_TYPE_COUNT);
     UVM_ASSERT(data);
     // Data can only be created once per module
     UVM_ASSERT(!modules_data[type].data);
 
     modules_data[type].data = data;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_module_type_unset_data(uvm_perf_module_data_desc_t *modules_data, uvm_perf_module_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(type >= 0 && type < UVM_PERF_MODULE_TYPE_COUNT);
     // Data should have been previously set
     UVM_ASSERT(modules_data[type].data);
 
     memset(&modules_data[type], 0, sizeof(modules_data[type]));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_module_load(uvm_perf_module_t *module, uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     size_t i, j;
 
@@ -73,10 +74,10 @@ error:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_module_unload(uvm_perf_module_t *module, uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_event_data_t event_data;
     uvm_va_range_t *va_range;
     uvm_va_block_t *block;
@@ -116,20 +117,20 @@ void uvm_perf_module_unload(uvm_perf_module_t *module, uvm_va_space_t *va_space)
     }
 
     va_space->perf_modules[module->type] = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_perf_module_t *uvm_perf_module_for_type(uvm_va_space_t *va_space, uvm_perf_module_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->lock);
 
     return va_space->perf_modules[type];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 void uvm_perf_module_init(const char *name, uvm_perf_module_type_t type,
                           uvm_perf_module_event_callback_desc_t *callbacks, size_t callback_count,
                           uvm_perf_module_t *module)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
 
     UVM_ASSERT(callbacks);
@@ -148,4 +149,4 @@ void uvm_perf_module_init(const char *name, uvm_perf_module_type_t type,
 
     module->name = name;
     module->type = type;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

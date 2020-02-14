@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018-2019 NVIDIA Corporation
 
@@ -207,7 +208,7 @@
 #define UVM_VA_SPACE_MM_SHUTDOWN_DELAY_MAX_MS 100
 
 NV_STATUS uvm_va_space_mm_register(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_mm_t *va_space_mm;
 
@@ -246,10 +247,10 @@ NV_STATUS uvm_va_space_mm_register(uvm_va_space_t *va_space)
 
     uvm_mutex_unlock(&va_space->mm_state.lock);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_space_mm_t *uvm_va_space_mm_unregister(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_mm_t *va_space_mm;
     bool do_wait = false;
 
@@ -299,24 +300,24 @@ uvm_va_space_mm_t *uvm_va_space_mm_unregister(uvm_va_space_t *va_space)
     // We haven't dropped the kref, so the caller must complete the operation
     // with uvm_va_space_mm_drop.
     return va_space_mm;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_space_mm_free(nv_kref_t *nv_kref)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_mm_t *va_space_mm = container_of(nv_kref, uvm_va_space_mm_t, kref);
     UVM_ASSERT(va_space_mm->registered_count == 0);
     UVM_ASSERT(va_space_mm->retained_count == 0);
     UVM_ASSERT(!waitqueue_active(&va_space_mm->wait_queue));
     uvm_kvfree(va_space_mm);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_space_mm_drop(uvm_va_space_mm_t *va_space_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     nv_kref_put(&va_space_mm->kref, uvm_va_space_mm_free);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_space_mm_t *uvm_va_space_mm_retain(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_mm_t *va_space_mm;
 
     uvm_mutex_lock(&va_space->mm_state.lock);
@@ -334,10 +335,10 @@ uvm_va_space_mm_t *uvm_va_space_mm_retain(uvm_va_space_t *va_space)
 
     uvm_mutex_unlock(&va_space->mm_state.lock);
     return va_space_mm;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_space_mm_release(uvm_va_space_mm_t *va_space_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_space_mm->va_space;
 
     uvm_mutex_lock(&va_space->mm_state.lock);
@@ -363,10 +364,10 @@ void uvm_va_space_mm_release(uvm_va_space_mm_t *va_space_mm)
 
     // As soon as we drop this lock, va_space_mm could be freed.
     uvm_mutex_unlock(&va_space->mm_state.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_space_mm_shutdown_delay(uvm_va_space_mm_t *va_space_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 start_time;
     int num_threads;
     bool timed_out = false;
@@ -394,11 +395,11 @@ static void uvm_va_space_mm_shutdown_delay(uvm_va_space_mm_t *va_space_mm)
 
     // No need to decrement num_mm_shutdown_threads since this va_space_mm is
     // being shut down.
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // See the mm teardown block comment at the top of the file.
 void uvm_va_space_mm_shutdown(uvm_va_space_mm_t *va_space_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_space_mm->va_space;
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_gpu_t *gpu;
@@ -522,10 +523,10 @@ void uvm_va_space_mm_shutdown(uvm_va_space_mm_t *va_space_mm)
 
     // As soon as we drop this lock, va_space_mm could be freed.
     uvm_mutex_unlock(&va_space->mm_state.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS mm_read64(struct mm_struct *mm, NvU64 addr, NvU64 *val)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     long ret;
     int write = 0, force = 0;
     struct page *page;
@@ -548,10 +549,10 @@ static NV_STATUS mm_read64(struct mm_struct *mm, NvU64 addr, NvU64 *val)
     put_page(page);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_space_mm_retain(UVM_TEST_VA_SPACE_MM_RETAIN_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = NULL;
     uvm_va_space_mm_t *va_space_mm = NULL;
     NV_STATUS status = NV_OK;
@@ -585,10 +586,10 @@ NV_STATUS uvm8_test_va_space_mm_retain(UVM_TEST_VA_SPACE_MM_RETAIN_PARAMS *param
 
     uvm_va_space_mm_release(va_space_mm);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_space_mm_delay_shutdown(UVM_TEST_VA_SPACE_MM_DELAY_SHUTDOWN_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_space_mm_t *va_space_mm;
     NV_STATUS status = NV_ERR_PAGE_TABLE_NOT_AVAIL;
@@ -606,4 +607,4 @@ NV_STATUS uvm8_test_va_space_mm_delay_shutdown(UVM_TEST_VA_SPACE_MM_DELAY_SHUTDO
     uvm_va_space_up_write(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

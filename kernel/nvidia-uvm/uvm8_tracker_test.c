@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -30,7 +31,7 @@
 #include "uvm8_va_space.h"
 
 static NV_STATUS assert_tracker_is_completed(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(uvm_tracker_query(tracker) == NV_OK);
     TEST_CHECK_RET(uvm_tracker_is_completed(tracker));
     TEST_CHECK_RET(uvm_tracker_wait(tracker) == NV_OK);
@@ -40,10 +41,10 @@ static NV_STATUS assert_tracker_is_completed(uvm_tracker_t *tracker)
     uvm_tracker_clear(tracker);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS assert_tracker_is_not_completed(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_remove_completed(tracker);
     TEST_CHECK_RET(uvm_tracker_query(tracker) == NV_WARN_MORE_PROCESSING_REQUIRED);
     TEST_CHECK_RET(!uvm_tracker_is_completed(tracker));
@@ -51,13 +52,13 @@ static NV_STATUS assert_tracker_is_not_completed(uvm_tracker_t *tracker)
     TEST_CHECK_RET(tracker->size != 0);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This test schedules some GPU work behind a semaphore and then allows the GPU
 // to progress one tracker entry at a time verifying that the tracker entries
 // are completed as expected.
 static NV_STATUS test_tracker_completion(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_channel_t *channel;
     uvm_tracker_t tracker;
@@ -127,10 +128,10 @@ done:
     uvm_tracker_wait_deinit(&tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tracker_basic(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_channel_t *channel;
     uvm_tracker_t tracker;
@@ -222,10 +223,10 @@ static NV_STATUS test_tracker_basic(uvm_va_space_t *va_space)
 done:
     uvm_tracker_deinit(&tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tracker_overwrite(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_channel_t *channel;
     uvm_tracker_t tracker, dup_tracker;
@@ -309,10 +310,10 @@ done:
     if (dup_tracker_init)
         uvm_tracker_deinit(&dup_tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tracker_add_tracker(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_channel_t *channel;
     uvm_tracker_t tracker, dup_tracker;
@@ -387,10 +388,10 @@ done:
     uvm_tracker_deinit(&tracker);
     uvm_tracker_deinit(&dup_tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_tracker_sanity(UVM_TEST_TRACKER_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -416,4 +417,4 @@ done:
     uvm_va_space_up_read_rm(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

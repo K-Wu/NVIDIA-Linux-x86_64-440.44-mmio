@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2013-2019 NVIDIA Corporation
 
@@ -174,9 +175,9 @@ void on_uvm_assert(void);
 #define ABBREV_UUID(uuid) (unsigned)(uuid)
 
 static inline NvBool uvm_uuid_is_cpu(const NvProcessorUuid *uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return memcmp(uuid, &NV_PROCESSOR_UUID_CPU_DEFAULT, sizeof(*uuid)) == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define UVM_ALIGN_DOWN(x, a) ({         \
         typeof(x) _a = a;               \
@@ -201,39 +202,39 @@ static inline NvBool uvm_uuid_is_cpu(const NvProcessorUuid *uuid)
 // optimized as a single instruction in many processors, whereas integer
 // division is always slow.
 static inline NvU32 uvm_div_pow2_32(NvU32 numerator, NvU32 denominator_pow2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(is_power_of_2(denominator_pow2));
     UVM_ASSERT(denominator_pow2);
     return numerator >> ilog2(denominator_pow2);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline NvU64 uvm_div_pow2_64(NvU64 numerator, NvU64 denominator_pow2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(is_power_of_2(denominator_pow2));
     UVM_ASSERT(denominator_pow2);
     return numerator >> ilog2(denominator_pow2);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define SUM_FROM_0_TO_N(n) (((n) * ((n) + 1)) / 2)
 
 // Start and end are inclusive
 static inline NvBool uvm_ranges_overlap(NvU64 a_start, NvU64 a_end, NvU64 b_start, NvU64 b_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // De Morgan's of: !(a_end < b_start || b_end < a_start)
     return a_end >= b_start && b_end >= a_start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int debug_mode(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 #ifdef DEBUG
     return 1;
 #else
     return 0;
 #endif
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline void kmem_cache_destroy_safe(struct kmem_cache **ppCache)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (ppCache)
     {
         if (*ppCache) {
@@ -242,7 +243,7 @@ static inline void kmem_cache_destroy_safe(struct kmem_cache **ppCache)
         }
         *ppCache = NULL;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const uid_t UVM_ROOT_UID = 0;
 
@@ -254,11 +255,11 @@ typedef struct
 } uvm_spin_loop_t;
 
 static inline void uvm_spin_loop_init(uvm_spin_loop_t *spin)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 curr = NV_GETTIME();
     spin->start_time_ns = curr;
     spin->print_time_ns = curr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Periodically yields the CPU when not called from interrupt context. Returns
 // NV_ERR_TIMEOUT_RETRY if the caller should print a warning that we've been
@@ -266,10 +267,10 @@ static inline void uvm_spin_loop_init(uvm_spin_loop_t *spin)
 NV_STATUS uvm_spin_loop(uvm_spin_loop_t *spin);
 
 static NvU64 uvm_spin_loop_elapsed(const uvm_spin_loop_t *spin)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 curr = NV_GETTIME();
     return curr - spin->start_time_ns;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define UVM_SPIN_LOOP(__spin) ({                                                        \
     NV_STATUS __status = uvm_spin_loop(__spin);                                         \
@@ -302,10 +303,10 @@ NvBool uvm_user_id_security_check(uid_t euidTarget);
 extern int uvm_enable_builtin_tests;
 
 static inline void uvm_init_character_device(struct cdev *cdev, const struct file_operations *fops)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     cdev_init(cdev, fops);
     cdev->owner = THIS_MODULE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef struct
 {
@@ -317,12 +318,12 @@ typedef struct
 // ARM/x86 architectures require addresses to be in "canonical form". Sign-extend 49-bit virtual
 // address for all architectures as per Bug 1568165
 static inline NvU64 uvm_address_get_canonical_form(NvU64 address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 #if NVCPU_IS_X86_64 || NVCPU_IS_AARCH64
     address = (NvU64)(((NvS64) address << (64 - 49)) >> (64 - 49));
 #endif
     return address;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Macro used to compare two values for types that support less than operator.
 // It returns -1 if a < b, 1 if a > b and 0 if a == 0

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -36,7 +37,7 @@ static struct kmem_cache *g_uvm_va_range_cache __read_mostly;
 static struct kmem_cache *g_uvm_vma_wrapper_cache __read_mostly;
 
 NV_STATUS uvm_va_range_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_uvm_va_range_cache = NV_KMEM_CACHE_CREATE("uvm_va_range_t", uvm_va_range_t);
     if (!g_uvm_va_range_cache)
         return NV_ERR_NO_MEMORY;
@@ -46,39 +47,39 @@ NV_STATUS uvm_va_range_init(void)
         return NV_ERR_NO_MEMORY;
 
     return uvm_va_block_init();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_exit();
     kmem_cache_destroy_safe(&g_uvm_va_range_cache);
     kmem_cache_destroy_safe(&g_uvm_vma_wrapper_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 block_calc_start(uvm_va_range_t *va_range, size_t index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 range_start = UVM_VA_BLOCK_ALIGN_DOWN(va_range->node.start);
     NvU64 block_start = range_start + index * UVM_VA_BLOCK_SIZE;
     NvU64 start = max(va_range->node.start, block_start);
     UVM_ASSERT(start < va_range->node.end);
     return start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 block_calc_end(uvm_va_range_t *va_range, size_t index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 start = block_calc_start(va_range, index);
     NvU64 block_end = UVM_VA_BLOCK_ALIGN_UP(start + 1) - 1; // Inclusive end
     NvU64 end = min(va_range->node.end, block_end);
     UVM_ASSERT(end > va_range->node.start);
     return end;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Called before the range's bounds have been adjusted. This may not actually
 // shrink the blocks array. For example, if the shrink attempt fails then
 // va_range's old array is left intact. This may waste memory, but it means this
 // function cannot fail.
 static void blocks_array_shrink(uvm_va_range_t *va_range, size_t new_num_blocks)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t new_size = new_num_blocks * sizeof(va_range->blocks[0]);
     atomic_long_t *new_blocks;
 
@@ -105,10 +106,10 @@ static void blocks_array_shrink(uvm_va_range_t *va_range, size_t new_num_blocks)
     }
 
     va_range->blocks = new_blocks;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_range_t *uvm_va_range_alloc(uvm_va_space_t *va_space, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = nv_kmem_cache_zalloc(g_uvm_va_range_cache, NV_UVM_GFP_FLAGS);
     if (!va_range)
         return NULL;
@@ -127,10 +128,10 @@ static uvm_va_range_t *uvm_va_range_alloc(uvm_va_space_t *va_space, NvU64 start,
     nv_kref_init(&va_range->kref);
 
     return va_range;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_range_t *uvm_va_range_alloc_managed(uvm_va_space_t *va_space, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = NULL;
 
     va_range = uvm_va_range_alloc(va_space, start, end);
@@ -153,12 +154,12 @@ static uvm_va_range_t *uvm_va_range_alloc_managed(uvm_va_space_t *va_space, NvU6
 error:
     uvm_va_range_destroy(va_range, NULL);
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_create_mmap(uvm_va_space_t *va_space,
                                    uvm_vma_wrapper_t *vma_wrapper,
                                    uvm_va_range_t **out_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     struct vm_area_struct *vma = vma_wrapper->vma;
     uvm_va_range_t *va_range = NULL;
@@ -184,13 +185,13 @@ NV_STATUS uvm_va_range_create_mmap(uvm_va_space_t *va_space,
 error:
     uvm_va_range_destroy(va_range, NULL);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_create_external(uvm_va_space_t *va_space,
                                        NvU64 start,
                                        NvU64 length,
                                        uvm_va_range_t **out_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_range_t *va_range = NULL;
 
@@ -214,13 +215,13 @@ NV_STATUS uvm_va_range_create_external(uvm_va_space_t *va_space,
 error:
     uvm_va_range_destroy(va_range, NULL);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_create_channel(uvm_va_space_t *va_space,
                                       NvU64 start,
                                       NvU64 end,
                                       uvm_va_range_t **out_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_range_t *va_range = NULL;
 
@@ -245,13 +246,13 @@ NV_STATUS uvm_va_range_create_channel(uvm_va_space_t *va_space,
 error:
     uvm_va_range_destroy(va_range, NULL);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_create_sked_reflected(uvm_va_space_t *va_space,
                                              NvU64 start,
                                              NvU64 length,
                                              uvm_va_range_t **out_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_range_t *va_range = NULL;
 
@@ -275,7 +276,7 @@ NV_STATUS uvm_va_range_create_sked_reflected(uvm_va_space_t *va_space,
 error:
     uvm_va_range_destroy(va_range, NULL);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_create_semaphore_pool(uvm_va_space_t *va_space,
                                              NvU64 start,
@@ -283,7 +284,7 @@ NV_STATUS uvm_va_range_create_semaphore_pool(uvm_va_space_t *va_space,
                                              const UvmGpuMappingAttributes *per_gpu_attrs,
                                              NvU32 per_gpu_attrs_count,
                                              uvm_va_range_t **out_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     static const uvm_mem_gpu_mapping_attrs_t default_attrs = {
             .protection = UVM_PROT_READ_WRITE_ATOMIC,
             .is_volatile = true
@@ -349,10 +350,10 @@ NV_STATUS uvm_va_range_create_semaphore_pool(uvm_va_space_t *va_space,
 error:
     uvm_va_range_destroy(va_range, NULL);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_destroy_managed(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *block;
     uvm_va_block_t *block_tmp;
     uvm_perf_event_data_t event_data;
@@ -373,10 +374,10 @@ static void uvm_va_range_destroy_managed(uvm_va_range_t *va_range)
 
     status = uvm_range_group_assign_range(va_range->va_space, NULL, va_range->node.start, va_range->node.end);
     UVM_ASSERT(status == NV_OK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_destroy_external(uvm_va_range_t *va_range, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     if (uvm_processor_mask_empty(&va_range->external.mapped_gpus))
@@ -388,10 +389,10 @@ static void uvm_va_range_destroy_external(uvm_va_range_t *va_range, struct list_
         uvm_ext_gpu_map_destroy(va_range, gpu, deferred_free_list);
 
     UVM_ASSERT(uvm_processor_mask_empty(&va_range->external.mapped_gpus));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_destroy_channel(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = va_range->channel.gpu_va_space;
     uvm_membar_t membar;
 
@@ -412,10 +413,10 @@ static void uvm_va_range_destroy_channel(uvm_va_range_t *va_range)
 
     // Channel unregister handles releasing this descriptor back to RM
     va_range->channel.rm_descriptor = 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_destroy_sked_reflected(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = va_range->sked_reflected.gpu_va_space;
 
     if (!gpu_va_space || !va_range->sked_reflected.pt_range_vec.ranges)
@@ -427,10 +428,10 @@ static void uvm_va_range_destroy_sked_reflected(uvm_va_range_t *va_range)
     uvm_page_table_range_vec_deinit(&va_range->sked_reflected.pt_range_vec);
 
     va_range->sked_reflected.gpu_va_space = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_destroy_semaphore_pool(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_wait_deinit(&va_range->semaphore_pool.tracker);
     if (status != NV_OK) {
         UVM_ASSERT_MSG(status == uvm_global_get_status(),
@@ -440,23 +441,23 @@ static void uvm_va_range_destroy_semaphore_pool(uvm_va_range_t *va_range)
     }
     uvm_mem_free(va_range->semaphore_pool.mem);
     va_range->semaphore_pool.mem = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void va_range_free(nv_kref_t *nv_kref)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = container_of(nv_kref, uvm_va_range_t, kref);
     UVM_ASSERT(!va_range->va_space);
     kmem_cache_free(g_uvm_va_range_cache, va_range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_release(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (va_range)
         nv_kref_put(&va_range->kref, va_range_free);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_destroy(uvm_va_range_t *va_range, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!va_range)
         return;
 
@@ -493,10 +494,10 @@ void uvm_va_range_destroy(uvm_va_range_t *va_range, struct list_head *deferred_f
     va_range->va_space = NULL;
 
     uvm_va_range_release(va_range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_zombify(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!va_range)
         return;
 
@@ -505,10 +506,10 @@ void uvm_va_range_zombify(uvm_va_range_t *va_range)
 
     // Destroy will be done by uvm_destroy_vma_managed
     va_range->managed.vma_wrapper = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_clean_up_zombie_resources(UVM_CLEAN_UP_ZOMBIE_RESOURCES_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range, *va_range_next;
 
@@ -522,10 +523,10 @@ NV_STATUS uvm_api_clean_up_zombie_resources(UVM_CLEAN_UP_ZOMBIE_RESOURCES_PARAMS
     uvm_va_space_up_write(va_space);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_validate_va_range(UVM_VALIDATE_VA_RANGE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_ERR_INVALID_ADDRESS;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range;
@@ -539,10 +540,10 @@ NV_STATUS uvm_api_validate_va_range(UVM_VALIDATE_VA_RANGE_PARAMS *params, struct
     uvm_va_space_up_read(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_va_range_add_gpu_va_space_managed(uvm_va_range_t *va_range, uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_range->va_space;
     uvm_gpu_t *gpu = gpu_va_space->gpu;
     NV_STATUS status = NV_OK;
@@ -588,10 +589,10 @@ static NV_STATUS uvm_va_range_add_gpu_va_space_managed(uvm_va_range_t *va_range,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_add_gpu_va_space(uvm_va_range_t *va_range, uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mem_gpu_mapping_attrs_t *attrs;
 
     switch (va_range->type) {
@@ -603,10 +604,10 @@ NV_STATUS uvm_va_range_add_gpu_va_space(uvm_va_range_t *va_range, uvm_gpu_va_spa
         default:
             return NV_OK;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void range_remove_gpu_va_space_managed(uvm_va_range_t *va_range, uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
     uvm_va_space_t *va_space = va_range->va_space;
     bool should_enable_read_duplicate;
@@ -623,12 +624,12 @@ static void range_remove_gpu_va_space_managed(uvm_va_range_t *va_range, uvm_gpu_
         if (should_enable_read_duplicate)
             uvm_va_block_set_read_duplication(va_block, uvm_va_space_block_context(va_space));
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_remove_gpu_va_space(uvm_va_range_t *va_range,
                                       uvm_gpu_va_space_t *gpu_va_space,
                                       struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (va_range->type) {
         case UVM_VA_RANGE_TYPE_MANAGED:
             range_remove_gpu_va_space_managed(va_range, gpu_va_space);
@@ -655,10 +656,10 @@ void uvm_va_range_remove_gpu_va_space(uvm_va_range_t *va_range,
             UVM_ASSERT_MSG(0, "[0x%llx, 0x%llx] has type %d\n",
                            va_range->node.start, va_range->node.end, va_range->type);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_va_range_enable_peer_managed(uvm_va_range_t *va_range, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_t *va_block;
     bool gpu0_accessed_by = uvm_processor_mask_test(&va_range->accessed_by, gpu0->id);
@@ -695,10 +696,10 @@ static NV_STATUS uvm_va_range_enable_peer_managed(uvm_va_range_t *va_range, uvm_
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_enable_peer(uvm_va_range_t *va_range, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (va_range->type) {
         case UVM_VA_RANGE_TYPE_MANAGED:
             return uvm_va_range_enable_peer_managed(va_range, gpu0, gpu1);
@@ -719,13 +720,13 @@ NV_STATUS uvm_va_range_enable_peer(uvm_va_range_t *va_range, uvm_gpu_t *gpu0, uv
                            va_range->node.start, va_range->node.end, va_range->type);
             return NV_ERR_NOT_SUPPORTED;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_disable_peer_external(uvm_va_range_t *va_range,
                                                uvm_gpu_t *gpu0,
                                                uvm_gpu_t *gpu1,
                                                struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_ext_gpu_map_t *ext_gpu_map;
 
     // If GPU 0 has a mapping to GPU 1, remove GPU 0's mapping
@@ -741,10 +742,10 @@ static void uvm_va_range_disable_peer_external(uvm_va_range_t *va_range,
         UVM_ASSERT(deferred_free_list);
         uvm_ext_gpu_map_destroy(va_range, gpu1, deferred_free_list);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_disable_peer_managed(uvm_va_range_t *va_range, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
     uvm_gpu_t *uvm_lite_gpu_to_unmap = NULL;
 
@@ -781,13 +782,13 @@ static void uvm_va_range_disable_peer_managed(uvm_va_range_t *va_range, uvm_gpu_
         // UVM-Lite GPU any more.
         uvm_va_range_unset_accessed_by(va_range, uvm_lite_gpu_to_unmap->id);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_disable_peer(uvm_va_range_t *va_range,
                                uvm_gpu_t *gpu0,
                                uvm_gpu_t *gpu1,
                                struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 
     switch (va_range->type) {
         case UVM_VA_RANGE_TYPE_MANAGED:
@@ -809,10 +810,10 @@ void uvm_va_range_disable_peer(uvm_va_range_t *va_range,
             UVM_ASSERT_MSG(0, "[0x%llx, 0x%llx] has type %d\n",
                            va_range->node.start, va_range->node.end, va_range->type);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_unregister_gpu_managed(uvm_va_range_t *va_range, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
 
     // Reset preferred location and accessed-by of VA ranges if needed
@@ -826,7 +827,7 @@ static void uvm_va_range_unregister_gpu_managed(uvm_va_range_t *va_range, uvm_gp
     // Migrate and free any remaining resident allocations on this GPU
     for_each_va_block_in_va_range(va_range, va_block)
         uvm_va_block_unregister_gpu(va_block, gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // The GPU being unregistered can't have any remaining mappings, since those
 // were removed when the corresponding GPU VA space was removed. However, other
@@ -835,7 +836,7 @@ static void uvm_va_range_unregister_gpu_managed(uvm_va_range_t *va_range, uvm_gp
 static void uvm_va_range_unregister_gpu_external(uvm_va_range_t *va_range,
                                                  uvm_gpu_t *gpu,
                                                  struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_ext_gpu_map_t *ext_gpu_map;
     uvm_gpu_t *other_gpu;
 
@@ -850,10 +851,10 @@ static void uvm_va_range_unregister_gpu_external(uvm_va_range_t *va_range,
             uvm_ext_gpu_map_destroy(va_range, other_gpu, deferred_free_list);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_va_range_unregister_gpu_semaphore_pool(uvm_va_range_t *va_range, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     // All ranges for this GPU should have been unmapped by GPU VA space
@@ -870,10 +871,10 @@ static void uvm_va_range_unregister_gpu_semaphore_pool(uvm_va_range_t *va_range,
     va_range->semaphore_pool.gpu_attrs[uvm_id_gpu_index(gpu->id)] = va_range->semaphore_pool.default_gpu_attrs;
     if (va_range->semaphore_pool.owner == gpu)
         va_range->semaphore_pool.owner = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_unregister_gpu(uvm_va_range_t *va_range, uvm_gpu_t *gpu, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (va_range->type) {
         case UVM_VA_RANGE_TYPE_MANAGED:
             uvm_va_range_unregister_gpu_managed(va_range, gpu);
@@ -900,7 +901,7 @@ void uvm_va_range_unregister_gpu(uvm_va_range_t *va_range, uvm_gpu_t *gpu, struc
             UVM_ASSERT_MSG(0, "[0x%llx, 0x%llx] has type %d\n",
                            va_range->node.start, va_range->node.end, va_range->type);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Split existing's blocks into new. new's blocks array has already been
 // allocated. This is called before existing's range node is split, so it
@@ -910,7 +911,7 @@ void uvm_va_range_unregister_gpu(uvm_va_range_t *va_range, uvm_gpu_t *gpu, struc
 //
 // If this fails it leaves existing unchanged.
 static NV_STATUS uvm_va_range_split_blocks(uvm_va_range_t *existing, uvm_va_range_t *new)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *old_block, *block = NULL;
     size_t existing_blocks, split_index, new_index = 0;
     NV_STATUS status;
@@ -996,12 +997,12 @@ static NV_STATUS uvm_va_range_split_blocks(uvm_va_range_t *existing, uvm_va_rang
     blocks_array_shrink(existing, existing_blocks);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_split(uvm_va_range_t *existing_va_range,
                              NvU64 new_end,
                              uvm_va_range_t **new_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = existing_va_range->va_space;
     uvm_va_range_t *new = NULL;
     uvm_perf_event_data_t event_data;
@@ -1050,29 +1051,29 @@ error:
     uvm_va_range_destroy(new, NULL);
     return status;
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline uvm_va_range_t *uvm_va_range_container(uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!node)
         return NULL;
     return container_of(node, uvm_va_range_t, node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_range_t *uvm_va_range_find(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->lock);
     return uvm_va_range_container(uvm_range_tree_find(&va_space->va_range_tree, addr));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_range_t *uvm_va_space_iter_first(uvm_va_space_t *va_space, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = uvm_range_tree_iter_first(&va_space->va_range_tree, start, end);
     return uvm_va_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_range_t *uvm_va_space_iter_next(uvm_va_range_t *va_range, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
 
     // Handling a NULL va_range here makes uvm_for_each_va_range_in_safe much
@@ -1082,17 +1083,17 @@ uvm_va_range_t *uvm_va_space_iter_next(uvm_va_range_t *va_range, NvU64 end)
 
     node = uvm_range_tree_iter_next(&va_range->va_space->va_range_tree, &va_range->node, end);
     return uvm_va_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 size_t uvm_va_range_num_blocks(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 start = UVM_VA_BLOCK_ALIGN_DOWN(va_range->node.start);
     NvU64 end   = UVM_VA_BLOCK_ALIGN_UP(va_range->node.end); // End is inclusive
     return (end - start) / UVM_VA_BLOCK_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 size_t uvm_va_range_block_index(uvm_va_range_t *va_range, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t addr_index, start_index, index;
 
     UVM_ASSERT(addr >= va_range->node.start);
@@ -1111,10 +1112,10 @@ size_t uvm_va_range_block_index(uvm_va_range_t *va_range, NvU64 addr)
     index = addr_index - start_index;
     UVM_ASSERT(index < uvm_va_range_num_blocks(va_range));
     return index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_block_create(uvm_va_range_t *va_range, size_t index, uvm_va_block_t **out_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *block, *old;
     NV_STATUS status;
 
@@ -1146,10 +1147,10 @@ NV_STATUS uvm_va_range_block_create(uvm_va_range_t *va_range, size_t index, uvm_
 
     *out_block = block;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_block_t *uvm_va_range_block_next(uvm_va_range_t *va_range, uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_range->va_space;
     size_t i = 0;
 
@@ -1170,10 +1171,10 @@ uvm_va_block_t *uvm_va_range_block_next(uvm_va_range_t *va_range, uvm_va_block_t
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS range_unmap_mask(uvm_va_range_t *va_range, const uvm_processor_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_range->va_space;
     uvm_va_block_context_t *block_context = uvm_va_space_block_context(va_space);
     uvm_va_block_t *block;
@@ -1195,10 +1196,10 @@ static NV_STATUS range_unmap_mask(uvm_va_range_t *va_range, const uvm_processor_
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS range_unmap(uvm_va_range_t *va_range, uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t mask;
 
     UVM_ASSERT_MSG(va_range->type == UVM_VA_RANGE_TYPE_MANAGED, "type 0x%x\n", va_range->type);
@@ -1207,10 +1208,10 @@ static NV_STATUS range_unmap(uvm_va_range_t *va_range, uvm_processor_id_t proces
     uvm_processor_mask_set(&mask, processor);
 
     return range_unmap_mask(va_range, &mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS range_map_uvm_lite_gpus(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_block_t *va_block;
     uvm_va_block_context_t *va_block_context = uvm_va_space_block_context(va_range->va_space);
@@ -1235,14 +1236,14 @@ static NV_STATUS range_map_uvm_lite_gpus(uvm_va_range_t *va_range)
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Calculate the mask of GPUs that should follow the UVM-Lite behaviour
 static void calc_uvm_lite_gpus_mask(uvm_va_space_t *va_space,
                                     uvm_processor_id_t preferred_location,
                                     const uvm_processor_mask_t *accessed_by_mask,
                                     uvm_processor_mask_t *uvm_lite_gpus)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_id_t gpu_id;
 
     uvm_assert_rwsem_locked_write(&va_space->lock);
@@ -1271,20 +1272,20 @@ static void calc_uvm_lite_gpus_mask(uvm_va_space_t *va_space,
     // And the preferred location if it's a GPU
     if (UVM_ID_IS_GPU(preferred_location))
         uvm_processor_mask_set(uvm_lite_gpus, preferred_location);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Update the mask of GPUs that follow the UVM-Lite behaviour
 static void range_update_uvm_lite_gpus_mask(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(va_range->type == UVM_VA_RANGE_TYPE_MANAGED);
     calc_uvm_lite_gpus_mask(va_range->va_space,
                             va_range->preferred_location,
                             &va_range->accessed_by,
                             &va_range->uvm_lite_gpus);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_set_preferred_location(uvm_va_range_t *va_range, uvm_processor_id_t preferred_location)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_processor_mask_t all_uvm_lite_gpus;
     uvm_processor_mask_t new_uvm_lite_gpus;
@@ -1391,10 +1392,10 @@ NV_STATUS uvm_va_range_set_preferred_location(uvm_va_range_t *va_range, uvm_proc
     // the new preferred location. Anything that's not resident right now will
     // get mapped on the next PreventMigration().
     return range_map_uvm_lite_gpus(va_range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_set_accessed_by(uvm_va_range_t *va_range, uvm_processor_id_t processor_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_t *va_block;
     uvm_processor_mask_t new_uvm_lite_gpus;
@@ -1441,10 +1442,10 @@ NV_STATUS uvm_va_range_set_accessed_by(uvm_va_range_t *va_range, uvm_processor_i
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_range_unset_accessed_by(uvm_va_range_t *va_range, uvm_processor_id_t processor_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr = NULL;
 
     // Mark all range group ranges within this VA range as migrated. We do this to force
@@ -1466,10 +1467,10 @@ void uvm_va_range_unset_accessed_by(uvm_va_range_t *va_range, uvm_processor_id_t
     }
 
     range_update_uvm_lite_gpus_mask(va_range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_set_read_duplication(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
     uvm_va_block_context_t *va_block_context;
 
@@ -1486,10 +1487,10 @@ NV_STATUS uvm_va_range_set_read_duplication(uvm_va_range_t *va_range)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_unset_read_duplication(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
     uvm_va_block_context_t *va_block_context;
 
@@ -1506,13 +1507,13 @@ NV_STATUS uvm_va_range_unset_read_duplication(uvm_va_range_t *va_range)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_space_split_as_needed(uvm_va_space_t *va_space,
                                        NvU64 addr,
                                        uvm_va_range_is_split_needed_t split_needed_cb,
                                        void *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
 
     UVM_ASSERT(va_space);
@@ -1536,14 +1537,14 @@ NV_STATUS uvm_va_space_split_as_needed(uvm_va_space_t *va_space,
         return uvm_va_range_split(va_range, addr - 1, NULL);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_space_split_span_as_needed(uvm_va_space_t *va_space,
                                             NvU64 start_addr,
                                             NvU64 end_addr,
                                             uvm_va_range_is_split_needed_t split_needed_cb,
                                             void *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = uvm_va_space_split_as_needed(va_space, start_addr, split_needed_cb, data);
@@ -1551,10 +1552,10 @@ NV_STATUS uvm_va_space_split_span_as_needed(uvm_va_space_t *va_space,
         return status;
 
     return uvm_va_space_split_as_needed(va_space, end_addr, split_needed_cb, data);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_vma_wrapper_t *uvm_vma_wrapper_alloc(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_vma_wrapper_t *vma_wrapper = nv_kmem_cache_zalloc(g_uvm_vma_wrapper_cache, NV_UVM_GFP_FLAGS);
     if (!vma_wrapper)
         return NULL;
@@ -1563,20 +1564,20 @@ uvm_vma_wrapper_t *uvm_vma_wrapper_alloc(struct vm_area_struct *vma)
     uvm_init_rwsem(&vma_wrapper->lock, UVM_LOCK_ORDER_LEAF);
 
     return vma_wrapper;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_vma_wrapper_destroy(uvm_vma_wrapper_t *vma_wrapper)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!vma_wrapper)
         return;
 
     uvm_assert_rwsem_unlocked(&vma_wrapper->lock);
 
     kmem_cache_free(g_uvm_vma_wrapper_cache, vma_wrapper);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_prot_t uvm_va_range_logical_prot(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_prot_t logical_prot;
     struct vm_area_struct *vma;
 
@@ -1597,21 +1598,21 @@ uvm_prot_t uvm_va_range_logical_prot(uvm_va_range_t *va_range)
         logical_prot = UVM_PROT_READ_WRITE_ATOMIC;
 
     return logical_prot;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fault_check_range_permission(uvm_va_range_t *va_range, uvm_fault_access_type_t access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_prot_t logical_prot = uvm_va_range_logical_prot(va_range);
     uvm_prot_t fault_prot = uvm_fault_access_type_to_prot(access_type);
 
     return fault_prot <= logical_prot;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_check_logical_permissions(uvm_va_range_t *va_range,
                                                  uvm_processor_id_t processor_id,
                                                  uvm_fault_type_t access_type,
                                                  bool allow_migration)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // CPU permissions are checked later by block_map_cpu_page.
     //
     // TODO: Bug 1766124: permissions are checked by block_map_cpu_page because
@@ -1650,19 +1651,19 @@ NV_STATUS uvm_va_range_check_logical_permissions(uvm_va_range_t *va_range,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 
 static NvU64 sked_reflected_pte_maker(uvm_page_table_range_vec_t *range_vec, NvU64 offset, void *caller_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     (void)caller_data;
 
     return range_vec->tree->hal->make_sked_reflected_pte();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_map_sked_reflected_range(uvm_va_space_t *va_space, UVM_MAP_DYNAMIC_PARALLELISM_REGION_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_range_t *va_range = NULL;
     uvm_gpu_t *gpu;
@@ -1733,20 +1734,20 @@ done:
     uvm_va_space_up_write(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_map_dynamic_parallelism_region(UVM_MAP_DYNAMIC_PARALLELISM_REGION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     // Notably the ranges created by the UvmMapDynamicParallelismRegion() API
     // are referred to as "SKED reflected ranges" internally as it's more
     // descriptive.
     return uvm_map_sked_reflected_range(va_space, params);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_alloc_semaphore_pool(UVM_ALLOC_SEMAPHORE_POOL_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range = NULL;
@@ -1783,10 +1784,10 @@ done:
         uvm_va_range_destroy(va_range, NULL);
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_range_info(UVM_TEST_VA_RANGE_INFO_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_va_range_t *va_range;
     uvm_processor_id_t processor_id;
@@ -1858,10 +1859,10 @@ out:
     uvm_va_space_up_read(va_space);
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_range_split(UVM_TEST_VA_RANGE_SPLIT_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range;
     NV_STATUS status = NV_OK;
@@ -1884,11 +1885,11 @@ NV_STATUS uvm8_test_va_range_split(UVM_TEST_VA_RANGE_SPLIT_PARAMS *params, struc
 out:
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_range_inject_split_error(UVM_TEST_VA_RANGE_INJECT_SPLIT_ERROR_PARAMS *params,
                                                 struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range;
     NV_STATUS status = NV_OK;
@@ -1906,4 +1907,4 @@ NV_STATUS uvm8_test_va_range_inject_split_error(UVM_TEST_VA_RANGE_INJECT_SPLIT_E
 out:
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

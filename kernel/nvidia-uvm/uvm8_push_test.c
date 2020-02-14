@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -40,7 +41,7 @@
 
 // Verify that UVM_PUSH_END_SIZE is correct
 static NV_STATUS test_push_end_size(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     NvU32 push_size;
@@ -70,7 +71,7 @@ done:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum {
     TEST_INLINE_ADD,
@@ -80,7 +81,7 @@ typedef enum {
 } test_inline_type_t;
 
 static NV_STATUS test_push_inline_data_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     static const size_t test_sizes[] = { 1, 2, 3, 4, 8, 31, 32, 1023, 1024, 1025, UVM_PUSH_INLINE_DATA_MAX_SIZE };
     NV_STATUS status;
     int i, j;
@@ -158,10 +159,10 @@ done:
     uvm_mem_free(mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_push_inline_data(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_va_space_gpu(gpu, va_space) {
@@ -169,14 +170,14 @@ static NV_STATUS test_push_inline_data(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Test that begins UVM_PUSH_MAX_CONCURRENT_PUSHES number of pushes before
 // ending any of them on each GPU.
 // Notably starting more than a single push is not safe to do outside of a test
 // as if multiple threads tried doing so, it could easily deadlock.
 static NV_STATUS test_concurrent_pushes(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     NvU32 i;
@@ -219,26 +220,26 @@ done:
     uvm_kvfree(pushes);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void add_to_counter(void* ptr, int value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     atomic_t *atomic = (atomic_t*) ptr;
     atomic_add(value, atomic);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void add_one_to_counter(void* ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     add_to_counter(ptr, 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void add_two_to_counter(void* ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     add_to_counter(ptr, 2);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_push_interleaving_on_gpu(uvm_gpu_t* gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_channel_t *channel;
     uvm_push_t push;
@@ -343,7 +344,7 @@ done:
     uvm_thread_context_lock_enable_tracking();
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Using a single thread, interleave pushes and check that the result is consistent with a non-interleaved sequence.
 // 1) Begin a few pushes in channel X but do not end them. Each pushed (GPU) method sets a individual value in an
@@ -358,7 +359,7 @@ done:
 // Starting more than a single push is not safe to do outside of a test as if multiple threads tried doing so,
 // it could easily deadlock.
 static NV_STATUS test_push_interleaving(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
 
@@ -374,14 +375,14 @@ static NV_STATUS test_push_interleaving(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Push exactly UVM_MAX_PUSH_SIZE methods while acquiring a semaphore
 // This is very tightly coupled with the pushbuffer implementation and method
 // sizes, which is not ideal, but allows to test corner cases in the pushbuffer
 // management code.
 static NV_STATUS test_push_exactly_max_push(uvm_gpu_t *gpu, uvm_push_t *push, uvm_gpu_semaphore_t *sema_to_acquire, NvU32 value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = uvm_push_begin(gpu->channel_manager, UVM_CHANNEL_TYPE_ANY, push, "Test push");
@@ -403,25 +404,25 @@ static NV_STATUS test_push_exactly_max_push(uvm_gpu_t *gpu, uvm_push_t *push, uv
     UVM_ASSERT_MSG(uvm_push_get_size(push) == UVM_MAX_PUSH_SIZE, "push_size %u\n", uvm_push_get_size(push));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 test_count_idle_chunks(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU32 count = 0;
     for (i = 0; i < UVM_PUSHBUFFER_CHUNKS; ++i)
         count += test_bit(i, pushbuffer->idle_chunks) ? 1 : 0;
     return count;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 test_count_available_chunks(uvm_pushbuffer_t *pushbuffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU32 count = 0;
     for (i = 0; i < UVM_PUSHBUFFER_CHUNKS; ++i)
         count += test_bit(i, pushbuffer->available_chunks) ? 1 : 0;
     return count;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Reuse the whole pushbuffer 4 times, one UVM_MAX_PUSH_SIZE at a time
 #define EXTRA_MAX_PUSHES_WHILE_FULL (4 * UVM_PUSHBUFFER_SIZE / UVM_MAX_PUSH_SIZE)
@@ -429,7 +430,7 @@ static NvU32 test_count_available_chunks(uvm_pushbuffer_t *pushbuffer)
 // Test doing pushes of exactly UVM_MAX_PUSH_SIZE size and only allowing them to
 // complete one by one.
 static NV_STATUS test_max_pushes_on_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     uvm_tracker_t tracker;
@@ -504,13 +505,13 @@ done:
     uvm_gpu_semaphore_free(&sema);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // Test doing UVM_PUSHBUFFER_CHUNKS independent pushes expecting each one to use
 // a different chunk in the pushbuffer.
 static NV_STATUS test_idle_chunks_on_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     uvm_gpu_semaphore_t sema;
@@ -567,10 +568,10 @@ done:
     uvm_tracker_deinit(&tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_pushbuffer(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_va_space_gpu(gpu, va_space) {
@@ -578,7 +579,7 @@ static NV_STATUS test_pushbuffer(uvm_va_space_t *va_space)
         TEST_CHECK_RET(test_idle_chunks_on_gpu(gpu) == NV_OK);
     }
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef struct
 {
@@ -587,7 +588,7 @@ typedef struct
 } timestamp_test_t;
 
 static void timestamp_on_complete(void *void_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     timestamp_test_t *data = (timestamp_test_t *)void_data;
 
     if (uvm_global_get_status() != NV_OK) {
@@ -598,10 +599,10 @@ static void timestamp_on_complete(void *void_data)
     }
 
     data->timestamp = *data->timestmap_in_pushbuffer;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_timestamp_on_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     timestamp_test_t test_data = {0};
@@ -629,20 +630,20 @@ static NV_STATUS test_timestamp_on_gpu(uvm_gpu_t *gpu)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_timestamp(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_va_space_gpu(gpu, va_space)
         TEST_CHECK_RET(test_timestamp_on_gpu(gpu) == NV_OK);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS sync_memcopy(uvm_channel_type_t type, uvm_mem_t *dst, uvm_mem_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     uvm_gpu_address_t dst_va;
     uvm_gpu_address_t src_va;
@@ -681,10 +682,10 @@ static NV_STATUS sync_memcopy(uvm_channel_type_t type, uvm_mem_t *dst, uvm_mem_t
     }
 
     return uvm_push_end_and_wait(&push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool can_do_peer_copies(uvm_va_space_t *va_space, uvm_gpu_t *gpu_a, uvm_gpu_t *gpu_b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (gpu_a == gpu_b || !uvm_processor_mask_test(&va_space->can_copy_from[uvm_id_value(gpu_a->id)], gpu_b->id))
         return false;
 
@@ -695,12 +696,12 @@ static bool can_do_peer_copies(uvm_va_space_t *va_space, uvm_gpu_t *gpu_a, uvm_g
         return false;
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Test the GPU to GPU push interface by transferring data between each
 // permutation of GPU peers.
 static NV_STATUS test_push_gpu_to_gpu(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NV_STATUS status;
     uvm_gpu_t *gpu, *gpu_a, *gpu_b;
@@ -790,10 +791,10 @@ static NV_STATUS test_push_gpu_to_gpu(uvm_va_space_t *va_space)
     uvm_mem_free(mem[UVM_ID_CPU_VALUE]);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_push_sanity(UVM_TEST_PUSH_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -835,4 +836,4 @@ done:
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

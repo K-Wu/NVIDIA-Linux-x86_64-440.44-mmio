@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017-2019 NVIDIA Corporation
 
@@ -42,7 +43,7 @@
 // There is no error handling in this function. The caller is in charge of
 // calling uvm_gpu_fault_buffer_deinit_non_replayable_faults on failure.
 NV_STATUS uvm_gpu_fault_buffer_init_non_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_non_replayable_fault_buffer_info_t *non_replayable_faults = &gpu->fault_buffer_info.non_replayable;
 
     UVM_ASSERT(gpu->non_replayable_faults_supported);
@@ -67,10 +68,10 @@ NV_STATUS uvm_gpu_fault_buffer_init_non_replayable_faults(uvm_gpu_t *gpu)
     uvm_tracker_init(&non_replayable_faults->fault_service_tracker);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_fault_buffer_deinit_non_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_non_replayable_fault_buffer_info_t *non_replayable_faults = &gpu->fault_buffer_info.non_replayable;
 
     if (non_replayable_faults->fault_cache) {
@@ -86,10 +87,10 @@ void uvm_gpu_fault_buffer_deinit_non_replayable_faults(uvm_gpu_t *gpu)
     uvm_kvfree(non_replayable_faults->fault_cache);
     non_replayable_faults->shadow_buffer_copy = NULL;
     non_replayable_faults->fault_cache        = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_gpu_non_replayable_faults_pending(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvBool has_pending_faults;
 
@@ -100,10 +101,10 @@ bool uvm_gpu_non_replayable_faults_pending(uvm_gpu_t *gpu)
     UVM_ASSERT(status == NV_OK);
 
     return has_pending_faults == NV_TRUE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 fetch_non_replayable_fault_buffer_entries(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU32 i = 0;
     NvU32 cached_faults = 0;
@@ -154,14 +155,14 @@ static NvU32 fetch_non_replayable_fault_buffer_entries(uvm_gpu_t *gpu)
     }
 
     return cached_faults;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS clear_faulted_method_on_gpu(uvm_gpu_t *gpu,
                                              uvm_user_channel_t *user_channel,
                                              const uvm_fault_buffer_entry_t *fault_entry,
                                              NvU32 batch_id,
                                              uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     uvm_non_replayable_fault_buffer_info_t *non_replayable_faults = &gpu->fault_buffer_info.non_replayable;
@@ -197,7 +198,7 @@ static NV_STATUS clear_faulted_method_on_gpu(uvm_gpu_t *gpu,
         status = uvm_tracker_add_push_safe(&user_channel->clear_faulted_tracker, &push);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 
@@ -229,21 +230,21 @@ static NV_STATUS clear_faulted_on_gpu(uvm_gpu_t *gpu,
                                       const uvm_fault_buffer_entry_t *fault_entry,
                                       NvU32 batch_id,
                                       uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 
 
 
 
 
     return clear_faulted_method_on_gpu(gpu, user_channel, fault_entry, batch_id, tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_managed_fault_in_block_locked(uvm_gpu_t *gpu,
                                                        uvm_va_block_t *va_block,
                                                        uvm_va_block_retry_t *va_block_retry,
                                                        uvm_fault_buffer_entry_t *fault_entry,
                                                        uvm_service_block_context_t *service_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_page_index_t page_index;
     uvm_perf_thrashing_hint_t thrashing_hint;
@@ -330,13 +331,13 @@ static NV_STATUS service_managed_fault_in_block_locked(uvm_gpu_t *gpu,
     ++service_context->num_retries;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_managed_fault_in_block(uvm_gpu_t *gpu,
                                                 uvm_va_space_mm_t *va_space_mm,
                                                 uvm_va_block_t *va_block,
                                                 uvm_fault_buffer_entry_t *fault_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status, tracker_status;
     uvm_va_block_retry_t va_block_retry;
     uvm_service_block_context_t *service_context = &gpu->fault_buffer_info.non_replayable.block_service_context;
@@ -360,12 +361,12 @@ static NV_STATUS service_managed_fault_in_block(uvm_gpu_t *gpu,
     uvm_mutex_unlock(&va_block->lock);
 
     return status == NV_OK? tracker_status: status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // See uvm_unregister_channel for comments on the the channel destruction
 // sequence.
 static void kill_channel_delayed(void *_user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *user_channel = (uvm_user_channel_t *)_user_channel;
     uvm_va_space_t *va_space = user_channel->kill_channel.va_space;
 
@@ -382,17 +383,17 @@ static void kill_channel_delayed(void *_user_channel)
     uvm_va_space_up_read_rm(va_space);
 
     uvm_user_channel_release(user_channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void kill_channel_delayed_entry(void *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(kill_channel_delayed(user_channel));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void schedule_kill_channel(uvm_gpu_t *gpu,
                                   uvm_fault_buffer_entry_t *fault_entry,
                                   uvm_user_channel_t *user_channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = fault_entry->va_space;
     uvm_non_replayable_fault_buffer_info_t *non_replayable_faults = &gpu->fault_buffer_info.non_replayable;
     void *packet = (char *)non_replayable_faults->shadow_buffer_copy +
@@ -422,13 +423,13 @@ static void schedule_kill_channel(uvm_gpu_t *gpu,
 
     nv_kthread_q_schedule_q_item(&gpu->isr.kill_channel_q,
                                  &user_channel->kill_channel.kill_channel_q_item);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_non_managed_fault(uvm_gpu_va_space_t *gpu_va_space,
                                            uvm_va_space_mm_t *va_space_mm,
                                            uvm_fault_buffer_entry_t *fault_entry,
                                            NV_STATUS lookup_status)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = gpu_va_space->gpu;
     uvm_non_replayable_fault_buffer_info_t *non_replayable_faults = &gpu->fault_buffer_info.non_replayable;
     uvm_ats_fault_invalidate_t *ats_invalidate = &non_replayable_faults->ats_invalidate;
@@ -470,10 +471,10 @@ static NV_STATUS service_non_managed_fault(uvm_gpu_va_space_t *gpu_va_space,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS service_fault(uvm_gpu_t *gpu, uvm_fault_buffer_entry_t *fault_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_user_channel_t *user_channel;
     uvm_va_block_t *va_block;
@@ -567,10 +568,10 @@ exit_no_channel:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_service_non_replayable_fault_buffer(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU32 cached_faults;
 
@@ -593,4 +594,4 @@ void uvm_gpu_service_non_replayable_fault_buffer(uvm_gpu_t *gpu)
 
     if (status != NV_OK)
         UVM_DBG_PRINT("Error servicing non-replayable faults on GPU: %s\n", gpu->name);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

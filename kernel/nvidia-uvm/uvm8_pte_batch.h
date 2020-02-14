@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -87,11 +88,11 @@ void uvm_pte_batch_clear_ptes(uvm_pte_batch_t *batch,
 // A helper for a single call to uvm_pte_batch_write_ptes() that begin and ends the PTE batch internally
 static void uvm_pte_batch_single_write_ptes(uvm_push_t *push,
         uvm_gpu_phys_address_t first_pte, NvU64 *pte_bits, NvU32 entry_size, NvU32 entry_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pte_batch_t batch;
     uvm_pte_batch_begin(push, &batch);
     uvm_pte_batch_write_ptes(&batch, first_pte, pte_bits, entry_size, entry_count);
     uvm_pte_batch_end(&batch);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // __UVM8_PTE_BATCH_H__

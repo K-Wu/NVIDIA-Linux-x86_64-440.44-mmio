@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -112,41 +113,41 @@ void uvm_perf_tree_clear(uvm_perf_tree_t *tree, size_t node_size);
 
 // Initializes the context for a tree traversal from the leaves to the root
 static void uvm_perf_tree_init_up_traversal(const uvm_perf_tree_t *tree, uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     iter->level_idx     = tree->level_count - 1;
     iter->level_offset  = 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_perf_tree_init_up_branch_traversal(const uvm_perf_tree_t *tree, size_t leaf, uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_tree_init_up_traversal(tree, iter);
 
     iter->node_idx = leaf;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Initializes the context for a tree traversal from the root to the leaves
 static void uvm_perf_tree_init_down_traversal(const uvm_perf_tree_t *tree, uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     iter->level_idx     = 0;
     iter->level_offset  = tree->node_count - 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_perf_tree_init_down_branch_traversal(const uvm_perf_tree_t *tree, size_t leaf, uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_tree_init_down_traversal(tree, iter);
 
     iter->node_idx = leaf;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Computes the index of the node visited for the traversal in the current level
 static size_t uvm_perf_tree_iter_leaf_to_index_in_level(const uvm_perf_tree_t *tree, const uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return iter->node_idx >> ((tree->level_count - 1) - iter->level_idx);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Computes the number of nodes in the given level
 static size_t uvm_perf_tree_level_node_count(const uvm_perf_tree_t *tree, size_t level_idx)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t level_pow2_node_count;
     size_t level_missing_nodes_to_pow2;
 
@@ -154,7 +155,7 @@ static size_t uvm_perf_tree_level_node_count(const uvm_perf_tree_t *tree, size_t
     level_missing_nodes_to_pow2 = (tree->pow2_leaf_count - tree->leaf_count) >> ((tree->level_count - 1) - level_idx);
 
     return level_pow2_node_count - level_missing_nodes_to_pow2;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Function to compute the range of leaves that lie beneath any of the nodes in the tree.
 //
@@ -204,17 +205,17 @@ static size_t uvm_perf_tree_level_node_count(const uvm_perf_tree_t *tree, size_t
 
 // Functions to update the tree traversal context with the information of the next level (up/down)
 static void uvm_perf_tree_traverse_up(const uvm_perf_tree_t *tree, uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Nodes of the next level (up) are stored AFTER the current level
     iter->level_offset += uvm_perf_tree_level_node_count(tree, iter->level_idx--);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_perf_tree_traverse_down(const uvm_perf_tree_t *tree, uvm_perf_tree_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Nodes of the next level (down) are stored BEFORE the current level. Since we are at the beginning of the current
     // level, we must skip all the nodes of the NEXT level.
     iter->level_offset -= uvm_perf_tree_level_node_count(tree, ++iter->level_idx);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Complete branch traversal from the given leaf up to the root of the tree. A pointer to the node in each level of the
 // traversal is stored in node

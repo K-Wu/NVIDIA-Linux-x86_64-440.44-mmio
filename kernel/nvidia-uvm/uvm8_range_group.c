@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -35,7 +36,7 @@ static struct kmem_cache *g_uvm_range_group_cache __read_mostly;
 static struct kmem_cache *g_uvm_range_group_range_cache __read_mostly;
 
 NV_STATUS uvm_range_group_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_uvm_range_group_cache = NV_KMEM_CACHE_CREATE("uvm_range_group_t", uvm_range_group_t);
     if (!g_uvm_range_group_cache)
         return NV_ERR_NO_MEMORY;
@@ -45,18 +46,18 @@ NV_STATUS uvm_range_group_init(void)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_group_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     kmem_cache_destroy_safe(&g_uvm_range_group_cache);
     kmem_cache_destroy_safe(&g_uvm_range_group_range_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_range_group_range_t *range_group_range_create(uvm_range_group_t *range_group,
                                                          NvU64 start,
                                                          NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr = nv_kmem_cache_zalloc(g_uvm_range_group_range_cache, NV_UVM_GFP_FLAGS);
     if (rgr == NULL)
         return NULL;
@@ -70,10 +71,10 @@ static uvm_range_group_range_t *range_group_range_create(uvm_range_group_t *rang
     rgr->node.end = end;
 
     return rgr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_range_group_range_destroy(uvm_range_group_range_t *rgr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (rgr == NULL)
         return;
 
@@ -83,10 +84,10 @@ static void uvm_range_group_range_destroy(uvm_range_group_range_t *rgr)
     // so we don't need to acquire the migrated_list lock.
     list_del(&rgr->range_group_migrated_list_node);
     kmem_cache_free(g_uvm_range_group_range_cache, rgr);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_create_range_group(UVM_CREATE_RANGE_GROUP_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_range_group_t *range_group = NULL;
     NV_STATUS status = NV_OK;
@@ -119,10 +120,10 @@ done:
     uvm_va_space_up_write(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_range_group_destroy(uvm_va_space_t *va_space, uvm_range_group_t *range_group)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr, *tmp;
 
     list_for_each_entry_safe(rgr, tmp, &range_group->ranges, range_group_list_node) {
@@ -135,10 +136,10 @@ static void uvm_range_group_destroy(uvm_va_space_t *va_space, uvm_range_group_t 
     UVM_ASSERT(list_empty(&range_group->migrated_ranges));
 
     kmem_cache_free(g_uvm_range_group_cache, range_group);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_destroy_range_group(UVM_DESTROY_RANGE_GROUP_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_range_group_t *range_group = NULL;
     NV_STATUS status = NV_OK;
@@ -156,10 +157,10 @@ NV_STATUS uvm_api_destroy_range_group(UVM_DESTROY_RANGE_GROUP_PARAMS *params, st
 done:
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_group_radix_tree_destroy(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_t *range_group = NULL;
     struct radix_tree_root *root = &va_space->range_groups;
     NvU64 index = 1;
@@ -170,7 +171,7 @@ void uvm_range_group_radix_tree_destroy(uvm_va_space_t *va_space)
         index = range_group->id + 1;
         uvm_range_group_destroy(va_space, range_group);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_range_group_va_range_migrate_block_locked(uvm_va_range_t *va_range,
                                                                uvm_va_block_t *va_block,
@@ -178,7 +179,7 @@ static NV_STATUS uvm_range_group_va_range_migrate_block_locked(uvm_va_range_t *v
                                                                uvm_va_block_context_t *va_block_context,
                                                                uvm_va_block_region_t region,
                                                                uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NV_STATUS tracker_status;
     uvm_gpu_id_t gpu_id;
@@ -244,13 +245,13 @@ out:
     tracker_status = uvm_tracker_add_tracker_safe(tracker, &va_block->tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_range_group_va_range_migrate(uvm_va_range_t *va_range,
                                            NvU64 start,
                                            NvU64 end,
                                            uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block = NULL;
     size_t i = 0;
     NV_STATUS status = NV_OK;
@@ -288,10 +289,10 @@ NV_STATUS uvm_range_group_va_range_migrate(uvm_va_range_t *va_range,
     uvm_va_block_context_free(va_block_context);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_set_range_group(UVM_SET_RANGE_GROUP_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_range_group_t *range_group = NULL;
     uvm_va_range_t *va_range, *va_range_last;
@@ -368,11 +369,11 @@ done:
         uvm_va_space_up_read(va_space);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_range_group_prevent_migration(uvm_range_group_t *range_group,
                                                    uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr = NULL;
     uvm_va_range_t *va_range;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -456,13 +457,13 @@ done:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_range_groups_set_migration_policy(uvm_va_space_t *va_space,
                                                        NvU64 *range_group_ids,
                                                        NvU64 num_group_ids,
                                                        bool allow_migration)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU64 i;
     uvm_range_group_t *range_groups[UVM_MAX_RANGE_GROUPS_PER_IOCTL_CALL];
@@ -516,29 +517,29 @@ static NV_STATUS uvm_range_groups_set_migration_policy(uvm_va_space_t *va_space,
 
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_range_group_range_t *range_group_range_container(uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (node == NULL)
         return NULL;
     return container_of(node, uvm_range_group_range_t, node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_range_group_range_t *range_group_range_prev(uvm_va_space_t *va_space, uvm_range_group_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = uvm_range_tree_prev(&va_space->range_group_ranges, &range->node);
     return range_group_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_range_group_range_t *range_group_range_next(uvm_va_space_t *va_space, uvm_range_group_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = uvm_range_tree_next(&va_space->range_group_ranges, &range->node);
     return range_group_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_range_group_assign_range(uvm_va_space_t *va_space, uvm_range_group_t *range_group, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_group_range_t *rgr;
     uvm_range_group_range_t *temp;
@@ -635,16 +636,16 @@ NV_STATUS uvm_range_group_assign_range(uvm_va_space_t *va_space, uvm_range_group
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_range_group_address_migratable(uvm_va_space_t *va_space, NvU64 address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr = uvm_range_group_range_find(va_space, address);
     return rgr == NULL || uvm_range_group_migratable(rgr->range_group);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_range_group_any_migratable(uvm_va_space_t *va_space, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_iter_t iter;
     uvm_range_group_for_all_ranges_in(&iter, va_space, start, end) {
         if (iter.migratable)
@@ -652,10 +653,10 @@ bool uvm_range_group_any_migratable(uvm_va_space_t *va_space, NvU64 start, NvU64
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_range_group_all_migratable(uvm_va_space_t *va_space, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr;
     uvm_range_group_for_each_range_in(rgr, va_space, start, end) {
         if (!uvm_range_group_migratable(rgr->range_group))
@@ -663,33 +664,33 @@ bool uvm_range_group_all_migratable(uvm_va_space_t *va_space, NvU64 start, NvU64
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_group_range_t *uvm_range_group_range_find(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
     uvm_assert_rwsem_locked(&va_space->lock);
 
     node = uvm_range_tree_find(&va_space->range_group_ranges, addr);
     return range_group_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_group_range_t *uvm_range_group_range_iter_first(uvm_va_space_t *va_space, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = uvm_range_tree_iter_first(&va_space->range_group_ranges, start, end);
     return range_group_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_group_range_t *uvm_range_group_range_iter_next(uvm_va_space_t *va_space,
                                                          uvm_range_group_range_t *range,
                                                          NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = uvm_range_tree_iter_next(&va_space->range_group_ranges, &range->node, end);
     return range_group_range_container(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void range_group_range_iter_advance(uvm_range_group_range_iter_t *iter, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (iter->node == NULL) {
         iter->end = end;
     }
@@ -701,25 +702,25 @@ static void range_group_range_iter_advance(uvm_range_group_range_iter_t *iter, N
             iter->end = min(iter->node->node.start - 1, end);
     }
     iter->migratable = iter->node == NULL || !iter->is_current || uvm_range_group_migratable(iter->node->range_group);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 void uvm_range_group_range_iter_all_first(uvm_va_space_t *va_space,
                                           NvU64 start,
                                           NvU64 end,
                                           uvm_range_group_range_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     iter->valid = true;
     iter->start = start;
     iter->node = uvm_range_group_range_iter_first(va_space, start, end);
 
     range_group_range_iter_advance(iter, end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_range_group_range_iter_all_next(uvm_va_space_t *va_space,
                                          uvm_range_group_range_iter_t *iter,
                                          NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     iter->valid = iter->end < end;
     if (!iter->valid)
         return false;
@@ -730,13 +731,13 @@ bool uvm_range_group_range_iter_all_next(uvm_va_space_t *va_space,
 
     range_group_range_iter_advance(iter, end);
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_group_range_migratability_iter_first(uvm_va_space_t *va_space,
                                                     NvU64 start,
                                                     NvU64 end,
                                                     uvm_range_group_range_iter_t *iter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_iter_t next;
 
     uvm_range_group_range_iter_all_first(va_space, start, end, iter);
@@ -746,12 +747,12 @@ void uvm_range_group_range_migratability_iter_first(uvm_va_space_t *va_space,
         *iter = next;
 
     iter->start = start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_group_range_migratability_iter_next(uvm_va_space_t *va_space,
                                                    uvm_range_group_range_iter_t *iter,
                                                    NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_iter_t next;
     NvU64 start;
 
@@ -764,12 +765,12 @@ void uvm_range_group_range_migratability_iter_next(uvm_va_space_t *va_space,
         *iter = next;
 
     iter->start = start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_group_migratable_page_mask(uvm_va_block_t *va_block,
                                           uvm_va_block_region_t region,
                                           uvm_page_mask_t *mask_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_iter_t iter;
     uvm_va_space_t *va_space = va_block->va_range->va_space;
 
@@ -782,10 +783,10 @@ void uvm_range_group_migratable_page_mask(uvm_va_block_t *va_block,
         if (iter.migratable)
             uvm_page_mask_region_fill(mask_out, uvm_va_block_region_from_start_end(va_block, iter.start, iter.end));
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_prevent_migration_range_groups(UVM_PREVENT_MIGRATION_RANGE_GROUPS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -794,17 +795,17 @@ NV_STATUS uvm_api_prevent_migration_range_groups(UVM_PREVENT_MIGRATION_RANGE_GRO
         uvm_tools_flush_events();
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_allow_migration_range_groups(UVM_ALLOW_MIGRATION_RANGE_GROUPS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return uvm_range_groups_set_migration_policy(va_space, params->rangeGroupIds, params->numGroupIds, true);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_range_group_range_info(UVM_TEST_RANGE_GROUP_RANGE_INFO_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -842,10 +843,10 @@ NV_STATUS uvm8_test_range_group_range_info(UVM_TEST_RANGE_GROUP_RANGE_INFO_PARAM
     uvm_va_space_up_read(va_space);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_range_group_range_count(UVM_TEST_RANGE_GROUP_RANGE_COUNT_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_t *rgr;
     uvm_range_group_t *range_group;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
@@ -867,4 +868,4 @@ NV_STATUS uvm8_test_range_group_range_count(UVM_TEST_RANGE_GROUP_RANGE_COUNT_PAR
     uvm_va_space_up_read(va_space);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018-2019 NVIDIA Corporation
 
@@ -32,14 +33,14 @@
 #if UVM_KERNEL_SUPPORTS_IBM_ATS()
 
 void uvm_ats_ibm_register_lock(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mutex_lock(&va_space->mm_state.ats_reg_unreg_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_ats_ibm_register_unlock(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mutex_unlock(&va_space->mm_state.ats_reg_unreg_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function is called under two circumstances:
 // 1) By the kernel when the mm is about to be torn down
@@ -49,7 +50,7 @@ void uvm_ats_ibm_register_unlock(uvm_va_space_t *va_space)
 // paths. We are not guaranteed to be called by both paths, but it is possible
 // that they are called concurrently.
 static void npu_release(struct npu_context *npu_context, void *va_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_mm_t *va_space_mm = (uvm_va_space_mm_t *)va_mm;
     UVM_ASSERT(g_uvm_global.ats.enabled);
 
@@ -65,15 +66,15 @@ static void npu_release(struct npu_context *npu_context, void *va_mm)
     //
     // uvm_va_space_mm_shutdown provides all of those guarantees.
     uvm_va_space_mm_shutdown(va_space_mm);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void npu_release_entry(struct npu_context *npu_context, void *va_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(npu_release(npu_context, va_mm));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_ats_ibm_register_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = gpu_va_space->va_space;
     struct npu_context *npu_context;
     NV_STATUS status;
@@ -127,10 +128,10 @@ NV_STATUS uvm_ats_ibm_register_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space)
 
     gpu_va_space->ats.npu_context = npu_context;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_ats_ibm_unregister_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = gpu_va_space->va_space;
     uvm_va_space_mm_t *va_space_mm;
 
@@ -162,12 +163,12 @@ void uvm_ats_ibm_unregister_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space)
 
     uvm_ats_ibm_register_unlock(va_space);
     uvm_va_space_mm_drop(va_space_mm);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_ats_ibm_service_fault(uvm_gpu_va_space_t *gpu_va_space,
                                     NvU64 fault_addr,
                                     uvm_fault_access_type_t access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long flags;
     uintptr_t addr;
     unsigned long fault_status = 0;
@@ -193,6 +194,6 @@ NV_STATUS uvm_ats_ibm_service_fault(uvm_gpu_va_space_t *gpu_va_space,
     }
 
     return errno_to_nv_status(err);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // UVM_KERNEL_SUPPORTS_IBM_ATS

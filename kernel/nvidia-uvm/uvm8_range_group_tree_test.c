@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -33,7 +34,7 @@
 #define uvm_range_group_for_each_range(node, va_space) uvm_range_group_for_each_range_in(node, va_space, 0, ULLONG_MAX)
 
 static NV_STATUS range_group_owns_ranges(uvm_range_group_t *range_group, NvU64 count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 i = 0;
     uvm_range_group_range_t *rgr;
     list_for_each_entry(rgr, &range_group->ranges, range_group_list_node) {
@@ -42,10 +43,10 @@ static NV_STATUS range_group_owns_ranges(uvm_range_group_t *range_group, NvU64 c
     }
     TEST_CHECK_RET(i == count);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS range_group_tree_empty(uvm_va_space_t *va_space, uvm_range_group_t **range_groups)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 i;
     uvm_range_group_range_t *rgr;
 
@@ -58,10 +59,10 @@ static NV_STATUS range_group_tree_empty(uvm_va_space_t *va_space, uvm_range_grou
 
     TEST_CHECK_RET(i == 0);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS iterator_test(uvm_va_space_t *va_space, uvm_range_group_t **range_groups)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_group_range_iter_t iter;
     NvU64 i;
 
@@ -362,10 +363,10 @@ static NV_STATUS iterator_test(uvm_va_space_t *va_space, uvm_range_group_t **ran
     TEST_CHECK_RET(i == 1);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_range_group_tree(UVM_TEST_RANGE_GROUP_TREE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     size_t i;
     uvm_range_group_t *range_groups[RANGE_GROUP_COUNT];
@@ -382,4 +383,4 @@ NV_STATUS uvm8_test_range_group_tree(UVM_TEST_RANGE_GROUP_TREE_PARAMS *params, s
     status = iterator_test(va_space, range_groups);
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

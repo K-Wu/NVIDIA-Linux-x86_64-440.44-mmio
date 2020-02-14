@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -32,7 +33,7 @@
 
 // Verify that no range is currently allocated from the allocator
 static NV_STATUS test_check_range_allocator_empty(uvm_range_allocator_t *range_allocator)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
     node = uvm_range_tree_find(&range_allocator->range_tree, 0);
     TEST_CHECK_RET(node != NULL);
@@ -41,15 +42,15 @@ static NV_STATUS test_check_range_allocator_empty(uvm_range_allocator_t *range_a
     TEST_CHECK_RET(node->end == range_allocator->size - 1);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 range_alloc_size(uvm_range_allocation_t *alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return alloc->node->end - alloc->node->start + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_alloc_range(uvm_range_allocator_t *range_allocator, NvU64 size, NvU64 alignment, uvm_range_allocation_t *alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU64 node_start;
     NvU64 node_end;
@@ -67,35 +68,35 @@ static NV_STATUS test_alloc_range(uvm_range_allocator_t *range_allocator, NvU64 
     TEST_CHECK_RET(uvm_range_tree_iter_first(&range_allocator->range_tree, node_start, node_end) == NULL);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 test_free_range(uvm_range_allocator_t *range_allocator, uvm_range_allocation_t *alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 size = range_alloc_size(alloc);
 
     uvm_range_allocator_free(range_allocator, alloc);
 
     return size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define BASIC_TEST_SIZE (1024ull * 1024 * 1024)
 #define BASIC_TEST_MAX_ALLOCS (128)
 
 // Check that a specific range is free in the allocator
 static NV_STATUS test_check_free_range(uvm_range_allocator_t *range_allocator, NvU64 start, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = uvm_range_tree_find(&range_allocator->range_tree, start);
     TEST_CHECK_RET(node != NULL);
     TEST_CHECK_RET(node->start == start);
     TEST_CHECK_RET(node->end - node->start + 1 == size);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Notably this test leaks memory on failure as it's hard to clean up correctly
 // if something goes wrong and uvm_range_allocator_deinit would likely hit
 // asserts.
 static NV_STATUS basic_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_allocator_t range_allocator;
     uvm_range_allocation_t *range_allocs;
@@ -191,7 +192,7 @@ static NV_STATUS basic_test(void)
     uvm_kvfree(range_allocs);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define RANDOM_TEST_SIZE 1024
 
@@ -213,7 +214,7 @@ typedef struct
 } random_test_state_t;
 
 static NV_STATUS random_test_alloc_range(random_test_state_t *state, NvU64 size, NvU64 alignment)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_allocation_t *range_alloc;
 
@@ -235,10 +236,10 @@ static NV_STATUS random_test_alloc_range(random_test_state_t *state, NvU64 size,
     ++state->total_allocs;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 random_test_free_range(random_test_state_t *state, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_allocation_t *alloc = &state->range_allocs[index];
     NvU32 size = range_alloc_size(alloc);
 
@@ -254,10 +255,10 @@ static NvU64 random_test_free_range(random_test_state_t *state, NvU32 index)
 
     return size;
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS random_test_free_random_range(random_test_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index;
     NvU64 freed_size;
     NV_STATUS status;
@@ -276,7 +277,7 @@ static NV_STATUS random_test_free_random_range(random_test_state_t *state)
     random_test_free_range(state, state->allocated_ranges - 1);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Randomized test performing one of 3 actions on a free range allocator in each iteration:
 //  - Allocate all expected free space with 1-byte allocations and then free
@@ -288,7 +289,7 @@ static NV_STATUS random_test_free_random_range(random_test_state_t *state)
 // if something goes wrong and uvm_range_allocator_deinit would likely hit
 // asserts.
 static NV_STATUS random_test(NvU32 iters, NvU32 seed, bool verbose)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     random_test_state_t state;
     int i;
@@ -340,12 +341,12 @@ static NV_STATUS random_test(NvU32 iters, NvU32 seed, bool verbose)
     uvm_range_allocator_deinit(&state.range_allocator);
     uvm_kvfree(state.range_allocs);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_range_allocator_sanity(UVM_TEST_RANGE_ALLOCATOR_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(basic_test() == NV_OK);
     TEST_CHECK_RET(random_test(params->iters, params->seed, params->verbose > 0) == NV_OK);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

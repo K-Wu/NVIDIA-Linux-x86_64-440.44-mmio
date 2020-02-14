@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -35,7 +36,7 @@
 //
 // Locking: current->mm->mmap_sem must be locked
 bool uvm_is_valid_vma_range(NvU64 start, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const NvU64 end = start + length;
     struct vm_area_struct *vma;
 
@@ -51,10 +52,10 @@ bool uvm_is_valid_vma_range(NvU64 start, NvU64 length)
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_range_type_check(uvm_va_space_t *va_space, NvU64 base, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range, *va_range_last;
     const NvU64 last_address = base + length - 1;
 
@@ -83,19 +84,19 @@ NV_STATUS uvm_api_range_type_check(uvm_va_space_t *va_space, NvU64 base, NvU64 l
 
     // Passed interval is fully covered by managed VA ranges
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool preferred_location_is_va_range_split_needed(uvm_va_range_t *va_range, void *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t processor_id;
     UVM_ASSERT(data);
     processor_id = *(uvm_processor_id_t*)data;
     return !uvm_id_equal(processor_id, va_range->preferred_location);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS preferred_location_unmap_remote_pages(uvm_va_block_t *va_block,
                                                        uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -138,24 +139,24 @@ done:
     uvm_tracker_deinit(&local_tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_set_preferred_location_locked(uvm_va_block_t *va_block,
                                                      uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_mutex_locked(&va_block->lock);
 
     uvm_va_block_mark_cpu_dirty(va_block);
 
     return preferred_location_unmap_remote_pages(va_block, va_block_context);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS preferred_location_set(uvm_va_space_t *va_space,
                                         NvU64 base,
                                         NvU64 length,
                                         uvm_processor_id_t preferred_location,
                                         uvm_va_range_t **first_va_range_to_migrate)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range, *va_range_last;
     const NvU64 last_address = base + length - 1;
     bool preferred_location_is_faultable_gpu = false;
@@ -213,10 +214,10 @@ static NV_STATUS preferred_location_set(uvm_va_space_t *va_space,
     UVM_ASSERT(va_range_last && va_range_last->node.end >= last_address);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_set_preferred_location(const UVM_SET_PREFERRED_LOCATION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NV_STATUS tracker_status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -308,10 +309,10 @@ done:
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_unset_preferred_location(const UVM_UNSET_PREFERRED_LOCATION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -330,13 +331,13 @@ NV_STATUS uvm_api_unset_preferred_location(const UVM_UNSET_PREFERRED_LOCATION_PA
     uvm_va_space_up_write(va_space);
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS va_block_set_accessed_by_locked(uvm_va_block_t *va_block,
                                                  uvm_va_block_context_t *va_block_context,
                                                  uvm_processor_id_t processor_id,
                                                  uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NV_STATUS tracker_status;
 
@@ -352,12 +353,12 @@ static NV_STATUS va_block_set_accessed_by_locked(uvm_va_block_t *va_block,
     tracker_status = uvm_tracker_add_tracker_safe(out_tracker, &va_block->tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_set_accessed_by(uvm_va_block_t *va_block,
                                        uvm_va_block_context_t *va_block_context,
                                        uvm_processor_id_t processor_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
 
@@ -378,7 +379,7 @@ NV_STATUS uvm_va_block_set_accessed_by(uvm_va_block_t *va_block,
 
     uvm_tracker_deinit(&local_tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef struct
 {
@@ -387,19 +388,19 @@ typedef struct
 } accessed_by_split_params_t;
 
 static bool accessed_by_is_va_range_split_needed(uvm_va_range_t *va_range, void *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     accessed_by_split_params_t *params = (accessed_by_split_params_t*)data;
     UVM_ASSERT(params);
 
     return (uvm_processor_mask_test(&va_range->accessed_by, params->processor_id) != params->set_bit);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS accessed_by_set(uvm_va_space_t *va_space,
                                  NvU64 base,
                                  NvU64 length,
                                  const NvProcessorUuid *processor_uuid,
                                  bool set_bit)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t processor_id = UVM_ID_INVALID;
     uvm_va_range_t *va_range, *va_range_last;
     const NvU64 last_address = base + length - 1;
@@ -476,26 +477,26 @@ done:
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_set_accessed_by(const UVM_SET_ACCESSED_BY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return accessed_by_set(va_space, params->requestedBase, params->length, &params->accessedByUuid, true);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_unset_accessed_by(const UVM_UNSET_ACCESSED_BY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return accessed_by_set(va_space, params->requestedBase, params->length, &params->accessedByUuid, false);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS va_block_set_read_duplication_locked(uvm_va_block_t *va_block,
                                                       uvm_va_block_retry_t *va_block_retry,
                                                       uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t src_id;
 
     uvm_assert_mutex_locked(&va_block->lock);
@@ -519,11 +520,11 @@ static NV_STATUS va_block_set_read_duplication_locked(uvm_va_block_t *va_block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_set_read_duplication(uvm_va_block_t *va_block,
                                             uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_retry_t va_block_retry;
 
@@ -533,13 +534,13 @@ NV_STATUS uvm_va_block_set_read_duplication(uvm_va_block_t *va_block,
                                                                           va_block_context));
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS va_block_unset_read_duplication_locked(uvm_va_block_t *va_block,
                                                         uvm_va_block_retry_t *va_block_retry,
                                                         uvm_va_block_context_t *va_block_context,
                                                         uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_processor_id_t processor_id;
     uvm_va_range_t *va_range = va_block->va_range;
@@ -613,11 +614,11 @@ static NV_STATUS va_block_unset_read_duplication_locked(uvm_va_block_t *va_block
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_unset_read_duplication(uvm_va_block_t *va_block,
                                               uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_retry_t va_block_retry;
     NV_STATUS status = NV_OK;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -634,20 +635,20 @@ NV_STATUS uvm_va_block_unset_read_duplication(uvm_va_block_t *va_block,
     uvm_tracker_deinit(&local_tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool read_duplication_is_va_range_split_needed(uvm_va_range_t *va_range, void *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_read_duplication_policy_t new_policy;
 
     UVM_ASSERT(data);
 
     new_policy = *(uvm_read_duplication_policy_t *)data;
     return va_range->read_duplication != new_policy;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS read_duplication_set(uvm_va_space_t *va_space, NvU64 base, NvU64 length, bool enable)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range, *va_range_last;
     const NvU64 last_address = base + length - 1;
     NV_STATUS status;
@@ -712,24 +713,24 @@ done:
     uvm_va_space_up_write(va_space);
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_enable_read_duplication(const UVM_ENABLE_READ_DUPLICATION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return read_duplication_set(va_space, params->requestedBase, params->length, true);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_disable_read_duplication(const UVM_DISABLE_READ_DUPLICATION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return read_duplication_set(va_space, params->requestedBase, params->length, false);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS system_wide_atomics_set(uvm_va_space_t *va_space, const NvProcessorUuid *gpu_uuid, bool enable)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     bool already_enabled;
@@ -811,18 +812,18 @@ static NV_STATUS system_wide_atomics_set(uvm_va_space_t *va_space, const NvProce
 done:
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_enable_system_wide_atomics(UVM_ENABLE_SYSTEM_WIDE_ATOMICS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return system_wide_atomics_set(va_space, &params->gpu_uuid, true);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_disable_system_wide_atomics(UVM_DISABLE_SYSTEM_WIDE_ATOMICS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     return system_wide_atomics_set(va_space, &params->gpu_uuid, false);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

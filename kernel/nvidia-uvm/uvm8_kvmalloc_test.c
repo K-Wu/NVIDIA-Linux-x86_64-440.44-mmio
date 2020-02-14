@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -36,7 +37,7 @@ typedef enum
 } alloc_type_t;
 
 static NV_STATUS check_alloc(void *p, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (size == 0) {
         TEST_CHECK_RET(p == ZERO_SIZE_PTR);
         TEST_CHECK_RET(uvm_kvsize(p) == 0);
@@ -57,10 +58,10 @@ static NV_STATUS check_alloc(void *p, size_t size)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_uvm_kvmalloc(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     static const size_t sizes[] = {0, UVM_KMALLOC_THRESHOLD, UVM_KMALLOC_THRESHOLD + 1};
     uint8_t *p;
     uint8_t expected;
@@ -117,10 +118,10 @@ static NV_STATUS test_uvm_kvmalloc(void)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_uvm_kvrealloc(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i, j, k, old_size, new_size;
     uint8_t *old_p, *new_p;
     uint8_t expected = (uint8_t)current->pid;
@@ -173,12 +174,12 @@ static NV_STATUS test_uvm_kvrealloc(void)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_kvmalloc(UVM_TEST_KVMALLOC_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = test_uvm_kvmalloc();
     if (status != NV_OK)
         return status;
     return test_uvm_kvrealloc();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

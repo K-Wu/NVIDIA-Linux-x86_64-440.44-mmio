@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -47,7 +48,7 @@ static LIST_HEAD(g_cpu_service_block_context_list);
 static uvm_spinlock_t g_cpu_service_block_context_list_lock;
 
 static int alloc_cpu_service_block_context_list(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned num_preallocated_contexts = 4;
 
     uvm_spin_lock_init(&g_cpu_service_block_context_list_lock, UVM_LOCK_ORDER_LEAF);
@@ -62,10 +63,10 @@ static int alloc_cpu_service_block_context_list(void)
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void free_cpu_service_block_context_list(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_service_block_context_t *service_context, *service_context_tmp;
 
     // Free fault service contexts for the CPU and add clear the global list
@@ -74,12 +75,12 @@ static void free_cpu_service_block_context_list(void)
         uvm_kvfree(service_context);
     }
     INIT_LIST_HEAD(&g_cpu_service_block_context_list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get a fault service context from the global list or allocate a new one if there are no
 // available entries
 static uvm_service_block_context_t *get_cpu_fault_service_context(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_service_block_context_t *service_context;
 
     uvm_spin_lock(&g_cpu_service_block_context_list_lock);
@@ -96,20 +97,20 @@ static uvm_service_block_context_t *get_cpu_fault_service_context(void)
         service_context = uvm_kvmalloc(sizeof(*service_context));
 
     return service_context;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Put a fault service context in the global list
 static void put_cpu_fault_service_context(uvm_service_block_context_t *service_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_spin_lock(&g_cpu_service_block_context_list_lock);
 
     list_add(&service_context->cpu_fault.service_context_list, &g_cpu_service_block_context_list);
 
     uvm_spin_unlock(&g_cpu_service_block_context_list_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_open(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_global_get_status();
 
     if (status == NV_OK) {
@@ -122,15 +123,15 @@ static int uvm_open(struct inode *inode, struct file *filp)
     }
 
     return -nv_status_to_errno(status);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_open_entry(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_RET(uvm_open(inode, filp));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_release_deferred(void *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = data;
 
     // Since this function is only scheduled to run when uvm_release() fails
@@ -143,10 +144,10 @@ static void uvm_release_deferred(void *data)
     uvm_va_space_destroy(va_space);
 
     uvm_up_read(&g_uvm_global.pm.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_release(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     int ret;
 
@@ -175,15 +176,15 @@ static int uvm_release(struct inode *inode, struct file *filp)
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_release_entry(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_RET(uvm_release(inode, filp));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_destroy_vma_managed(struct vm_area_struct *vma, bool is_uvm_teardown)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range, *va_range_next;
     NvU64 size = 0;
 
@@ -206,10 +207,10 @@ static void uvm_destroy_vma_managed(struct vm_area_struct *vma, bool is_uvm_tear
         vma->vm_private_data = NULL;
     }
     UVM_ASSERT(size == vma->vm_end - vma->vm_start);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_destroy_vma_semaphore_pool(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_va_range_t *va_range;
 
@@ -221,35 +222,35 @@ static void uvm_destroy_vma_semaphore_pool(struct vm_area_struct *vma)
                va_range->node.end + 1 == vma->vm_end &&
                va_range->type == UVM_VA_RANGE_TYPE_SEMAPHORE_POOL);
     uvm_mem_unmap_cpu(va_range->semaphore_pool.mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // If a fault handler is not set, paths like handle_pte_fault in older kernels
 // assume the memory is anonymous. That would make debugging this failure harder
 // so we force it to fail instead.
 static vm_fault_t uvm_vm_fault_sigbus(struct vm_area_struct *vma, struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_DBG_PRINT_RL("Fault to address 0x%lx in disabled vma\n", nv_page_fault_va(vmf));
     return VM_FAULT_SIGBUS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static vm_fault_t uvm_vm_fault_sigbus_entry(struct vm_area_struct *vma, struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_vm_fault_sigbus(vma, vmf));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static vm_fault_t uvm_vm_fault_sigbus_wrapper(struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 #if defined(NV_VM_OPS_FAULT_REMOVED_VMA_ARG)
     return uvm_vm_fault_sigbus(vmf->vma, vmf);
 #else
     return uvm_vm_fault_sigbus(NULL, vmf);
 #endif
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static vm_fault_t uvm_vm_fault_sigbus_wrapper_entry(struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_vm_fault_sigbus_wrapper(vmf));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static struct vm_operations_struct uvm_vm_ops_disabled =
 {
@@ -261,7 +262,7 @@ static struct vm_operations_struct uvm_vm_ops_disabled =
 };
 
 static void uvm_disable_vma(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // In the case of fork, the kernel has already copied the old PTEs over to
     // the child process, so an access in the child might succeed instead of
     // causing a fault. To force a fault we'll unmap it directly here.
@@ -285,7 +286,7 @@ static void uvm_disable_vma(struct vm_area_struct *vma)
         uvm_vma_wrapper_destroy(vma->vm_private_data);
         vma->vm_private_data = NULL;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // We can't return an error from uvm_vm_open so on failed splits
 // we'll disable *both* vmas. This isn't great behavior for the
@@ -300,7 +301,7 @@ static void uvm_disable_vma(struct vm_area_struct *vma)
 // be common by any means, and the process might die anyway.
 static void uvm_vm_open_failure(struct vm_area_struct *original,
                                 struct vm_area_struct *new)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(new->vm_file);
     static const bool is_uvm_teardown = false;
 
@@ -310,7 +311,7 @@ static void uvm_vm_open_failure(struct vm_area_struct *original,
     uvm_destroy_vma_managed(original, is_uvm_teardown);
     uvm_disable_vma(original);
     uvm_disable_vma(new);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // vm_ops->open cases:
 //
@@ -334,7 +335,7 @@ static void uvm_vm_open_failure(struct vm_area_struct *original,
 // Note that since we set VM_DONTEXPAND on the vma we're guaranteed that the vma
 // will never increase in size, only shrink/split.
 static void uvm_vm_open_managed(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(vma->vm_file);
     uvm_va_range_t *va_range;
     struct vm_area_struct *original;
@@ -418,15 +419,15 @@ static void uvm_vm_open_managed(struct vm_area_struct *vma)
 out:
     uvm_va_space_up_write(va_space);
     uvm_record_unlock_mmap_sem_write(&current->mm->mmap_sem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_vm_open_managed_entry(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(uvm_vm_open_managed(vma));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_vm_close_managed(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(vma->vm_file);
     uvm_gpu_t *gpu;
     bool is_uvm_teardown = false;
@@ -464,15 +465,15 @@ static void uvm_vm_close_managed(struct vm_area_struct *vma)
 
     if (current->mm != NULL)
         uvm_record_unlock_mmap_sem_write(&current->mm->mmap_sem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_vm_close_managed_entry(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(uvm_vm_close_managed(vma));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static vm_fault_t uvm_vm_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(vma->vm_file);
     uvm_va_block_t *va_block;
     NvU64 fault_addr = nv_page_fault_va(vmf);
@@ -604,27 +605,27 @@ convert_error:
         default:
             return VM_FAULT_SIGBUS;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 static vm_fault_t uvm_vm_fault_entry(struct vm_area_struct *vma, struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_vm_fault(vma, vmf));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static vm_fault_t uvm_vm_fault_wrapper(struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 #if defined(NV_VM_OPS_FAULT_REMOVED_VMA_ARG)
     return uvm_vm_fault(vmf->vma, vmf);
 #else
     return uvm_vm_fault(NULL, vmf);
 #endif
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static vm_fault_t uvm_vm_fault_wrapper_entry(struct vm_fault *vmf)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_vm_fault_wrapper(vmf));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static struct vm_operations_struct uvm_vm_ops_managed =
 {
@@ -643,7 +644,7 @@ static struct vm_operations_struct uvm_vm_ops_managed =
 // vm operations on semaphore pool allocations only control CPU mappings. Unmapping GPUs,
 // freeing the allocation, and destroying the va_range are handled by UVM_FREE.
 static void uvm_vm_open_semaphore_pool(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct vm_area_struct *origin_vma = (struct vm_area_struct *)vma->vm_private_data;
     uvm_va_space_t *va_space = uvm_va_space_get(origin_vma->vm_file);
     uvm_va_range_t *va_range;
@@ -691,17 +692,17 @@ static void uvm_vm_open_semaphore_pool(struct vm_area_struct *vma)
     uvm_va_space_up_write(va_space);
 
     uvm_record_unlock_mmap_sem_write(&current->mm->mmap_sem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_vm_open_semaphore_pool_entry(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(uvm_vm_open_semaphore_pool(vma));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // vm operations on semaphore pool allocations only control CPU mappings. Unmapping GPUs,
 // freeing the allocation, and destroying the va_range are handled by UVM_FREE.
 static void uvm_vm_close_semaphore_pool(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(vma->vm_file);
 
     if (current->mm != NULL)
@@ -715,12 +716,12 @@ static void uvm_vm_close_semaphore_pool(struct vm_area_struct *vma)
 
     if (current->mm != NULL)
         uvm_record_unlock_mmap_sem_write(&current->mm->mmap_sem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_vm_close_semaphore_pool_entry(struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(uvm_vm_close_semaphore_pool(vma));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static struct vm_operations_struct uvm_vm_ops_semaphore_pool =
 {
@@ -735,7 +736,7 @@ static struct vm_operations_struct uvm_vm_ops_semaphore_pool =
 };
 
 static int uvm_mmap(struct file *filp, struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range;
     NV_STATUS status = uvm_global_get_status();
@@ -848,15 +849,15 @@ out:
     uvm_up_read(&g_uvm_global.pm.lock);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_mmap_entry(struct file *filp, struct vm_area_struct *vma)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_RET(uvm_mmap(filp, vma));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_api_initialize(UVM_INITIALIZE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -887,10 +888,10 @@ static NV_STATUS uvm_api_initialize(UVM_INITIALIZE_PARAMS *params, struct file *
     uvm_up_write_mmap_sem(&current->mm->mmap_sem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static long uvm_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (cmd)
     {
         case UVM_DEINITIALIZE:
@@ -939,10 +940,10 @@ static long uvm_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
     // Try the test ioctls if none of the above matched
     return uvm8_test_ioctl(filp, cmd, arg);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static long uvm_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     long ret;
 
     if (!uvm_down_read_trylock(&g_uvm_global.pm.lock))
@@ -955,12 +956,12 @@ static long uvm_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned lon
     uvm_thread_assert_all_unlocked();
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static long uvm_unlocked_ioctl_entry(struct file *filp, unsigned int cmd, unsigned long arg)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_RET(uvm_unlocked_ioctl(filp, cmd, arg));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const struct file_operations uvm_fops =
 {
@@ -975,12 +976,12 @@ static const struct file_operations uvm_fops =
 };
 
 bool uvm_file_is_nvidia_uvm(struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (filp != NULL) && (filp->f_op == &uvm_fops);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool allocated_dev = false;
     bool initialized_globals = false;
     bool added_device = false;
@@ -1055,15 +1056,15 @@ error:
     UVM_ERR_PRINT("uvm init failed: %d\n", ret);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int __init uvm_init_entry(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_RET(uvm_init());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     free_cpu_service_block_context_list();
     uvm_tools_exit();
     cdev_del(&g_uvm_cdev);
@@ -1073,12 +1074,12 @@ static void uvm_exit(void)
     unregister_chrdev_region(g_uvm_base_dev, NVIDIA_UVM_NUM_MINOR_DEVICES);
 
     pr_info("Unloaded the UVM driver.\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void __exit uvm_exit_entry(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(uvm_exit());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 module_init(uvm_init_entry);
 module_exit(uvm_exit_entry);

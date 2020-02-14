@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -26,7 +27,7 @@
 #include "uvm8_test.h"
 
 static NV_STATUS test_saturating_counter_basic(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU8 counter8;
     NvU16 counter16;
     NvU32 counter32;
@@ -94,7 +95,7 @@ static NV_STATUS test_saturating_counter_basic(void)
     TEST_CHECK_RET(counter64 == max64);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 struct region
 {
@@ -105,7 +106,7 @@ struct region
 };
 
 static NV_STATUS test_saturating_counter_bitfields(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct region r;
 
     memset(&r, 0, sizeof(r));
@@ -118,10 +119,10 @@ static NV_STATUS test_saturating_counter_bitfields(void)
     TEST_CHECK_RET(r.atomic_faults == 15);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_saturating_counter(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = test_saturating_counter_basic();
@@ -131,10 +132,10 @@ static NV_STATUS test_saturating_counter(void)
 
 fail:
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tree_pow2(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_perf_tree_t my_int_tree;
     uvm_perf_tree_iter_t iter;
@@ -264,10 +265,10 @@ fail:
     uvm_perf_tree_destroy(&my_int_tree);
 
     return NV_ERR_INVALID_STATE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tree_non_pow2(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_perf_tree_t my_int_tree;
     uvm_perf_tree_iter_t iter;
@@ -394,10 +395,10 @@ fail:
     uvm_perf_tree_destroy(&my_int_tree);
 
     return NV_ERR_INVALID_STATE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_branch_traversal(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_perf_tree_t my_int_tree;
     uvm_perf_tree_iter_t iter;
@@ -517,10 +518,10 @@ fail:
     uvm_perf_tree_destroy(&my_int_tree);
 
     return NV_ERR_INVALID_STATE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_tree_traversal(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_perf_tree_t my_int_tree;
     uvm_perf_tree_iter_t iter;
@@ -676,10 +677,10 @@ fail:
     uvm_perf_tree_destroy(&my_int_tree);
 
     return NV_ERR_INVALID_STATE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_bitmap_tree_traversal(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int value;
     uvm_va_block_bitmap_tree_t tree;
     uvm_va_block_bitmap_tree_iter_t iter;
@@ -709,10 +710,10 @@ static NV_STATUS test_bitmap_tree_traversal(void)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_trees(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = test_tree_pow2();
@@ -731,10 +732,10 @@ static NV_STATUS test_trees(void)
 
 fail:
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_perf_utils_sanity(UVM_TEST_PERF_UTILS_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = test_saturating_counter();
@@ -744,4 +745,4 @@ NV_STATUS uvm8_test_perf_utils_sanity(UVM_TEST_PERF_UTILS_SANITY_PARAMS *params,
 
 fail:
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

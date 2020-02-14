@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -25,27 +26,27 @@
 #include "uvm8_hal.h"
 
 void uvm_tlb_batch_begin(uvm_page_tree_t *tree, uvm_tlb_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(batch, 0, sizeof(*batch));
     batch->tree = tree;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 smallest_page_size(NvU32 page_sizes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_sizes != 0);
 
     return 1u << __ffs(page_sizes);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 biggest_page_size(NvU32 page_sizes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(page_sizes != 0);
 
     return 1u << __fls(page_sizes);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void tlb_batch_flush_invalidate_per_va(uvm_tlb_batch_t *batch, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_tree_t *tree = batch->tree;
     uvm_gpu_phys_address_t pdb_addr = uvm_page_tree_pdb(tree)->addr;
     uvm_membar_t membar = UVM_MEMBAR_NONE;
@@ -70,19 +71,19 @@ static void tlb_batch_flush_invalidate_per_va(uvm_tlb_batch_t *batch, uvm_push_t
         tree->gpu->host_hal->tlb_invalidate_va(push, pdb_addr,
                 depth, entry->start, entry->size, min_page_size, membar);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void tlb_batch_flush_invalidate_all(uvm_tlb_batch_t *batch, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_tree_t *tree = batch->tree;
     uvm_gpu_t *gpu = tree->gpu;
     NvU32 page_table_depth = tree->hal->page_table_depth(batch->biggest_page_size);
 
     gpu->host_hal->tlb_invalidate_all(push, uvm_page_tree_pdb(tree)->addr, page_table_depth, batch->membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tlb_batch_should_invalidate_all(uvm_tlb_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!batch->tree->gpu->tlb_batch.va_invalidate_supported)
         return true;
 
@@ -93,10 +94,10 @@ static bool tlb_batch_should_invalidate_all(uvm_tlb_batch_t *batch)
         return batch->total_ranges > batch->tree->gpu->tlb_batch.max_ranges;
 
     return batch->total_pages > batch->tree->gpu->tlb_batch.max_pages;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tlb_batch_end(uvm_tlb_batch_t *batch, uvm_push_t *push, uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (batch->count == 0)
         return;
 
@@ -106,10 +107,10 @@ void uvm_tlb_batch_end(uvm_tlb_batch_t *batch, uvm_push_t *push, uvm_membar_t tl
         tlb_batch_flush_invalidate_all(batch, push);
     else
         tlb_batch_flush_invalidate_per_va(batch, push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tlb_batch_invalidate(uvm_tlb_batch_t *batch, NvU64 start, NvU64 size, NvU32 page_sizes, uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tlb_batch_range_t *new_entry;
 
     batch->membar = uvm_membar_max(tlb_membar, batch->membar);
@@ -130,4 +131,4 @@ void uvm_tlb_batch_invalidate(uvm_tlb_batch_t *batch, NvU64 start, NvU64 size, N
     new_entry->start = start;
     new_entry->size = size;
     new_entry->page_sizes = page_sizes;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -28,7 +29,7 @@
 #include "clb06f.h"
 
 void uvm_hal_maxwell_host_tlb_invalidate_all(uvm_push_t *push, uvm_gpu_phys_address_t pdb, NvU32 depth, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 target;
     NvU32 pdb_lo;
     NvU32 pdb_hi;
@@ -57,4 +58,4 @@ void uvm_hal_maxwell_host_tlb_invalidate_all(uvm_push_t *push, uvm_gpu_phys_addr
                                HWVALUE(B06F, MEM_OP_C, TLB_INVALIDATE_ADDR_LO, pdb_lo),
                      MEM_OP_D, HWCONST(B06F, MEM_OP_D, OPERATION, MMU_TLB_INVALIDATE) |
                                HWVALUE(B06F, MEM_OP_D, TLB_INVALIDATE_ADDR_HI, pdb_hi));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

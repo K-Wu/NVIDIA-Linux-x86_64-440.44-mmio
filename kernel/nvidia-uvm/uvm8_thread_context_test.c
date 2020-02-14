@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -28,23 +29,23 @@
 
 
 static NvU64 timed_udelay(NvU64 delay_us)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 start = NV_GETTIME();
 
     udelay(delay_us);
 
     return NV_GETTIME() - start;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 timed_udelay_entry(NvU64 delay_us)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(timed_udelay(delay_us));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Measure the overhead of wrapping entry functions i.e. the overhead of
 // adding and removing a thread context.
 NV_STATUS uvm8_test_thread_context_perf(UVM_TEST_THREAD_CONTEXT_PERF_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 start;
     NvU32 i;
     uvm_thread_context_t *thread_context;
@@ -84,15 +85,15 @@ NV_STATUS uvm8_test_thread_context_perf(UVM_TEST_THREAD_CONTEXT_PERF_PARAMS *par
     uvm_thread_context_restore(&thread_context_wrapper_backup.context);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_thread_context_t *inner_thread_context(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_thread_context());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_thread_context_sanity(UVM_TEST_THREAD_CONTEXT_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     uvm_thread_context_t *thread_context, *nested_thread_context;
     uvm_thread_context_wrapper_t thread_context_wrapper_backup;
@@ -136,4 +137,4 @@ NV_STATUS uvm8_test_thread_context_sanity(UVM_TEST_THREAD_CONTEXT_SANITY_PARAMS 
     TEST_CHECK_RET(uvm_thread_context_present());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

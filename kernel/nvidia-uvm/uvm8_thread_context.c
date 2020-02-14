@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -102,22 +103,22 @@ static void thread_context_non_interrupt_remove(uvm_thread_context_t *thread_con
                                                 uvm_thread_context_table_entry_t *thread_context_entry);
 
 bool uvm_thread_context_wrapper_is_used()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // The wrapper contains lock information. While uvm_record_lock_X
     // routines are a no-op outside of debug mode, unit tests do invoke their
     // internal counterparts __uvm_record_lock_X. To add coverage, lock
     // information is made available in develop and release modes if the
     // builtin tests are enabled.
     return UVM_IS_DEBUG() || uvm_enable_builtin_tests;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_thread_context_global_initialized(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return g_thread_context_table_initialized;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_global_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t table_index;
 
     UVM_ASSERT(!uvm_thread_context_global_initialized());
@@ -130,10 +131,10 @@ void uvm_thread_context_global_init(void)
     }
 
     g_thread_context_table_initialized = true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_global_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t table_index;
     uvm_thread_context_t *curr_thread_context = uvm_thread_context();
 
@@ -185,10 +186,10 @@ void uvm_thread_context_global_exit(void)
     }
 
     g_thread_context_table_initialized = false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_thread_context_t *thread_context_non_interrupt_tree_search(struct rb_root *root, struct task_struct *task)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct rb_node *node = root->rb_node;
     uintptr_t task_uintptr = (uintptr_t) task;
 
@@ -203,10 +204,10 @@ static uvm_thread_context_t *thread_context_non_interrupt_tree_search(struct rb_
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool thread_context_non_interrupt_tree_insert(struct rb_root *root, uvm_thread_context_t *new_thread_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct rb_node **node_ptr = &root->rb_node;
     struct rb_node *node = root->rb_node;
     struct rb_node *parent = NULL;
@@ -229,10 +230,10 @@ static bool thread_context_non_interrupt_tree_insert(struct rb_root *root, uvm_t
     rb_insert_color(&new_thread_context->node, root);
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thread_context_lock_interrupt_patch_acquired(uvm_thread_context_lock_t *context_lock)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_acquired_t *thread_context_lock_acquired;
 
     UVM_ASSERT(in_interrupt());
@@ -242,10 +243,10 @@ static void thread_context_lock_interrupt_patch_acquired(uvm_thread_context_lock
     thread_context_lock_acquired = &get_cpu_var(interrupt_thread_context_lock_acquired);
     put_cpu_var(interrupt_thread_context_lock_acquired);
     context_lock->acquired = (void**) thread_context_lock_acquired;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_thread_context_lock_t *thread_context_lock_of(uvm_thread_context_t *thread_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_wrapper_t *thread_context_wrapper;
     uvm_thread_context_lock_t *context_lock;
 
@@ -267,10 +268,10 @@ static uvm_thread_context_lock_t *thread_context_lock_of(uvm_thread_context_t *t
     }
 
     return context_lock;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thread_context_non_interrupt_init(uvm_thread_context_t *thread_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!in_interrupt());
 
     RB_CLEAR_NODE(&thread_context->node);
@@ -289,10 +290,10 @@ static void thread_context_non_interrupt_init(uvm_thread_context_t *thread_conte
         // present, but the rest of the thread context is usable.
         context_lock->acquired = kmalloc(sizeof(context_lock->acquired[0]) * UVM_LOCK_ORDER_COUNT, NV_UVM_GFP_FLAGS);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thread_context_non_interrupt_deinit(uvm_thread_context_t *thread_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *context_lock;
 
     UVM_ASSERT(!in_interrupt());
@@ -304,7 +305,7 @@ static void thread_context_non_interrupt_deinit(uvm_thread_context_t *thread_con
         kfree(context_lock->acquired);
         context_lock->acquired = NULL;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Return the table entry and array index within that entry where the thread
 // context of the current task is located.
@@ -312,7 +313,7 @@ static void thread_context_non_interrupt_deinit(uvm_thread_context_t *thread_con
 // The array index should be interpreted as a hint: the thread context of the
 // current taks may be stored at a different array index, or in the tree.
 static uvm_thread_context_table_entry_t *thread_context_non_interrupt_table_entry(size_t *array_index_hint)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t table_index;
     NvU64 current_ptr = (NvU64) current;
     NvU32 hash = jhash_2words((NvU32) current_ptr, (NvU32) (current_ptr >> 32), 0);
@@ -329,10 +330,10 @@ static uvm_thread_context_table_entry_t *thread_context_non_interrupt_table_entr
         *array_index_hint = hash % UVM_THREAD_CONTEXT_ARRAY_SIZE;
 
     return g_thread_context_table + table_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_thread_context_t *thread_context_non_interrupt(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long flags;
     size_t i, array_index;
     uvm_thread_context_t *thread_context;
@@ -357,10 +358,10 @@ static uvm_thread_context_t *thread_context_non_interrupt(void)
     spin_unlock_irqrestore(&table_entry->tree_lock, flags);
 
     return thread_context;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_thread_context_t *thread_context_interrupt(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_wrapper_t *thread_context_wrapper;
 
     // As we are in interrupt anyway it would be best to just use this_cpu_ptr()
@@ -370,20 +371,20 @@ static uvm_thread_context_t *thread_context_interrupt(void)
     put_cpu_var(interrupt_thread_context_wrapper);
 
     return &thread_context_wrapper->context;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_thread_context_t *thread_context_current(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return in_interrupt() ? thread_context_interrupt() : thread_context_non_interrupt();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_thread_context_present(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return thread_context_current() != NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_thread_context_t *uvm_thread_context(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_t *thread_context = thread_context_current();
 
     // If this assertion fires is probably because an entry point into the
@@ -393,7 +394,7 @@ uvm_thread_context_t *uvm_thread_context(void)
     UVM_ASSERT(thread_context != NULL);
 
     return thread_context;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // The addition logic takes into account that there may be a different thread
 // context already associated with the given task. This happens in the uncommon
@@ -405,7 +406,7 @@ uvm_thread_context_t *uvm_thread_context(void)
 static bool thread_context_non_interrupt_add(uvm_thread_context_t *thread_context,
                                              uvm_thread_context_table_entry_t *table_entry,
                                              size_t array_index_hint)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
     NvU64 task;
     unsigned long flags;
@@ -477,10 +478,10 @@ static bool thread_context_non_interrupt_add(uvm_thread_context_t *thread_contex
 
     spin_unlock_irqrestore(&table_entry->tree_lock, flags);
     return added;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_thread_context_add(uvm_thread_context_t *thread_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_table_entry_t *table_entry;
     size_t array_index;
 
@@ -495,10 +496,10 @@ bool uvm_thread_context_add(uvm_thread_context_t *thread_context)
     thread_context->task = current;
     table_entry = thread_context_non_interrupt_table_entry(&array_index);
     return thread_context_non_interrupt_add(thread_context, table_entry, array_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_thread_context_add_at(uvm_thread_context_t *thread_context, size_t table_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_table_entry_t *table_entry;
 
     UVM_ASSERT(uvm_enable_builtin_tests != 0);
@@ -506,11 +507,11 @@ bool uvm_thread_context_add_at(uvm_thread_context_t *thread_context, size_t tabl
 
     table_entry = g_thread_context_table + table_index;
     return thread_context_non_interrupt_add(thread_context, table_entry, 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thread_context_non_interrupt_remove(uvm_thread_context_t *thread_context,
                                                 uvm_thread_context_table_entry_t *table_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 array_index;
 
     UVM_ASSERT(!in_interrupt());
@@ -554,10 +555,10 @@ static void thread_context_non_interrupt_remove(uvm_thread_context_t *thread_con
     }
 
     thread_context_non_interrupt_deinit(thread_context);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_remove(uvm_thread_context_t *thread_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_table_entry_t *table_entry;
 
     UVM_ASSERT(thread_context != NULL);
@@ -574,16 +575,16 @@ void uvm_thread_context_remove(uvm_thread_context_t *thread_context)
 
     table_entry = thread_context_non_interrupt_table_entry(NULL);
     thread_context_non_interrupt_remove(thread_context, table_entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_remove_at(uvm_thread_context_t *thread_context, size_t table_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_table_entry_t *table_entry = g_thread_context_table + table_index;
 
     UVM_ASSERT(uvm_enable_builtin_tests != 0);
 
     thread_context_non_interrupt_remove(thread_context, table_entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Move operation
 //  -Lock information is copied to the destination, and cleared in the source.
@@ -593,7 +594,7 @@ void uvm_thread_context_remove_at(uvm_thread_context_t *thread_context, size_t t
 //  -When adding new members to the thread context, consider if they need to be
 //   moved
 static void thread_context_move(uvm_thread_context_t *dst, uvm_thread_context_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *src_context_lock, *dst_context_lock;
 
     UVM_ASSERT(uvm_enable_builtin_tests != 0);
@@ -627,27 +628,27 @@ static void thread_context_move(uvm_thread_context_t *dst, uvm_thread_context_t 
 
         memcpy(dst_context_lock->acquired, src_context_lock->acquired, acquired_size);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_save(uvm_thread_context_t *dst)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     thread_context_non_interrupt_init(dst);
     thread_context_move(dst, uvm_thread_context());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_restore(uvm_thread_context_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     thread_context_move(uvm_thread_context(), src);
     thread_context_non_interrupt_deinit(src);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_thread_context_lock_t *uvm_thread_context_lock_get(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return thread_context_lock_of(uvm_thread_context());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_lock_disable_tracking(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *context_lock = thread_context_lock_of(uvm_thread_context());
 
     if (context_lock == NULL)
@@ -656,10 +657,10 @@ void uvm_thread_context_lock_disable_tracking(void)
     ++context_lock->skip_lock_tracking;
 
     UVM_ASSERT(context_lock->skip_lock_tracking != 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_thread_context_lock_enable_tracking(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *context_lock = thread_context_lock_of(uvm_thread_context());
 
     if (context_lock == NULL)
@@ -668,4 +669,4 @@ void uvm_thread_context_lock_enable_tracking(void)
     UVM_ASSERT(context_lock->skip_lock_tracking > 0);
 
     --context_lock->skip_lock_tracking;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

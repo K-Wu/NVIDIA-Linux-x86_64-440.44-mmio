@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -82,10 +83,10 @@ typedef struct uvm_range_group_range_iter_struct
 } uvm_range_group_range_iter_t;
 
 static inline bool uvm_range_group_migratable(uvm_range_group_t *range_group)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // A NULL range group is always migratable
     return !range_group || atomic_read(&range_group->allow_migration);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Causes [start, end] to have a range group of range_group.
 // This function may split or overwrite existing range group ranges to accomplish this; merging when possible.
@@ -150,12 +151,12 @@ void uvm_range_group_range_migratability_iter_next(uvm_va_space_t *va_space,
 static void uvm_range_group_range_migratability_iter_next_safe(uvm_va_space_t *va_space,
                                                                uvm_range_group_range_iter_t *iter,
                                                                NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     iter->valid = iter->end < end;
     if (!iter->valid)
         return;
     uvm_range_group_range_migratability_iter_first(va_space, iter->end + 1, end, iter);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Fill mask_out with all migratable pages in region. The mask is guaranteed to
 // be zero outside the region.

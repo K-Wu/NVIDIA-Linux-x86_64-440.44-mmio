@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVidia Corporation
 
@@ -44,7 +45,7 @@ static uvm_aperture_t get_aperture(uvm_va_space_t *va_space,
                                    uvm_gpu_t *memory_mapping_gpu,
                                    UvmGpuMemoryInfo *memory_info,
                                    bool sli_supported)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (memory_info->sysmem) {
         return UVM_APERTURE_SYS;
     }
@@ -53,11 +54,11 @@ static uvm_aperture_t get_aperture(uvm_va_space_t *va_space,
             return uvm_gpu_peer_aperture(memory_mapping_gpu, memory_owning_gpu);
         return UVM_APERTURE_VID;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool get_volatility(UvmGpuExternalMappingInfo *ext_mapping_info,
                            uvm_aperture_t aperture)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (ext_mapping_info->cachingType == UvmGpuCachingTypeForceCached) {
         return false;
     }
@@ -70,10 +71,10 @@ static bool get_volatility(UvmGpuExternalMappingInfo *ext_mapping_info,
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 get_protection(UvmGpuExternalMappingInfo *ext_mapping_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (ext_mapping_info->mappingType == UvmGpuMappingTypeReadWriteAtomic ||
         ext_mapping_info->mappingType == UvmGpuMappingTypeDefault)
         return UVM_PROT_READ_WRITE_ATOMIC;
@@ -81,7 +82,7 @@ static NvU32 get_protection(UvmGpuExternalMappingInfo *ext_mapping_info)
         return UVM_PROT_READ_WRITE;
     else
         return UVM_PROT_READ_ONLY;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS verify_mapping_info(uvm_va_space_t *va_space,
                                      uvm_gpu_t *memory_mapping_gpu,
@@ -90,7 +91,7 @@ static NV_STATUS verify_mapping_info(uvm_va_space_t *va_space,
                                      UvmGpuExternalMappingInfo *ext_mapping_info,
                                      UvmGpuMemoryInfo *memory_info,
                                      bool sli_supported)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index = 0, total_pte_count = 0, skip = 0, page_size = 0;
     uvm_aperture_t aperture = 0;
     NvU32 prot;
@@ -156,10 +157,10 @@ static NV_STATUS verify_mapping_info(uvm_va_space_t *va_space,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_get_rm_ptes_single_gpu(uvm_va_space_t *va_space, UVM_TEST_GET_RM_PTES_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS free_status;
     uvm_gpu_t *memory_mapping_gpu;
@@ -263,10 +264,10 @@ done:
         status = free_status;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_get_rm_ptes_multi_gpu(uvm_va_space_t *va_space, UVM_TEST_GET_RM_PTES_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS free_status;
     uvm_gpu_t *memory_mapping_gpu;
@@ -326,10 +327,10 @@ done:
         status = free_status;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_get_rm_ptes(UVM_TEST_GET_RM_PTES_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -352,4 +353,4 @@ NV_STATUS uvm8_test_get_rm_ptes(UVM_TEST_GET_RM_PTES_PARAMS *params, struct file
     uvm_va_space_up_read_rm(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

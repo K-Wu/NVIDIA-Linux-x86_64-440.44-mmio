@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -40,7 +41,7 @@ static uvm_perf_module_t module2;
 
 // Convenience function that obtains the data for the given module, and allocates it if it does not exist yet
 static void *get_or_alloc_data(uvm_perf_module_data_desc_t *modules_data, uvm_perf_module_t *module, size_t type_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    void *data_ret;
 
    data_ret = uvm_perf_module_type_data(modules_data, module->type);
@@ -50,11 +51,11 @@ static void *get_or_alloc_data(uvm_perf_module_data_desc_t *modules_data, uvm_pe
            uvm_perf_module_type_set_data(modules_data, data_ret, module->type);
    }
    return data_ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Block destruction callback for module1
 static void module1_destroy(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
     void *data;
 
@@ -74,11 +75,11 @@ static void module1_destroy(uvm_perf_event_t event_id, uvm_perf_event_data_t *ev
         uvm_kvfree(data);
         uvm_perf_module_type_unset_data(va_block->perf_modules_data, module1.type);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Page fault callback for module1
 static void module1_fault(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     module1_data_type_t *data;
     uvm_va_block_t *va_block;
 
@@ -89,11 +90,11 @@ static void module1_fault(uvm_perf_event_t event_id, uvm_perf_event_data_t *even
         return;
 
     ++(*data);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Block destruction callback for module2
 static void module2_destroy(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *data;
     uvm_va_block_t *va_block;
 
@@ -112,11 +113,11 @@ static void module2_destroy(uvm_perf_event_t event_id, uvm_perf_event_data_t *ev
         uvm_kvfree(data);
         uvm_perf_module_type_unset_data(va_block->perf_modules_data, module2.type);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Page fault callback for module2
 static void module2_fault(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     module2_data_type_t *data;
     uvm_va_block_t *va_block;
 
@@ -130,7 +131,7 @@ static void module2_fault(uvm_perf_event_t event_id, uvm_perf_event_data_t *even
     data->value[1] += 2;
     data->value[2] += 3;
     data->value[3] += 4;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This test:
 // 1) Initializes modules named module1 and module2
@@ -146,7 +147,7 @@ static void module2_fault(uvm_perf_event_t event_id, uvm_perf_event_data_t *even
 // 11) Unloads module2
 // 12) Checks that data allocated by module2 has been freed
 static NV_STATUS test_module_replace(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_perf_event_data_t event_data;
     void *module1_data;
@@ -267,10 +268,10 @@ fail_space_write_invalid_state:
     uvm_va_space_up_write(va_space);
 
     return NV_ERR_INVALID_STATE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_perf_module_sanity(UVM_TEST_PERF_MODULE_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space;
 
@@ -286,4 +287,4 @@ NV_STATUS uvm8_test_perf_module_sanity(UVM_TEST_PERF_MODULE_SANITY_PARAMS *param
 
 fail:
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

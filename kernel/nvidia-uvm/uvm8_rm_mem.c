@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -29,7 +30,7 @@
 #include "nv_uvm_interface.h"
 
 NV_STATUS uvm_rm_mem_alloc(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, NvLength size, uvm_rm_mem_t **rm_mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_rm_mem_t *rm_mem = NULL;
     UvmGpuAllocInfo alloc_info = {0};
@@ -79,10 +80,10 @@ NV_STATUS uvm_rm_mem_alloc(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, NvLength size
 error:
     uvm_kvfree(rm_mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_rm_mem_map_cpu(uvm_rm_mem_t *rm_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu = rm_mem->gpu_owner;
     NvU64 gpu_va = uvm_rm_mem_get_gpu_va(rm_mem, gpu);
@@ -104,10 +105,10 @@ NV_STATUS uvm_rm_mem_map_cpu(uvm_rm_mem_t *rm_mem)
     uvm_global_processor_mask_set(&rm_mem->mapped_on, UVM_GLOBAL_ID_CPU);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_rm_mem_unmap_cpu(uvm_rm_mem_t *rm_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(rm_mem);
 
     if (!uvm_global_processor_mask_test(&rm_mem->mapped_on, UVM_GLOBAL_ID_CPU)) {
@@ -119,10 +120,10 @@ void uvm_rm_mem_unmap_cpu(uvm_rm_mem_t *rm_mem)
 
     rm_mem->vas[UVM_ID_CPU_VALUE] = 0;
     uvm_global_processor_mask_clear(&rm_mem->mapped_on, UVM_GLOBAL_ID_CPU);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_rm_mem_map_gpu(uvm_rm_mem_t *rm_mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu_owner = rm_mem->gpu_owner;
     NvU64 gpu_owner_va = uvm_rm_mem_get_gpu_va(rm_mem, gpu_owner);
@@ -150,10 +151,10 @@ NV_STATUS uvm_rm_mem_map_gpu(uvm_rm_mem_t *rm_mem, uvm_gpu_t *gpu)
     uvm_global_processor_mask_set(&rm_mem->mapped_on, gpu->global_id);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_rm_mem_unmap_gpu(uvm_rm_mem_t *rm_mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 *va;
 
     UVM_ASSERT(rm_mem);
@@ -172,10 +173,10 @@ void uvm_rm_mem_unmap_gpu(uvm_rm_mem_t *rm_mem, uvm_gpu_t *gpu)
     uvm_rm_locked_call_void(nvUvmInterfaceMemoryFree(gpu->rm_address_space, *va));
     *va = 0;
     uvm_global_processor_mask_clear(&rm_mem->mapped_on, gpu->global_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_rm_mem_free(uvm_rm_mem_t *rm_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_global_gpu_id_t gpu_id;
     uvm_gpu_t *gpu_owner;
     NvU64 *va;
@@ -207,10 +208,10 @@ void uvm_rm_mem_free(uvm_rm_mem_t *rm_mem)
                    uvm_global_processor_mask_get_count(&rm_mem->mapped_on));
 
     uvm_kvfree(rm_mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_rm_mem_alloc_and_map_cpu(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, NvLength size, uvm_rm_mem_t **rm_mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_rm_mem_t *rm_mem;
     NV_STATUS status = uvm_rm_mem_alloc(gpu, type, size, &rm_mem);
     if (status != NV_OK)
@@ -226,10 +227,10 @@ NV_STATUS uvm_rm_mem_alloc_and_map_cpu(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, N
 error:
     uvm_rm_mem_free(rm_mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_rm_mem_map_all_gpus(uvm_rm_mem_t *rm_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     UVM_ASSERT(rm_mem);
@@ -240,10 +241,10 @@ NV_STATUS uvm_rm_mem_map_all_gpus(uvm_rm_mem_t *rm_mem)
             return status;
     }
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_rm_mem_alloc_and_map_all(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, NvLength size, uvm_rm_mem_t **rm_mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_rm_mem_t *rm_mem;
 
     NV_STATUS status = uvm_rm_mem_alloc_and_map_cpu(gpu, type, size, &rm_mem);
@@ -261,21 +262,21 @@ NV_STATUS uvm_rm_mem_alloc_and_map_all(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, N
 error:
     uvm_rm_mem_free(rm_mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_rm_mem_get_processor_va(uvm_rm_mem_t *rm_mem, uvm_global_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(uvm_global_processor_mask_test(&rm_mem->mapped_on, id), "processor id %u\n", uvm_global_id_value(id));
 
     return rm_mem->vas[uvm_global_id_value(id)];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_rm_mem_get_gpu_va(uvm_rm_mem_t *rm_mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_rm_mem_get_processor_va(rm_mem, gpu->global_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *uvm_rm_mem_get_cpu_va(uvm_rm_mem_t *rm_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (void *)(unsigned long)uvm_rm_mem_get_processor_va(rm_mem, UVM_GLOBAL_ID_CPU);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

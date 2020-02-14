@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -41,7 +42,7 @@
 #define CE_TEST_MEM_COUNT 5
 
 static NV_STATUS test_non_pipelined(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NV_STATUS status;
     uvm_rm_mem_t *mem[CE_TEST_MEM_COUNT] = { NULL };
@@ -139,12 +140,12 @@ done:
     uvm_rm_mem_free(host_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define REDUCTIONS 32
 
 static NV_STATUS test_membar(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NV_STATUS status;
     uvm_rm_mem_t *host_mem = NULL;
@@ -188,10 +189,10 @@ done:
     uvm_rm_mem_free(host_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void push_memset(uvm_push_t *push, uvm_gpu_address_t dst, NvU64 value, size_t element_size, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (element_size) {
         case 1:
             uvm_push_get_gpu(push)->ce_hal->memset_1(push, dst, (NvU8)value, size);
@@ -205,7 +206,7 @@ static void push_memset(uvm_push_t *push, uvm_gpu_address_t dst, NvU64 value, si
         default:
             UVM_ASSERT(0);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_unaligned_memset(uvm_gpu_t *gpu,
                                        uvm_gpu_address_t gpu_verif_addr,
@@ -213,7 +214,7 @@ static NV_STATUS test_unaligned_memset(uvm_gpu_t *gpu,
                                        size_t size,
                                        size_t element_size,
                                        size_t offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     NV_STATUS status;
     size_t i;
@@ -276,7 +277,7 @@ static NV_STATUS test_unaligned_memset(uvm_gpu_t *gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_memcpy_and_memset_inner(uvm_gpu_t *gpu,
                                               uvm_gpu_address_t dst,
@@ -286,7 +287,7 @@ static NV_STATUS test_memcpy_and_memset_inner(uvm_gpu_t *gpu,
                                               uvm_gpu_address_t gpu_verif_addr,
                                               void *cpu_verif_addr,
                                               int test_iteration)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     NV_STATUS status;
     size_t i;
@@ -340,13 +341,13 @@ static NV_STATUS test_memcpy_and_memset_inner(uvm_gpu_t *gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define MEM_TEST_SIZE UVM_CHUNK_SIZE_64K
 #define MEM_TEST_ITERS 4
 
 static NV_STATUS test_memcpy_and_memset(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_mem_t *verif_mem = NULL;
     uvm_mem_t *sys_phys_mem = NULL;
@@ -443,10 +444,10 @@ done:
     uvm_mem_free(verif_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_ce(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_va_space_gpu(gpu, va_space) {
@@ -456,10 +457,10 @@ static NV_STATUS test_ce(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_ce_sanity(UVM_TEST_CE_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -473,4 +474,4 @@ done:
     uvm_va_space_up_read_rm(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

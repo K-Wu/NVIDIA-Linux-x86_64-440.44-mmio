@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -30,7 +31,7 @@
 #define MEM_ALLOCATION_SIZE (4 * 1024 * 1024)
 
 static NV_STATUS try_peer_access_remote_gpu_memory(uvm_gpu_t *local_gpu, uvm_gpu_t *peer_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_mem_t *vidmem = NULL;
     uvm_mem_t *sysmem = NULL;
@@ -124,10 +125,10 @@ cleanup:
     uvm_mem_free(vidmem);
     uvm_mem_free(sysmem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_peer_identity_mappings(UVM_TEST_PEER_IDENTITY_MAPPINGS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu_a;
     uvm_gpu_t *gpu_b;
@@ -169,4 +170,4 @@ NV_STATUS uvm8_test_peer_identity_mappings(UVM_TEST_PEER_IDENTITY_MAPPINGS_PARAM
 done:
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

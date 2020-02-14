@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -31,7 +32,7 @@
 #include "uvm8_test_ioctl.h"
 
 static NV_STATUS copy_wait(uvm_gpu_t *gpu, uvm_gpu_address_t dst, uvm_gpu_address_t src, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     NV_STATUS status;
 
@@ -48,22 +49,22 @@ static NV_STATUS copy_wait(uvm_gpu_t *gpu, uvm_gpu_address_t dst, uvm_gpu_addres
     gpu->ce_hal->memcopy(&push, dst, src, size);
 
     return uvm_push_end_and_wait(&push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS swizzle_phys_wait(uvm_gpu_t *gpu, NvU64 phys_addr, uvm_gpu_swizzle_op_t op)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status, tracker_status;
     uvm_tracker_t tracker = UVM_TRACKER_INIT();
     status = uvm_gpu_swizzle_phys(gpu, phys_addr, op, &tracker);
     tracker_status = uvm_tracker_wait_deinit(&tracker);
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Test that big page swizzling happens as expected for GPUs with the
 // gpu->big_page_swizzling property set, and that the big page identity mapping
 // works correctly to deswizzle.
 static NV_STATUS test_big_page_swizzling(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_mem_t *gpu_mem = NULL;
     uvm_mem_t *sys_mem_gold = NULL, *sys_mem_verif = NULL;
@@ -172,10 +173,10 @@ done:
     uvm_mem_free(sys_mem_verif);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_all_gpus(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     for_each_va_space_gpu(gpu, va_space) {
         if (gpu->big_page.swizzling)
@@ -183,10 +184,10 @@ static NV_STATUS test_all_gpus(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_mmu_sanity(UVM_TEST_MMU_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -197,4 +198,4 @@ NV_STATUS uvm8_test_mmu_sanity(UVM_TEST_MMU_SANITY_PARAMS *params, struct file *
     uvm_va_space_up_read(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -80,7 +81,7 @@ MODULE_PARM_DESC(uvm_exp_gpu_cache_sysmem,
 static void block_deferred_eviction_mappings_entry(void *args);
 
 static bool block_gpu_pte_is_volatile(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_processor_id_t resident_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
 
     UVM_ASSERT(block->va_range);
@@ -97,57 +98,57 @@ static bool block_gpu_pte_is_volatile(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm
     UVM_ASSERT(uvm_processor_mask_test(&va_space->can_access[uvm_id_value(gpu->id)], resident_id));
 
     return uvm_exp_gpu_cache_peermem == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_t *block_get_gpu(uvm_va_block_t *block, uvm_gpu_id_t gpu_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(block->va_range);
     UVM_ASSERT(block->va_range->va_space);
 
     return uvm_va_space_get_gpu(block->va_range->va_space, gpu_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const char *block_processor_name(uvm_va_block_t *block, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(block->va_range);
     UVM_ASSERT(block->va_range->va_space);
 
     return uvm_va_space_processor_name(block->va_range->va_space, id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_processor_has_memory(uvm_va_block_t *block, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(block->va_range);
     UVM_ASSERT(block->va_range->va_space);
 
     return uvm_va_space_processor_has_memory(block->va_range->va_space, id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool is_uvm_fault_force_sysmem_set(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Only enforce this during testing
     return uvm_enable_builtin_tests && uvm_fault_force_sysmem != 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool va_space_map_remote_on_eviction(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_perf_map_remote_on_eviction &&
            uvm_va_space_has_access_counter_migrations(va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_retry_init(uvm_va_block_retry_t *retry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!retry)
         return;
 
     uvm_tracker_init(&retry->tracker);
     INIT_LIST_HEAD(&retry->used_chunks);
     INIT_LIST_HEAD(&retry->free_chunks);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Frees any left-over free chunks and unpins all the used chunks
 void uvm_va_block_retry_deinit(uvm_va_block_retry_t *retry, uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_gpu_chunk_t *gpu_chunk;
     uvm_gpu_chunk_t *next_chunk;
@@ -170,20 +171,20 @@ void uvm_va_block_retry_deinit(uvm_va_block_retry_t *retry, uvm_va_block_t *va_b
         gpu = uvm_gpu_chunk_get_gpu(gpu_chunk);
         uvm_pmm_gpu_unpin_temp(&gpu->pmm, gpu_chunk, va_block);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_retry_add_free_chunk(uvm_va_block_retry_t *retry, uvm_gpu_chunk_t *gpu_chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     list_add_tail(&gpu_chunk->list, &retry->free_chunks);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_retry_add_used_chunk(uvm_va_block_retry_t *retry, uvm_gpu_chunk_t *gpu_chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     list_add_tail(&gpu_chunk->list, &retry->used_chunks);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_chunk_t *block_retry_get_free_chunk(uvm_va_block_retry_t *retry, uvm_gpu_t *gpu, uvm_chunk_size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_chunk_t *gpu_chunk;
 
     list_for_each_entry(gpu_chunk, &retry->free_chunks, list) {
@@ -194,7 +195,7 @@ static uvm_gpu_chunk_t *block_retry_get_free_chunk(uvm_va_block_retry_t *retry, 
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Encapsulates a reference to a physical page belonging to a specific processor
 // within a VA block.
@@ -208,12 +209,12 @@ typedef struct
 } block_phys_page_t;
 
 static block_phys_page_t block_phys_page(uvm_processor_id_t processor, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (block_phys_page_t){ processor, page_index };
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_enable_builtin_tests)
         g_uvm_va_block_cache = NV_KMEM_CACHE_CREATE("uvm_va_block_wrapper_t", uvm_va_block_wrapper_t);
     else
@@ -235,35 +236,35 @@ NV_STATUS uvm_va_block_init(void)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     kmem_cache_destroy_safe(&g_uvm_va_block_context_cache);
     kmem_cache_destroy_safe(&g_uvm_page_mask_cache);
     kmem_cache_destroy_safe(&g_uvm_va_block_gpu_state_cache);
     kmem_cache_destroy_safe(&g_uvm_va_block_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_block_context_t *uvm_va_block_context_alloc(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_context_t *block_context = kmem_cache_alloc(g_uvm_va_block_context_cache, NV_UVM_GFP_FLAGS);
     if (block_context)
         uvm_va_block_context_init(block_context);
 
     return block_context;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_context_free(uvm_va_block_context_t *va_block_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (va_block_context)
         kmem_cache_free(g_uvm_va_block_context_cache, va_block_context);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_gpu_state_t *block_gpu_state_get(uvm_va_block_t *block, uvm_gpu_id_t gpu_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return block->gpus[uvm_id_gpu_index(gpu_id)];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Convert from page_index to chunk_index. The goal is for each system page in
 // the region [start, start + size) to be covered by the largest naturally-
@@ -273,7 +274,7 @@ size_t uvm_va_block_gpu_chunk_index_range(NvU64 start,
                                           uvm_gpu_t *gpu,
                                           uvm_page_index_t page_index,
                                           uvm_chunk_size_t *out_chunk_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_chunk_sizes_mask_t chunk_sizes = gpu->mmu_user_chunk_sizes;
     uvm_chunk_size_t chunk_size, final_chunk_size;
     size_t num_chunks, num_chunks_total;
@@ -383,13 +384,13 @@ out:
         *out_chunk_size = final_chunk_size;
 
     return num_chunks_total;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static size_t block_gpu_chunk_index(uvm_va_block_t *block,
                                     uvm_gpu_t *gpu,
                                     uvm_page_index_t page_index,
                                     uvm_chunk_size_t *out_chunk_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_chunk_size_t size;
     uvm_gpu_chunk_t *chunk;
@@ -412,11 +413,11 @@ static size_t block_gpu_chunk_index(uvm_va_block_t *block,
         *out_chunk_size = size;
 
     return index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compute the size of the chunk known to start at start_page_index
 static uvm_chunk_size_t block_gpu_chunk_size(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_page_index_t start_page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_chunk_sizes_mask_t chunk_sizes = gpu->mmu_user_chunk_sizes;
     uvm_chunk_sizes_mask_t start_alignments, pow2_leq_size, allowed_sizes;
     NvU64 start = uvm_va_block_cpu_page_address(block, start_page_index);
@@ -441,33 +442,33 @@ static uvm_chunk_size_t block_gpu_chunk_size(uvm_va_block_t *block, uvm_gpu_t *g
 
     // Take the largest allowed size
     return uvm_chunk_find_last_size(allowed_sizes);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static size_t block_num_gpu_chunks(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return block_gpu_chunk_index(block, gpu, uvm_va_block_cpu_page_index(block, block->end), NULL) + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static size_t block_num_gpu_chunks_range(NvU64 start, NvU64 size, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t last_page_index = (size_t)((size / PAGE_SIZE) - 1);
     return uvm_va_block_gpu_chunk_index_range(start, size, gpu, last_page_index, NULL) + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Return the block region covered by the given chunk size. page_index must be
 // any page within the block known to be covered by the chunk.
 static uvm_va_block_region_t block_gpu_chunk_region(uvm_va_block_t *block,
                                                     uvm_chunk_size_t chunk_size,
                                                     uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 page_addr = uvm_va_block_cpu_page_address(block, page_index);
     NvU64 chunk_start_addr = UVM_ALIGN_DOWN(page_addr, chunk_size);
     uvm_page_index_t first = (uvm_page_index_t)((chunk_start_addr - block->start) / PAGE_SIZE);
     return uvm_va_block_region(first, first + (chunk_size / PAGE_SIZE));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_chunk_t *uvm_va_block_lookup_gpu_chunk(uvm_va_block_t *va_block, uvm_gpu_t *gpu, NvU64 address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t chunk_index;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu->id);
     uvm_page_index_t page_index = uvm_va_block_cpu_page_index(va_block, address);
@@ -480,13 +481,13 @@ uvm_gpu_chunk_t *uvm_va_block_lookup_gpu_chunk(uvm_va_block_t *va_block, uvm_gpu
     chunk_index = block_gpu_chunk_index(va_block, gpu, page_index, NULL);
 
     return gpu_state->chunks[chunk_index];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_create(uvm_va_range_t *va_range,
                               NvU64 start,
                               NvU64 end,
                               uvm_va_block_t **out_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *block = NULL;
     NvU64 size = end - start + 1;
     NV_STATUS status;
@@ -539,10 +540,10 @@ NV_STATUS uvm_va_block_create(uvm_va_range_t *va_range,
 error:
     uvm_va_block_release(block);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_gpu_unmap_phys_all_cpu_pages(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
 
@@ -556,10 +557,10 @@ static void block_gpu_unmap_phys_all_cpu_pages(uvm_va_block_t *block, uvm_gpu_t 
         uvm_gpu_unmap_cpu_page(gpu, gpu_state->cpu_pages_dma_addrs[page_index]);
         gpu_state->cpu_pages_dma_addrs[page_index] = 0;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_gpu_map_phys_all_cpu_pages(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_page_index_t page_index;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
@@ -587,13 +588,13 @@ static NV_STATUS block_gpu_map_phys_all_cpu_pages(uvm_va_block_t *block, uvm_gpu
 error:
     block_gpu_unmap_phys_all_cpu_pages(block, gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_sysmem_mappings_add_gpu_chunk(uvm_va_block_t *block,
                                                      uvm_gpu_t *local_gpu,
                                                      uvm_gpu_chunk_t *chunk,
                                                      uvm_gpu_t *accessing_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 peer_addr = uvm_pmm_gpu_indirect_peer_addr(&local_gpu->pmm, chunk, accessing_gpu);
     return uvm_pmm_sysmem_mappings_add_gpu_chunk_mapping(&accessing_gpu->pmm_sysmem_mappings,
                                                          peer_addr,
@@ -601,20 +602,20 @@ static NV_STATUS block_sysmem_mappings_add_gpu_chunk(uvm_va_block_t *block,
                                                          uvm_gpu_chunk_get_size(chunk),
                                                          block,
                                                          local_gpu->id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_sysmem_mappings_remove_gpu_chunk(uvm_gpu_t *local_gpu,
                                                    uvm_gpu_chunk_t *chunk,
                                                    uvm_gpu_t *accessing_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 peer_addr = uvm_pmm_gpu_indirect_peer_addr(&local_gpu->pmm, chunk, accessing_gpu);
     uvm_pmm_sysmem_mappings_remove_gpu_chunk_mapping(&accessing_gpu->pmm_sysmem_mappings, peer_addr);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_gpu_map_all_chunks_indirect_peer(uvm_va_block_t *block,
                                                         uvm_gpu_t *local_gpu,
                                                         uvm_gpu_t *accessing_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, local_gpu->id);
     size_t num_chunks, i;
     NV_STATUS status;
@@ -657,14 +658,14 @@ error:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Mappings for indirect peers are removed lazily by PMM, but we need to remove
 // the entries from the reverse map.
 static void block_gpu_unmap_all_chunks_indirect_peer(uvm_va_block_t *block,
                                                      uvm_gpu_t *local_gpu,
                                                      uvm_gpu_t *accessing_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, local_gpu->id);
     size_t num_chunks, i;
 
@@ -681,11 +682,11 @@ static void block_gpu_unmap_all_chunks_indirect_peer(uvm_va_block_t *block,
         if (chunk)
             block_sysmem_mappings_remove_gpu_chunk(local_gpu, chunk, accessing_gpu);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Retrieves the gpu_state for the given GPU, allocating it if it doesn't exist
 static uvm_va_block_gpu_state_t *block_gpu_state_get_alloc(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
 
@@ -721,10 +722,10 @@ error:
     block->gpus[uvm_id_gpu_index(gpu->id)] = NULL;
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_unmap_phys_cpu_page_on_gpus(uvm_va_block_t *block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_id_t id;
 
     for_each_gpu_id(id) {
@@ -743,10 +744,10 @@ static void block_unmap_phys_cpu_page_on_gpus(uvm_va_block_t *block, uvm_page_in
 
         gpu_state->cpu_pages_dma_addrs[page_index] = 0;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_map_phys_cpu_page_on_gpus(uvm_va_block_t *block, uvm_page_index_t page_index, struct page *page)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_id_t id;
 
@@ -784,11 +785,11 @@ static NV_STATUS block_map_phys_cpu_page_on_gpus(uvm_va_block_t *block, uvm_page
 error:
     block_unmap_phys_cpu_page_on_gpus(block, page_index);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create physical mappings to allow other GPUs to access this chunk.
 static NV_STATUS block_map_indirect_peers_to_gpu_chunk(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_gpu_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = block->va_range->va_space;
     uvm_gpu_t *accessing_gpu, *remove_gpu;
     NV_STATUS status;
@@ -829,10 +830,10 @@ error:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_unmap_indirect_peers_from_gpu_chunk(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_gpu_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = block->va_range->va_space;
     uvm_gpu_t *peer_gpu;
 
@@ -843,14 +844,14 @@ static void block_unmap_indirect_peers_from_gpu_chunk(uvm_va_block_t *block, uvm
     // remove the sysmem reverse mappings.
     for_each_va_space_gpu_in_mask(peer_gpu, va_space, &va_space->indirect_peers[uvm_id_value(gpu->id)])
         block_sysmem_mappings_remove_gpu_chunk(gpu, chunk, peer_gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Allocates the input page in the block, if it doesn't already exist
 //
 // Also maps the page for physical access by all GPUs used by the block, which
 // is required for IOMMU support.
 static NV_STATUS block_populate_page_cpu(uvm_va_block_t *block, uvm_page_index_t page_index, bool zero)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     struct page *page;
     gfp_t gfp_flags;
@@ -888,7 +889,7 @@ static NV_STATUS block_populate_page_cpu(uvm_va_block_t *block, uvm_page_index_t
 error:
     __free_page(page);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Try allocating a chunk. If eviction was required,
 // NV_ERR_MORE_PROCESSING_REQUIRED will be returned since the block's lock was
@@ -899,7 +900,7 @@ static NV_STATUS block_alloc_gpu_chunk(uvm_va_block_t *block,
                                        uvm_gpu_t *gpu,
                                        uvm_chunk_size_t size,
                                        uvm_gpu_chunk_t **out_gpu_chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_chunk_t *gpu_chunk;
 
@@ -939,10 +940,10 @@ static NV_STATUS block_alloc_gpu_chunk(uvm_va_block_t *block,
 
     *out_gpu_chunk = gpu_chunk;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_gpu_has_page_tables(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
 
     if (!gpu_state)
@@ -951,7 +952,7 @@ static bool block_gpu_has_page_tables(uvm_va_block_t *block, uvm_gpu_t *gpu)
     return gpu_state->page_table_range_4k.table  ||
            gpu_state->page_table_range_big.table ||
            gpu_state->page_table_range_2m.table;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // A helper to get a known-to-be-present GPU VA space given a VA block that's
 // locked. In order to use this function, the caller must know that at least one
@@ -969,7 +970,7 @@ static bool block_gpu_has_page_tables(uvm_va_block_t *block, uvm_gpu_t *gpu)
 // has page tables (#2), the gpu_va_space can't go away while we're holding the
 // block lock.
 static uvm_gpu_va_space_t *uvm_va_block_get_gpu_va_space(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_va_space_t *va_space;
 
@@ -990,10 +991,10 @@ static uvm_gpu_va_space_t *uvm_va_block_get_gpu_va_space(uvm_va_block_t *va_bloc
     UVM_ASSERT(gpu_va_space->gpu == gpu);
 
     return gpu_va_space;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_gpu_supports_2m(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space;
 
     if (uvm_va_block_size(block) < UVM_PAGE_SIZE_2M)
@@ -1003,10 +1004,10 @@ static bool block_gpu_supports_2m(uvm_va_block_t *block, uvm_gpu_t *gpu)
 
     gpu_va_space = uvm_va_block_get_gpu_va_space(block, gpu);
     return uvm_mmu_page_size_supported(&gpu_va_space->page_tables, UVM_PAGE_SIZE_2M);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_va_block_gpu_big_page_size(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space;
 
     // For GPUs which swizzle, we have to associate the big page size with
@@ -1020,10 +1021,10 @@ NvU32 uvm_va_block_gpu_big_page_size(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
 
     gpu_va_space = uvm_va_block_get_gpu_va_space(va_block, gpu);
     return gpu_va_space->page_tables.big_page_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t range_big_page_region_all(NvU64 start, NvU64 end, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 first_addr = UVM_ALIGN_UP(start, big_page_size);
     NvU64 outer_addr = UVM_ALIGN_DOWN(end + 1, big_page_size);
 
@@ -1034,34 +1035,34 @@ static uvm_va_block_region_t range_big_page_region_all(NvU64 start, NvU64 end, N
         return uvm_va_block_region(0, 0);
 
     return uvm_va_block_region((first_addr - start) / PAGE_SIZE, (outer_addr - start) / PAGE_SIZE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static size_t range_num_big_pages(NvU64 start, NvU64 end, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t region = range_big_page_region_all(start, end, big_page_size);
     return (size_t)uvm_div_pow2_64(uvm_va_block_region_size(region), big_page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_block_region_t uvm_va_block_big_page_region_all(uvm_va_block_t *va_block, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return range_big_page_region_all(va_block->start, va_block->end, big_page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 size_t uvm_va_block_num_big_pages(uvm_va_block_t *va_block, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return range_num_big_pages(va_block->start, va_block->end, big_page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_va_block_big_page_addr(uvm_va_block_t *va_block, size_t big_page_index, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 addr = UVM_ALIGN_UP(va_block->start, big_page_size) + (big_page_index * big_page_size);
     UVM_ASSERT(addr >= va_block->start);
     UVM_ASSERT(addr < va_block->end);
     return addr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_va_block_region_t uvm_va_block_big_page_region(uvm_va_block_t *va_block, size_t big_page_index, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 page_addr = uvm_va_block_big_page_addr(va_block, big_page_index, big_page_size);
 
     // Assume that we don't have to handle multiple big PTEs per system page.
@@ -1070,14 +1071,14 @@ uvm_va_block_region_t uvm_va_block_big_page_region(uvm_va_block_t *va_block, siz
     UVM_ASSERT(big_page_size >= PAGE_SIZE);
 
     return uvm_va_block_region_from_start_size(va_block, page_addr, big_page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the big page index (the bit index within
 // uvm_va_block_gpu_state_t::big_ptes) corresponding to page_index. If
 // page_index cannot be covered by a big PTE due to alignment or block size,
 // MAX_BIG_PAGES_PER_UVM_VA_BLOCK is returned.
 size_t uvm_va_block_big_page_index(uvm_va_block_t *va_block, uvm_page_index_t page_index, NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t big_region_all = uvm_va_block_big_page_region_all(va_block, big_page_size);
     size_t big_index;
 
@@ -1092,10 +1093,10 @@ size_t uvm_va_block_big_page_index(uvm_va_block_t *va_block, uvm_page_index_t pa
     UVM_ASSERT(uvm_va_block_big_page_addr(va_block, big_index, big_page_size) + big_page_size <= va_block->end + 1);
 
     return big_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_gpu_page_is_swizzled(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 big_page_size;
     size_t big_page_index;
     uvm_va_block_gpu_state_t *gpu_state;
@@ -1110,13 +1111,13 @@ static bool block_gpu_page_is_swizzled(uvm_va_block_t *block, uvm_gpu_t *gpu, uv
     big_page_index = uvm_va_block_big_page_index(block, page_index, big_page_size);
 
     return big_page_index != MAX_BIG_PAGES_PER_UVM_VA_BLOCK && test_bit(big_page_index, gpu_state->big_pages_swizzled);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_page_mask_init_from_big_ptes(uvm_va_block_t *block,
                                              uvm_gpu_t *gpu,
                                              uvm_page_mask_t *mask_out,
                                              const unsigned long *big_ptes_in)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t big_region;
     size_t big_page_index;
     NvU32 big_page_size = uvm_va_block_gpu_big_page_size(block, gpu);
@@ -1127,19 +1128,19 @@ static void uvm_page_mask_init_from_big_ptes(uvm_va_block_t *block,
         big_region = uvm_va_block_big_page_region(block, big_page_index, big_page_size);
         uvm_page_mask_region_fill(mask_out, big_region);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_va_block_page_size_cpu(uvm_va_block_t *va_block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_page_mask_test(&va_block->cpu.pte_bits[UVM_PTE_BITS_CPU_READ], page_index))
         return 0;
 
     UVM_ASSERT(uvm_processor_mask_test(&va_block->mapped, UVM_ID_CPU));
     return PAGE_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_va_block_page_size_gpu(uvm_va_block_t *va_block, uvm_gpu_id_t gpu_id, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu_id);
     size_t big_page_size, big_page_index;
 
@@ -1160,14 +1161,14 @@ NvU32 uvm_va_block_page_size_gpu(uvm_va_block_t *va_block, uvm_gpu_id_t gpu_id, 
         return big_page_size;
 
     return UVM_PAGE_SIZE_4K;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the size of the physical allocation backing the page, or 0 if not
 // resident. Note that this is different from uvm_va_block_page_size_* because
 // those return the size of the PTE which maps the page index, which may be
 // smaller than the physical allocation.
 static NvU32 block_phys_page_size(uvm_va_block_t *block, block_phys_page_t page)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state;
     uvm_chunk_size_t chunk_size;
 
@@ -1186,10 +1187,10 @@ static NvU32 block_phys_page_size(uvm_va_block_t *block, block_phys_page_t page)
     UVM_ASSERT(uvm_processor_mask_test(&block->resident, page.processor));
     block_gpu_chunk_index(block, block_get_gpu(block, page.processor), page.page_index, &chunk_size);
     return (NvU32)chunk_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pte_bits_cpu_t get_cpu_pte_bit_index(uvm_prot_t prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pte_bits_cpu_t pte_bit_index = UVM_PTE_BITS_CPU_MAX;
 
     // ATOMIC and WRITE are synonyms for the CPU
@@ -1201,10 +1202,10 @@ static uvm_pte_bits_cpu_t get_cpu_pte_bit_index(uvm_prot_t prot)
         UVM_ASSERT_MSG(false, "Invalid access permissions %s\n", uvm_prot_string(prot));
 
     return pte_bit_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_pte_bits_gpu_t get_gpu_pte_bit_index(uvm_prot_t prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pte_bits_gpu_t pte_bit_index = UVM_PTE_BITS_GPU_MAX;
 
     if (prot == UVM_PROT_READ_WRITE_ATOMIC)
@@ -1217,10 +1218,10 @@ static uvm_pte_bits_gpu_t get_gpu_pte_bit_index(uvm_prot_t prot)
         UVM_ASSERT_MSG(false, "Invalid access permissions %s\n", uvm_prot_string(prot));
 
     return pte_bit_index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_page_mask_t *uvm_va_block_resident_mask_get(uvm_va_block_t *block, uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state;
 
     if (UVM_ID_IS_CPU(processor))
@@ -1230,14 +1231,14 @@ uvm_page_mask_t *uvm_va_block_resident_mask_get(uvm_va_block_t *block, uvm_proce
 
     UVM_ASSERT(gpu_state);
     return &gpu_state->resident;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the page residency mask for a processor
 //
 // Notably this will allocate GPU state if not yet present and if that fails
 // NULL is returned.
 static uvm_page_mask_t *block_resident_mask_get_alloc(uvm_va_block_t *block, uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state;
 
     if (UVM_ID_IS_CPU(processor))
@@ -1248,12 +1249,12 @@ static uvm_page_mask_t *block_resident_mask_get_alloc(uvm_va_block_t *block, uvm
         return NULL;
 
     return &gpu_state->resident;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const uvm_page_mask_t *block_map_with_prot_mask_get(uvm_va_block_t *block,
                                                            uvm_processor_id_t processor,
                                                            uvm_prot_t prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state;
 
     if (UVM_ID_IS_CPU(processor))
@@ -1263,23 +1264,23 @@ static const uvm_page_mask_t *block_map_with_prot_mask_get(uvm_va_block_t *block
 
     UVM_ASSERT(gpu_state);
     return &gpu_state->pte_bits[get_gpu_pte_bit_index(prot)];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const uvm_page_mask_t *uvm_va_block_map_mask_get(uvm_va_block_t *block, uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return block_map_with_prot_mask_get(block, processor, UVM_PROT_READ_ONLY);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const uvm_page_mask_t *block_evicted_mask_get(uvm_va_block_t *block, uvm_gpu_id_t gpu_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu_id);
     UVM_ASSERT(gpu_state);
 
     return &gpu_state->evicted;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_is_page_resident_anywhere(uvm_va_block_t *block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t id;
     for_each_id_in_mask(id, &block->resident) {
         if (uvm_page_mask_test(uvm_va_block_resident_mask_get(block, id), page_index))
@@ -1287,10 +1288,10 @@ static bool block_is_page_resident_anywhere(uvm_va_block_t *block, uvm_page_inde
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_processor_page_is_populated(uvm_va_block_t *block, uvm_processor_id_t proc, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state;
     size_t chunk_index;
 
@@ -1303,10 +1304,10 @@ static bool block_processor_page_is_populated(uvm_va_block_t *block, uvm_process
 
     chunk_index = block_gpu_chunk_index(block, block_get_gpu(block, proc), page_index, NULL);
     return gpu_state->chunks[chunk_index] != NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_processor_page_is_resident_on(uvm_va_block_t *block, uvm_processor_id_t proc, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const uvm_page_mask_t *resident_mask;
 
     if (UVM_ID_IS_CPU(proc)) {
@@ -1321,13 +1322,13 @@ static bool block_processor_page_is_resident_on(uvm_va_block_t *block, uvm_proce
     }
 
     return uvm_page_mask_test(resident_mask, page_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_region_authorized_gpus(uvm_va_block_t *va_block,
                                          uvm_va_block_region_t region,
                                          uvm_prot_t access_permission,
                                          uvm_processor_mask_t *authorized_processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_id_t gpu_id;
     uvm_pte_bits_gpu_t search_gpu_bit = get_gpu_pte_bit_index(access_permission);
 
@@ -1339,13 +1340,13 @@ void uvm_va_block_region_authorized_gpus(uvm_va_block_t *va_block,
         if (gpu_state && !uvm_page_mask_region_empty(&gpu_state->pte_bits[search_gpu_bit], region))
             uvm_processor_mask_set(authorized_processors, gpu_id);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_region_authorized_processors(uvm_va_block_t *va_block,
                                                uvm_va_block_region_t region,
                                                uvm_prot_t access_permission,
                                                uvm_processor_mask_t *authorized_processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pte_bits_cpu_t search_cpu_bit = get_cpu_pte_bit_index(access_permission);
 
     // Compute GPUs
@@ -1356,35 +1357,35 @@ void uvm_va_block_region_authorized_processors(uvm_va_block_t *va_block,
         !uvm_page_mask_region_empty(&va_block->cpu.pte_bits[search_cpu_bit], region)) {
         uvm_processor_mask_set(authorized_processors, UVM_ID_CPU);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_page_authorized_gpus(uvm_va_block_t *va_block,
                                        uvm_page_index_t page_index,
                                        uvm_prot_t access_permission,
                                        uvm_processor_mask_t *authorized_gpus)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_authorized_gpus(va_block,
                                         uvm_va_block_region_for_page(page_index),
                                         access_permission,
                                         authorized_gpus);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_page_authorized_processors(uvm_va_block_t *va_block,
                                              uvm_page_index_t page_index,
                                              uvm_prot_t access_permission,
                                              uvm_processor_mask_t *authorized_processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_authorized_processors(va_block,
                                               uvm_va_block_region_for_page(page_index),
                                               access_permission,
                                               authorized_processors);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_block_is_gpu_authorized_on_whole_region(uvm_va_block_t *va_block,
                                                     uvm_va_block_region_t region,
                                                     uvm_gpu_id_t gpu_id,
                                                     uvm_prot_t required_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pte_bits_gpu_t search_gpu_bit = get_gpu_pte_bit_index(required_prot);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu_id);
 
@@ -1392,13 +1393,13 @@ bool uvm_va_block_is_gpu_authorized_on_whole_region(uvm_va_block_t *va_block,
         return false;
 
     return uvm_page_mask_region_full(&gpu_state->pte_bits[search_gpu_bit], region);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_block_is_processor_authorized_on_whole_region(uvm_va_block_t *va_block,
                                                           uvm_va_block_region_t region,
                                                           uvm_processor_id_t processor_id,
                                                           uvm_prot_t required_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_CPU(processor_id)) {
         uvm_pte_bits_cpu_t search_cpu_bit = get_cpu_pte_bit_index(required_prot);
 
@@ -1407,34 +1408,34 @@ bool uvm_va_block_is_processor_authorized_on_whole_region(uvm_va_block_t *va_blo
     else {
         return uvm_va_block_is_gpu_authorized_on_whole_region(va_block, region, processor_id, required_prot);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_block_page_is_gpu_authorized(uvm_va_block_t *va_block,
                                          uvm_page_index_t page_index,
                                          uvm_gpu_id_t gpu_id,
                                          uvm_prot_t required_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_is_gpu_authorized_on_whole_region(va_block,
                                                           uvm_va_block_region_for_page(page_index),
                                                           gpu_id,
                                                           required_prot);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_block_page_is_processor_authorized(uvm_va_block_t *va_block,
                                                uvm_page_index_t page_index,
                                                uvm_processor_id_t processor_id,
                                                uvm_prot_t required_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_is_processor_authorized_on_whole_region(va_block,
                                                                 uvm_va_block_region_for_page(page_index),
                                                                 processor_id,
                                                                 required_prot);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_page_resident_gpus(uvm_va_block_t *va_block,
                                      uvm_page_index_t page_index,
                                      uvm_processor_mask_t *resident_gpus)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_id_t id;
     uvm_processor_mask_zero(resident_gpus);
 
@@ -1444,40 +1445,40 @@ void uvm_va_block_page_resident_gpus(uvm_va_block_t *va_block,
             uvm_processor_mask_set(resident_gpus, id);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_page_resident_processors(uvm_va_block_t *va_block,
                                            uvm_page_index_t page_index,
                                            uvm_processor_mask_t *resident_processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_page_resident_gpus(va_block, page_index, resident_processors);
 
     if (uvm_page_mask_test(uvm_va_block_resident_mask_get(va_block, UVM_ID_CPU), page_index)) {
         UVM_ASSERT(block_processor_page_is_populated(va_block, UVM_ID_CPU, page_index));
         uvm_processor_mask_set(resident_processors, UVM_ID_CPU);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_va_block_page_resident_processors_count(uvm_va_block_t *va_block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t resident_processors;
     uvm_va_block_page_resident_processors(va_block, page_index, &resident_processors);
 
     return uvm_processor_mask_get_count(&resident_processors);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_processor_id_t uvm_va_block_page_get_closest_resident(uvm_va_block_t *va_block,
                                                           uvm_page_index_t page_index,
                                                           uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_va_block_page_get_closest_resident_in_mask(va_block, page_index, processor, NULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_processor_id_t uvm_va_block_page_get_closest_resident_in_mask(uvm_va_block_t *va_block,
                                                                   uvm_page_index_t page_index,
                                                                   uvm_processor_id_t processor,
                                                                   const uvm_processor_mask_t *processor_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     uvm_processor_mask_t search_mask;
     uvm_processor_id_t id;
@@ -1493,7 +1494,7 @@ uvm_processor_id_t uvm_va_block_page_get_closest_resident_in_mask(uvm_va_block_t
     }
 
     return UVM_ID_INVALID;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // We don't track the specific aperture of each mapped page. Instead, we assume
 // that each virtual mapping from a given processor always targets the closest
@@ -1503,7 +1504,7 @@ uvm_processor_id_t uvm_va_block_page_get_closest_resident_in_mask(uvm_va_block_t
 // new location, assert that no processor has a valid mapping to a farther
 // processor on that page.
 static bool block_check_resident_proximity(uvm_va_block_t *block, uvm_page_index_t page_index, uvm_processor_id_t new_residency)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t resident_procs, mapped_procs;
     uvm_processor_id_t mapped_id, closest_id;
 
@@ -1522,13 +1523,13 @@ static bool block_check_resident_proximity(uvm_va_block_t *block, uvm_page_index
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the processor to which page_index should be mapped on gpu
 static uvm_processor_id_t block_gpu_get_processor_to_map(uvm_va_block_t *block,
                                                          uvm_gpu_t *gpu,
                                                          uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = block->va_range;
     uvm_processor_id_t dest_id;
 
@@ -1540,25 +1541,25 @@ static uvm_processor_id_t block_gpu_get_processor_to_map(uvm_va_block_t *block,
     dest_id = uvm_va_block_page_get_closest_resident(block, page_index, gpu->id);
     UVM_ASSERT(UVM_ID_IS_VALID(dest_id));
     return dest_id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the processor to which page_index should be mapped on mapping_id
 static uvm_processor_id_t block_get_processor_to_map(uvm_va_block_t *block,
                                                      uvm_processor_id_t mapping_id,
                                                      uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 
     if (UVM_ID_IS_CPU(mapping_id))
         return uvm_va_block_page_get_closest_resident(block, page_index, mapping_id);
 
     return block_gpu_get_processor_to_map(block, block_get_gpu(block, mapping_id), page_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_get_mapped_processors(uvm_va_block_t *block,
                                         uvm_processor_id_t resident_id,
                                         uvm_page_index_t page_index,
                                         uvm_processor_mask_t *mapped_procs)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t mapped_id;
 
     uvm_processor_mask_zero(mapped_procs);
@@ -1571,7 +1572,7 @@ static void block_get_mapped_processors(uvm_va_block_t *block,
                 uvm_processor_mask_set(mapped_procs, mapped_id);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // We use block_gpu_get_processor_to_map to find the destination processor of a
 // given GPU mapping. This function is called when the mapping is established to
@@ -1581,7 +1582,7 @@ static bool block_check_mapping_residency_region(uvm_va_block_t *block,
                                                  uvm_processor_id_t mapping_dest,
                                                  uvm_va_block_region_t region,
                                                  const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     for_each_va_block_page_in_region_mask(page_index, page_mask, region) {
         NvU64 va = uvm_va_block_cpu_page_address(block, page_index);
@@ -1594,24 +1595,24 @@ static bool block_check_mapping_residency_region(uvm_va_block_t *block,
                        block_processor_name(block, proc_to_map));
     }
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_check_mapping_residency(uvm_va_block_t *block,
                                           uvm_gpu_t *gpu,
                                           uvm_processor_id_t mapping_dest,
                                           const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return block_check_mapping_residency_region(block,
                                                 gpu,
                                                 mapping_dest,
                                                 uvm_va_block_region_from_block(block),
                                                 page_mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check that there are no mappings targeting resident_id from any processor in
 // the block.
 static bool block_check_processor_not_mapped(uvm_va_block_t *block, uvm_processor_id_t resident_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t mapped_id;
     uvm_page_index_t page_index;
 
@@ -1625,7 +1626,7 @@ static bool block_check_processor_not_mapped(uvm_va_block_t *block, uvm_processo
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Zero all pages of the newly-populated chunk which are not resident anywhere
 // else in the system, adding that work to the block's tracker. In all cases,
@@ -1635,7 +1636,7 @@ static NV_STATUS block_zero_new_gpu_chunk(uvm_va_block_t *block,
                                           uvm_gpu_chunk_t *chunk,
                                           uvm_va_block_region_t chunk_region,
                                           uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state;
     NV_STATUS status;
     uvm_gpu_address_t memset_addr_base, memset_addr, phys_addr;
@@ -1774,14 +1775,14 @@ out:
         kmem_cache_free(g_uvm_page_mask_cache, zero_mask);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_populate_gpu_chunk(uvm_va_block_t *block,
                                           uvm_va_block_retry_t *retry,
                                           uvm_gpu_t *gpu,
                                           size_t chunk_index,
                                           uvm_va_block_region_t chunk_region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get_alloc(block, gpu);
     uvm_gpu_chunk_t *chunk = NULL;
     uvm_chunk_size_t chunk_size = uvm_va_block_region_size(chunk_region);
@@ -1850,7 +1851,7 @@ error:
     // placed in the block tracker.
     uvm_pmm_gpu_free(&gpu->pmm, chunk, &block->tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Populate all chunks which cover the given region and page mask.
 static NV_STATUS block_populate_pages_gpu(uvm_va_block_t *block,
@@ -1858,7 +1859,7 @@ static NV_STATUS block_populate_pages_gpu(uvm_va_block_t *block,
                                           uvm_gpu_t *gpu,
                                           uvm_va_block_region_t region,
                                           const uvm_page_mask_t *populate_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t chunk_region, check_region;
     size_t chunk_index;
     uvm_page_index_t page_index;
@@ -1891,7 +1892,7 @@ static NV_STATUS block_populate_pages_gpu(uvm_va_block_t *block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_populate_pages(uvm_va_block_t *block,
                                       uvm_va_block_retry_t *retry,
@@ -1899,7 +1900,7 @@ static NV_STATUS block_populate_pages(uvm_va_block_t *block,
                                       uvm_processor_id_t dest_id,
                                       uvm_va_block_region_t region,
                                       const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     const uvm_page_mask_t *resident_mask = block_resident_mask_get_alloc(block, dest_id);
     uvm_page_index_t page_index;
@@ -1929,22 +1930,22 @@ static NV_STATUS block_populate_pages(uvm_va_block_t *block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const uvm_processor_mask_t *block_get_can_copy_from_mask(uvm_va_block_t *block, uvm_processor_id_t from)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return &block->va_range->va_space->can_copy_from[uvm_id_value(from)];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_can_copy_from(uvm_va_block_t *va_block, uvm_processor_id_t from, uvm_processor_id_t to)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_processor_mask_test(block_get_can_copy_from_mask(va_block, to), from);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the chunk containing the given page, along with the offset of that page
 // within the chunk.
 static uvm_gpu_chunk_t *block_phys_page_chunk(uvm_va_block_t *block, block_phys_page_t block_page, size_t *chunk_offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = block_get_gpu(block, block_page.processor);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, block_page.processor);
     size_t chunk_index;
@@ -1964,14 +1965,14 @@ static uvm_gpu_chunk_t *block_phys_page_chunk(uvm_va_block_t *block, block_phys_
     }
 
     return chunk;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the physical GPU address of a block's page from the POV of the specified GPU
 // This is the address that should be used for making PTEs for the specified GPU.
 static uvm_gpu_phys_address_t block_phys_page_address(uvm_va_block_t *block,
                                                       block_phys_page_t block_page,
                                                       uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *accessing_gpu_state = block_gpu_state_get(block, gpu->id);
     size_t chunk_offset;
     uvm_gpu_chunk_t *chunk;
@@ -2001,7 +2002,7 @@ static uvm_gpu_phys_address_t block_phys_page_address(uvm_va_block_t *block,
         phys_addr.address += chunk_offset;
         return phys_addr;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the physical GPU address of a block's page from the POV of the specified
 // GPU, suitable for accessing the memory from UVM-internal CE channels.
@@ -2011,7 +2012,7 @@ static uvm_gpu_phys_address_t block_phys_page_address(uvm_va_block_t *block,
 static uvm_gpu_address_t block_phys_page_copy_address(uvm_va_block_t *block,
                                                       block_phys_page_t block_page,
                                                       uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *owning_gpu;
     size_t chunk_offset;
     uvm_gpu_chunk_t *chunk;
@@ -2051,16 +2052,16 @@ static uvm_gpu_address_t block_phys_page_copy_address(uvm_va_block_t *block,
     copy_addr = uvm_pmm_gpu_peer_copy_address(&owning_gpu->pmm, chunk, gpu);
     copy_addr.address += chunk_offset;
     return copy_addr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_phys_address_t uvm_va_block_gpu_phys_page_address(uvm_va_block_t *va_block,
                                                           uvm_page_index_t page_index,
                                                           uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_mutex_locked(&va_block->lock);
 
     return block_phys_page_address(va_block, block_phys_page(gpu->id, page_index), gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Begin a push appropriate for copying data from src_id processor to dst_id processor.
 // One of src_id and dst_id needs to be a GPU.
@@ -2069,7 +2070,7 @@ static NV_STATUS block_copy_begin_push(uvm_va_block_t *va_block,
                                        uvm_processor_id_t src_id,
                                        uvm_tracker_t *tracker,
                                        uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_type_t channel_type;
     uvm_gpu_t *gpu;
 
@@ -2126,7 +2127,7 @@ static NV_STATUS block_copy_begin_push(uvm_va_block_t *va_block,
                                   block_processor_name(va_block, dst_id),
                                   va_block->start,
                                   va_block->end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // A page is clean iff...
 // the destination is the preferred location and
@@ -2137,12 +2138,12 @@ static bool block_page_is_clean(uvm_va_block_t *block,
                                 uvm_processor_id_t dst_id,
                                 uvm_processor_id_t src_id,
                                 uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_id_equal(dst_id, block->va_range->preferred_location) &&
            UVM_ID_IS_CPU(src_id) &&
            !block_get_gpu(block, dst_id)->isr.replayable_faults.handling &&
            !PageDirty(block->cpu.pages[page_index]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // When the destination is the CPU...
 // if the source is the preferred location, mark as clean
@@ -2151,7 +2152,7 @@ static void block_update_page_dirty_state(uvm_va_block_t *block,
                                           uvm_processor_id_t dst_id,
                                           uvm_processor_id_t src_id,
                                           uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_GPU(dst_id))
         return;
 
@@ -2159,10 +2160,10 @@ static void block_update_page_dirty_state(uvm_va_block_t *block,
         ClearPageDirty(block->cpu.pages[page_index]);
     else
         SetPageDirty(block->cpu.pages[page_index]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_mark_memory_used(uvm_va_block_t *block, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     if (UVM_ID_IS_CPU(id))
@@ -2177,20 +2178,20 @@ static void block_mark_memory_used(uvm_va_block_t *block, uvm_processor_id_t id)
         UVM_ASSERT(uvm_processor_mask_test(&block->resident, id));
         uvm_pmm_gpu_mark_root_chunk_used(&gpu->pmm, block_gpu_state_get(block, gpu->id)->chunks[0]);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_set_resident_processor(uvm_va_block_t *block, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!uvm_page_mask_empty(uvm_va_block_resident_mask_get(block, id)));
 
     if (uvm_processor_mask_test_and_set(&block->resident, id))
         return;
 
     block_mark_memory_used(block, id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_clear_resident_processor(uvm_va_block_t *block, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     UVM_ASSERT(uvm_page_mask_empty(uvm_va_block_resident_mask_get(block, id)));
@@ -2211,7 +2212,7 @@ static void block_clear_resident_processor(uvm_va_block_t *block, uvm_processor_
         if (gpu_state && gpu_state->chunks[0])
             uvm_pmm_gpu_mark_root_chunk_unused(&gpu->pmm, gpu_state->chunks[0]);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -2224,7 +2225,7 @@ typedef enum
 } block_transfer_mode_internal_t;
 
 static uvm_va_block_transfer_mode_t get_block_transfer_mode_from_internal(block_transfer_mode_internal_t transfer_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (transfer_mode) {
         case BLOCK_TRANSFER_MODE_INTERNAL_MOVE:
         case BLOCK_TRANSFER_MODE_INTERNAL_MOVE_TO_STAGE:
@@ -2239,14 +2240,14 @@ static uvm_va_block_transfer_mode_t get_block_transfer_mode_from_internal(block_
 
     UVM_ASSERT_MSG(0, "Invalid transfer mode %u\n", transfer_mode);
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_phys_copy_contig_check(uvm_va_block_t *block,
                                          uvm_page_index_t page_index,
                                          const uvm_gpu_address_t *base_address,
                                          uvm_processor_id_t proc_id,
                                          uvm_gpu_t *copying_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_address_t page_address;
     uvm_gpu_address_t contig_address = *base_address;
 
@@ -2255,20 +2256,20 @@ static bool block_phys_copy_contig_check(uvm_va_block_t *block,
     page_address = block_phys_page_copy_address(block, block_phys_page(proc_id, page_index), copying_gpu);
 
     return uvm_gpu_addr_cmp(page_address, contig_address) == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool is_block_phys_contig(uvm_va_block_t *block, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Check if the VA block has a single physically-contiguous chunk of storage
     // on the GPU
     return (UVM_ID_IS_GPU(id)) &&
            (uvm_va_block_size(block) == block_gpu_chunk_size(block, block_get_gpu(block, id), 0));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_block_region_t block_phys_contig_region(uvm_va_block_t *block,
                                                       uvm_page_index_t page_index,
                                                       uvm_processor_id_t resident_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_CPU(resident_id)) {
         // TODO: Bug 1766172: Use larger CPU contig regions, handle contig
         // differences (if any) between CPU phys and dma_addr.
@@ -2279,7 +2280,7 @@ static uvm_va_block_region_t block_phys_contig_region(uvm_va_block_t *block,
         (void)block_gpu_chunk_index(block, block_get_gpu(block, resident_id), page_index, &chunk_size);
         return block_gpu_chunk_region(block, chunk_size, page_index);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Copies pages resident on the src_id processor to the dst_id processor
 //
@@ -2299,7 +2300,7 @@ static NV_STATUS block_copy_resident_pages_between(uvm_va_block_t *block,
                                                    uvm_page_mask_t *migrated_pages,
                                                    NvU32 *copied_pages,
                                                    uvm_tracker_t *copy_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS tracker_status, status = NV_OK;
     uvm_page_mask_t *src_resident_mask = uvm_va_block_resident_mask_get(block, src_id);
     uvm_page_mask_t *dst_resident_mask = uvm_va_block_resident_mask_get(block, dst_id);
@@ -2607,7 +2608,7 @@ static NV_STATUS block_copy_resident_pages_between(uvm_va_block_t *block,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Copy resident pages to the destination from all source processors in the
 // src_processor_mask
@@ -2627,7 +2628,7 @@ static NV_STATUS block_copy_resident_pages_mask(uvm_va_block_t *block,
                                                 uvm_page_mask_t *migrated_pages,
                                                 NvU32 *copied_pages_out,
                                                 uvm_tracker_t *tracker_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t src_id;
     uvm_processor_mask_t search_mask;
 
@@ -2664,14 +2665,14 @@ static NV_STATUS block_copy_resident_pages_mask(uvm_va_block_t *block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void break_read_duplication_in_region(uvm_va_block_t *block,
                                              uvm_va_block_context_t *block_context,
                                              uvm_processor_id_t dst_id,
                                              uvm_va_block_region_t region,
                                              const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t id;
     uvm_page_mask_t *break_pages_in_region = &block_context->scratch_page_mask;
 
@@ -2694,14 +2695,14 @@ static void break_read_duplication_in_region(uvm_va_block_t *block,
         if (!uvm_page_mask_andnot(other_resident_mask, other_resident_mask, break_pages_in_region))
             block_clear_resident_processor(block, id);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_copy_set_first_touch_residency(uvm_va_block_t *block,
                                                  uvm_va_block_context_t *block_context,
                                                  uvm_processor_id_t dst_id,
                                                  uvm_va_block_region_t region,
                                                  const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     uvm_page_mask_t *resident_mask = uvm_va_block_resident_mask_get(block, dst_id);
     uvm_page_mask_t *first_touch_mask = &block_context->make_resident.page_mask;
@@ -2727,7 +2728,7 @@ static void block_copy_set_first_touch_residency(uvm_va_block_t *block,
     uvm_page_mask_or(&block_context->make_resident.pages_changed_residency,
                      &block_context->make_resident.pages_changed_residency,
                      first_touch_mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Copy resident pages from other processors to the destination and mark any
 // pages not resident anywhere as resident on the destination.
@@ -2744,7 +2745,7 @@ static NV_STATUS block_copy_resident_pages(uvm_va_block_t *block,
                                            const uvm_page_mask_t *page_mask,
                                            const uvm_page_mask_t *prefetch_page_mask,
                                            uvm_va_block_transfer_mode_t transfer_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -2929,7 +2930,7 @@ out:
     uvm_tracker_deinit(&local_tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_make_resident(uvm_va_block_t *va_block,
                                      uvm_va_block_retry_t *va_block_retry,
@@ -2939,7 +2940,7 @@ NV_STATUS uvm_va_block_make_resident(uvm_va_block_t *va_block,
                                      const uvm_page_mask_t *page_mask,
                                      const uvm_page_mask_t *prefetch_page_mask,
                                      uvm_make_resident_cause_t cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_processor_mask_t unmap_processor_mask;
@@ -3021,7 +3022,7 @@ NV_STATUS uvm_va_block_make_resident(uvm_va_block_t *va_block,
         block_mark_memory_used(va_block, dest_id);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Combination function which prepares the input {region, page_mask} for
 // entering read-duplication. It:
@@ -3032,7 +3033,7 @@ static NV_STATUS block_prep_read_duplicate_mapping(uvm_va_block_t *va_block,
                                                    uvm_processor_id_t revoke_id,
                                                    uvm_va_block_region_t region,
                                                    const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t unmap_processor_mask;
     uvm_processor_id_t unmap_id;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -3069,7 +3070,7 @@ out:
     tracker_status = uvm_tracker_add_tracker_safe(&va_block->tracker, &local_tracker);
     uvm_tracker_deinit(&local_tracker);
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_make_resident_read_duplicate(uvm_va_block_t *va_block,
                                                     uvm_va_block_retry_t *va_block_retry,
@@ -3079,7 +3080,7 @@ NV_STATUS uvm_va_block_make_resident_read_duplicate(uvm_va_block_t *va_block,
                                                     const uvm_page_mask_t *page_mask,
                                                     const uvm_page_mask_t *prefetch_page_mask,
                                                     uvm_make_resident_cause_t cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_processor_id_t src_id;
 
@@ -3150,14 +3151,14 @@ NV_STATUS uvm_va_block_make_resident_read_duplicate(uvm_va_block_t *va_block,
         block_mark_memory_used(va_block, dest_id);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Looks up the current CPU mapping state of page from the
 // block->cpu.pte_bits bitmaps. If write access is enabled,
 // UVM_PROT_READ_WRITE_ATOMIC is returned instead of UVM_PROT_READ_WRITE, since
 // write access implies atomic access for CPUs.
 static uvm_prot_t block_page_prot_cpu(uvm_va_block_t *block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_prot_t prot;
 
     UVM_ASSERT(block->va_range);
@@ -3172,12 +3173,12 @@ static uvm_prot_t block_page_prot_cpu(uvm_va_block_t *block, uvm_page_index_t pa
 
 
     return prot;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Looks up the current GPU mapping state of page from the
 // block->gpus[i]->pte_bits bitmaps.
 static uvm_prot_t block_page_prot_gpu(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_prot_t prot;
 
@@ -3197,19 +3198,19 @@ static uvm_prot_t block_page_prot_gpu(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm
         prot = UVM_PROT_NONE;
 
     return prot;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_prot_t block_page_prot(uvm_va_block_t *block, uvm_processor_id_t id, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_CPU(id))
         return block_page_prot_cpu(block, page_index);
     else
         return block_page_prot_gpu(block, block_get_gpu(block, id), page_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns true if the block has any valid CPU PTE mapping in the block region.
 static bool block_has_valid_mapping_cpu(uvm_va_block_t *block, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t valid_page;
 
     UVM_ASSERT(region.outer <= uvm_va_block_num_cpu_pages(block));
@@ -3229,10 +3230,10 @@ static bool block_has_valid_mapping_cpu(uvm_va_block_t *block, uvm_va_block_regi
 
     UVM_ASSERT(block_page_prot_cpu(block, valid_page) != UVM_PROT_NONE);
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_check_chunk_indirect_peers(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_gpu_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *accessing_gpu;
     uvm_va_space_t *va_space = block->va_range->va_space;
 
@@ -3258,11 +3259,11 @@ static bool block_check_chunk_indirect_peers(uvm_va_block_t *block, uvm_gpu_t *g
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sanity check the given GPU's chunks array
 static bool block_check_chunks(uvm_va_block_t *block, uvm_gpu_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, id);
     uvm_gpu_t *gpu;
     size_t i, num_chunks;
@@ -3325,11 +3326,11 @@ static bool block_check_chunks(uvm_va_block_t *block, uvm_gpu_id_t id)
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sanity checks for page mappings
 static bool block_check_mappings_page(uvm_va_block_t *block, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t atomic_mappings, write_mappings, read_mappings;
     uvm_processor_mask_t lite_read_mappings, lite_atomic_mappings;
     uvm_processor_mask_t remaining_mappings, temp_mappings;
@@ -3557,10 +3558,10 @@ static bool block_check_mappings_page(uvm_va_block_t *block, uvm_page_index_t pa
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_check_mappings_ptes(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_va_block_gpu_state_t *resident_gpu_state;
     uvm_pte_bits_gpu_t pte_bit;
@@ -3710,10 +3711,10 @@ static bool block_check_mappings_ptes(uvm_va_block_t *block, uvm_gpu_t *gpu)
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_check_mappings_swizzling(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     NvU32 big_page_size;
     size_t num_big_pages, big_page_index;
@@ -3785,10 +3786,10 @@ static bool block_check_mappings_swizzling(uvm_va_block_t *block, uvm_gpu_t *gpu
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_check_mappings(uvm_va_block_t *block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     uvm_processor_id_t id;
 
@@ -3838,11 +3839,11 @@ static bool block_check_mappings(uvm_va_block_t *block)
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // See the comments on uvm_va_block_unmap
 static void block_unmap_cpu(uvm_va_block_t *block, uvm_va_block_region_t region, const uvm_page_mask_t *unmap_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = block->va_range;
     uvm_pte_bits_cpu_t pte_bit;
     bool unmapped_something = false;
@@ -3891,7 +3892,7 @@ static void block_unmap_cpu(uvm_va_block_t *block, uvm_va_block_region_t region,
     }
 
     UVM_ASSERT(block_check_mappings(block));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Given a mask of mapped pages, returns true if any of the pages in the mask
 // are mapped remotely by the given GPU.
@@ -3899,7 +3900,7 @@ static bool block_has_remote_mapping_gpu(uvm_va_block_t *block,
                                          uvm_va_block_context_t *block_context,
                                          uvm_gpu_id_t gpu_id,
                                          const uvm_page_mask_t *mapped_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu_id);
     uvm_va_range_t *va_range = block->va_range;
 
@@ -3920,7 +3921,7 @@ static bool block_has_remote_mapping_gpu(uvm_va_block_t *block,
 
     // Remote pages are pages which are mapped but not resident locally
     return uvm_page_mask_andnot(&block_context->scratch_page_mask, mapped_pages, &gpu_state->resident);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes pte_clear_val to the 4k PTEs covered by clear_page_mask. If
 // clear_page_mask is NULL, all 4k PTEs in the {block, gpu} are written.
@@ -3933,7 +3934,7 @@ static void block_gpu_pte_clear_4k(uvm_va_block_t *block,
                                    NvU64 pte_clear_val,
                                    uvm_pte_batch_t *pte_batch,
                                    uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_gpu_phys_address_t pte_addr;
@@ -3959,7 +3960,7 @@ static void block_gpu_pte_clear_4k(uvm_va_block_t *block,
                                      UVM_MEMBAR_NONE);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes the 4k PTEs covered by write_page_mask using memory from resident_id
 // with new_prot permissions. new_prot must not be UVM_PROT_NONE: use
@@ -3976,7 +3977,7 @@ static void block_gpu_pte_write_4k(uvm_va_block_t *block,
                                    const uvm_page_mask_t *write_page_mask,
                                    uvm_pte_batch_t *pte_batch,
                                    uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     NvU32 pte_size = uvm_mmu_pte_size(tree, UVM_PAGE_SIZE_4K);
@@ -4023,7 +4024,7 @@ static void block_gpu_pte_write_4k(uvm_va_block_t *block,
             uvm_tlb_batch_invalidate(tlb_batch, page_virt_addr, PAGE_SIZE, UVM_PAGE_SIZE_4K, UVM_MEMBAR_NONE);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes all 4k PTEs under the big PTE regions described by big_ptes_covered.
 // This is used to initialize the 4k PTEs when splitting 2M and big PTEs. It
@@ -4050,7 +4051,7 @@ static void block_gpu_pte_big_split_write_4k(uvm_va_block_t *block,
                                              const unsigned long *big_ptes_covered,
                                              const uvm_page_mask_t *new_pages_mask,
                                              uvm_pte_batch_t *pte_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_region_t big_region;
     size_t big_page_index;
     uvm_processor_id_t curr_resident_id;
@@ -4116,7 +4117,7 @@ static void block_gpu_pte_big_split_write_4k(uvm_va_block_t *block,
             }
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes pte_clear_val to the big PTEs in big_ptes_mask. If big_ptes_mask is
 // NULL, all big PTEs in the {block, gpu} are cleared.
@@ -4129,7 +4130,7 @@ static void block_gpu_pte_clear_big(uvm_va_block_t *block,
                                     NvU64 pte_clear_val,
                                     uvm_pte_batch_t *pte_batch,
                                     uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_gpu_va_space_t *gpu_va_space = uvm_va_block_get_gpu_va_space(block, gpu);
     NvU32 big_page_size = gpu_va_space->page_tables.big_page_size;
@@ -4157,7 +4158,7 @@ static void block_gpu_pte_clear_big(uvm_va_block_t *block,
                                      UVM_MEMBAR_NONE);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes the big PTEs in big_ptes_mask using memory from resident_id with
 // new_prot permissions. new_prot must not be UVM_PROT_NONE: use
@@ -4174,7 +4175,7 @@ static void block_gpu_pte_write_big(uvm_va_block_t *block,
                                     const unsigned long *big_ptes_mask,
                                     uvm_pte_batch_t *pte_batch,
                                     uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_gpu_va_space_t *gpu_va_space = uvm_va_block_get_gpu_va_space(block, gpu);
     uvm_page_tree_t *tree = &gpu_va_space->page_tables;
@@ -4230,7 +4231,7 @@ static void block_gpu_pte_write_big(uvm_va_block_t *block,
                                      UVM_MEMBAR_NONE);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Switches any mix of valid or invalid 4k PTEs under the big PTEs in
 // big_ptes_to_merge to an unmapped big PTE. This also ends both pte_batch and
@@ -4245,7 +4246,7 @@ static void block_gpu_pte_merge_big_and_end(uvm_va_block_t *block,
                                             uvm_pte_batch_t *pte_batch,
                                             uvm_tlb_batch_t *tlb_batch,
                                             uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     NvU32 big_page_size = tree->big_page_size;
@@ -4305,7 +4306,7 @@ static void block_gpu_pte_merge_big_and_end(uvm_va_block_t *block,
                                NULL);
         uvm_pte_batch_end(pte_batch);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes 0 (invalid) to the 2M PTE for this {block, gpu}.
 //
@@ -4315,7 +4316,7 @@ static void block_gpu_pte_clear_2m(uvm_va_block_t *block,
                                    uvm_gpu_t *gpu,
                                    uvm_pte_batch_t *pte_batch,
                                    uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_gpu_phys_address_t pte_addr = uvm_page_table_range_entry_address(tree, &gpu_state->page_table_range_2m, 0);
@@ -4329,7 +4330,7 @@ static void block_gpu_pte_clear_2m(uvm_va_block_t *block,
 
     if (tlb_batch)
         uvm_tlb_batch_invalidate(tlb_batch, block->start, UVM_PAGE_SIZE_2M, UVM_PAGE_SIZE_2M, UVM_MEMBAR_NONE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Writes the 2M PTE for {block, gpu} using memory from resident_id with
 // new_prot permissions. new_prot must not be UVM_PROT_NONE: use
@@ -4343,7 +4344,7 @@ static void block_gpu_pte_write_2m(uvm_va_block_t *block,
                                    uvm_prot_t new_prot,
                                    uvm_pte_batch_t *pte_batch,
                                    uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_gpu_phys_address_t pte_addr = uvm_page_table_range_entry_address(tree, &gpu_state->page_table_range_2m, 0);
@@ -4364,10 +4365,10 @@ static void block_gpu_pte_write_2m(uvm_va_block_t *block,
 
     if (tlb_batch)
         uvm_tlb_batch_invalidate(tlb_batch, block->start, UVM_PAGE_SIZE_2M, UVM_PAGE_SIZE_2M, UVM_MEMBAR_NONE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_gpu_needs_to_activate_table(uvm_va_block_t *block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
 
     if (!block_gpu_supports_2m(block, gpu))
@@ -4378,14 +4379,14 @@ static bool block_gpu_needs_to_activate_table(uvm_va_block_t *block, uvm_gpu_t *
         return true;
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Only used if 2M PTEs are supported. Either transitions a 2M PTE to a PDE, or
 // activates a newly-allocated page table (big or 4k) while the other is already
 // active. The caller must have already written the new PTEs under the table
 // with the appropriate membar.
 static void block_gpu_write_pde(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_push_t *push, uvm_tlb_batch_t *tlb_batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
 
@@ -4410,7 +4411,7 @@ static void block_gpu_write_pde(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_push_
 
     if (gpu_state->page_table_range_4k.table)
         gpu_state->activated_4k = true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Called to switch the 2M PTE (valid or invalid) to a PDE. The caller should
 // have written all lower PTEs as appropriate into the given pte_batch already.
@@ -4425,7 +4426,7 @@ static void block_gpu_pte_finish_split_2m(uvm_va_block_t *block,
                                           uvm_pte_batch_t *pte_batch,
                                           uvm_tlb_batch_t *tlb_batch,
                                           uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_prot_t curr_prot = block_page_prot_gpu(block, gpu, 0);
 
@@ -4460,7 +4461,7 @@ static void block_gpu_pte_finish_split_2m(uvm_va_block_t *block,
     uvm_tlb_batch_begin(tree, tlb_batch);
     block_gpu_write_pde(block, gpu, push, tlb_batch);
     uvm_tlb_batch_end(tlb_batch, push, UVM_MEMBAR_NONE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Switches any mix of valid or invalid 4k or 64k PTEs to an invalid 2M PTE.
 // Any lower PTEs are invalidated with the specified membar.
@@ -4469,7 +4470,7 @@ static void block_gpu_pte_merge_2m(uvm_va_block_t *block,
                                    uvm_gpu_t *gpu,
                                    uvm_push_t *push,
                                    uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -4533,10 +4534,10 @@ static void block_gpu_pte_merge_2m(uvm_va_block_t *block,
 
         uvm_pte_batch_end(pte_batch);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_membar_t block_pte_op_membar(block_pte_op_t pte_op, uvm_gpu_t *gpu, uvm_processor_id_t resident_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Permissions upgrades (MAP) don't need membars
     if (pte_op == BLOCK_PTE_OP_MAP)
         return UVM_MEMBAR_NONE;
@@ -4551,7 +4552,7 @@ static uvm_membar_t block_pte_op_membar(block_pte_op_t pte_op, uvm_gpu_t *gpu, u
 
     // Otherwise, remote memory needs a sysmembar
     return UVM_MEMBAR_SYS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Write the 2M PTE for {block, gpu} to the memory on resident_id with new_prot
 // permissions. If the 2M entry is currently a PDE, it is first merged into a
@@ -4568,7 +4569,7 @@ static void block_gpu_map_to_2m(uvm_va_block_t *block,
                                 uvm_prot_t new_prot,
                                 uvm_push_t *push,
                                 block_pte_op_t pte_op)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_gpu_va_space_t *gpu_va_space = uvm_va_block_get_gpu_va_space(block, gpu);
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -4596,7 +4597,7 @@ static void block_gpu_map_to_2m(uvm_va_block_t *block,
 
     tlb_membar = block_pte_op_membar(pte_op, gpu, resident_id);
     uvm_tlb_batch_end(tlb_batch, push, tlb_membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Combination split + map operation, called when only part of a 2M PTE mapping
 // is being changed. This splits an existing valid or invalid 2M PTE into the
@@ -4619,7 +4620,7 @@ static void block_gpu_map_split_2m(uvm_va_block_t *block,
                                    uvm_prot_t new_prot,
                                    uvm_push_t *push,
                                    block_pte_op_t pte_op)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_va_block_new_pte_state_t *new_pte_state = &block_context->mapping.new_pte_state;
@@ -4707,7 +4708,7 @@ static void block_gpu_map_split_2m(uvm_va_block_t *block,
 
     gpu_state->pte_is_2m = false;
     bitmap_copy(gpu_state->big_ptes, new_pte_state->big_ptes, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Split the existing 2M PTE into big and 4k PTEs. No permissions are changed.
 //
@@ -4718,7 +4719,7 @@ static void block_gpu_split_2m(uvm_va_block_t *block,
                                uvm_gpu_t *gpu,
                                const unsigned long *new_big_ptes,
                                uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -4794,7 +4795,7 @@ static void block_gpu_split_2m(uvm_va_block_t *block,
 
     gpu_state->pte_is_2m = false;
     bitmap_copy(gpu_state->big_ptes, new_big_ptes_local, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Split the big PTEs in big_ptes_to_split into 4k PTEs. No permissions are
 // changed.
@@ -4805,7 +4806,7 @@ static void block_gpu_split_big(uvm_va_block_t *block,
                                 uvm_gpu_t *gpu,
                                 const unsigned long *big_ptes_to_split,
                                 uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -4885,7 +4886,7 @@ static void block_gpu_split_big(uvm_va_block_t *block,
     uvm_tlb_batch_end(tlb_batch, push, UVM_MEMBAR_NONE);
 
     bitmap_andnot(gpu_state->big_ptes, gpu_state->big_ptes, big_ptes_to_split, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Changes permissions on some pre-existing mix of big and 4k PTEs into some
 // other mix of big and 4k PTEs, as described by
@@ -4904,7 +4905,7 @@ static void block_gpu_map_big_and_4k(uvm_va_block_t *block,
                                      uvm_prot_t new_prot,
                                      uvm_push_t *push,
                                      block_pte_op_t pte_op)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_va_block_new_pte_state_t *new_pte_state = &block_context->mapping.new_pte_state;
@@ -5063,7 +5064,7 @@ static void block_gpu_map_big_and_4k(uvm_va_block_t *block,
 
     // Update gpu_state
     bitmap_copy(gpu_state->big_ptes, new_pte_state->big_ptes, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmap all PTEs for {block, gpu}. If the 2M entry is currently a PDE, it is
 // merged into a PTE.
@@ -5072,7 +5073,7 @@ static void block_gpu_unmap_to_2m(uvm_va_block_t *block,
                                   uvm_gpu_t *gpu,
                                   uvm_push_t *push,
                                   uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_gpu_va_space_t *gpu_va_space = uvm_va_block_get_gpu_va_space(block, gpu);
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -5096,7 +5097,7 @@ static void block_gpu_unmap_to_2m(uvm_va_block_t *block,
         gpu_state->pte_is_2m = true;
         bitmap_zero(gpu_state->big_ptes, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Combination split + unmap operation, called when only part of a valid 2M PTE
 // mapping is being unmapped. The 2M PTE is split into a mix of valid and
@@ -5113,7 +5114,7 @@ static void block_gpu_unmap_split_2m(uvm_va_block_t *block,
                                      const uvm_page_mask_t *pages_to_unmap,
                                      uvm_push_t *push,
                                      uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_va_block_new_pte_state_t *new_pte_state = &block_context->mapping.new_pte_state;
@@ -5197,7 +5198,7 @@ static void block_gpu_unmap_split_2m(uvm_va_block_t *block,
 
     gpu_state->pte_is_2m = false;
     bitmap_copy(gpu_state->big_ptes, new_pte_state->big_ptes, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmap some pre-existing mix of big and 4k PTEs into some other mix of big
 // and 4k PTEs.
@@ -5209,7 +5210,7 @@ static void block_gpu_unmap_big_and_4k(uvm_va_block_t *block,
                                        const uvm_page_mask_t *pages_to_unmap,
                                        uvm_push_t *push,
                                        uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_va_block_new_pte_state_t *new_pte_state = &block_context->mapping.new_pte_state;
@@ -5338,7 +5339,7 @@ static void block_gpu_unmap_big_and_4k(uvm_va_block_t *block,
 
     // Update gpu_state
     bitmap_copy(gpu_state->big_ptes, new_pte_state->big_ptes, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper for block_gpu_compute_new_pte_state. For GPUs which swizzle, all
 // GPUs mapping the same memory must use the same PTE size. This function
@@ -5347,7 +5348,7 @@ static void block_gpu_unmap_big_and_4k(uvm_va_block_t *block,
 static bool mapped_gpus_can_map_big(uvm_va_block_t *block,
                                     uvm_gpu_t *mapping_gpu,
                                     uvm_va_block_region_t big_page_region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t mapped_procs;
     uvm_gpu_t *other_gpu;
     uvm_gpu_t *resident_gpu;
@@ -5415,7 +5416,7 @@ static bool mapped_gpus_can_map_big(uvm_va_block_t *block,
 
     // All mapped peers can map as a big page
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // When PTE state is about to change (for example due to a map/unmap/revoke
 // operation), this function decides how to split and merge the PTEs in response
@@ -5438,7 +5439,7 @@ static void block_gpu_compute_new_pte_state(uvm_va_block_t *block,
                                             const uvm_page_mask_t *pages_changing,
                                             const uvm_page_mask_t *page_mask_after,
                                             uvm_va_block_new_pte_state_t *new_pte_state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_va_block_region_t big_region_all, big_page_region, region;
     NvU32 big_page_size;
@@ -5575,7 +5576,7 @@ static void block_gpu_compute_new_pte_state(uvm_va_block_t *block,
     }
 
     bitmap_or(new_pte_state->big_ptes, new_pte_state->big_ptes, big_ptes_not_covered, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Wrapper around uvm_page_tree_get_ptes() and uvm_page_tree_alloc_table() that
 // handles allocation retry. If the block lock has been unlocked and relocked as
@@ -5587,7 +5588,7 @@ static NV_STATUS block_alloc_pt_range_with_retry(uvm_va_block_t *va_block,
                                                  NvU32 page_size,
                                                  uvm_page_table_range_t *page_table_range,
                                                  uvm_tracker_t *pending_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu->id);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     uvm_gpu_va_space_t *gpu_va_space = uvm_va_block_get_gpu_va_space(va_block, gpu);
@@ -5703,7 +5704,7 @@ allocated:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper which allocates all page table ranges necessary for the given page
 // sizes. See block_alloc_pt_range_with_retry.
@@ -5711,7 +5712,7 @@ static NV_STATUS block_alloc_ptes_with_retry(uvm_va_block_t *va_block,
                                              uvm_gpu_t *gpu,
                                              NvU32 page_sizes,
                                              uvm_tracker_t *pending_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu->id);
     uvm_gpu_va_space_t *gpu_va_space = uvm_va_block_get_gpu_va_space(va_block, gpu);
     uvm_page_table_range_t *range;
@@ -5760,13 +5761,13 @@ static NV_STATUS block_alloc_ptes_with_retry(uvm_va_block_t *va_block,
     }
 
     return final_status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_alloc_ptes_new_state(uvm_va_block_t *va_block,
                                             uvm_gpu_t *gpu,
                                             uvm_va_block_new_pte_state_t *new_pte_state,
                                             uvm_tracker_t *pending_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 page_sizes = 0;
 
     if (new_pte_state->pte_is_2m) {
@@ -5783,7 +5784,7 @@ static NV_STATUS block_alloc_ptes_new_state(uvm_va_block_t *va_block,
     }
 
     return block_alloc_ptes_with_retry(va_block, gpu, page_sizes, pending_tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Make sure that GMMU PDEs down to PDE1 are populated for the given VA block.
 // This is currently used on ATS systems to prevent GPUs from inadvertently
@@ -5798,7 +5799,7 @@ static NV_STATUS block_alloc_ptes_new_state(uvm_va_block_t *va_block,
 static NV_STATUS block_pre_populate_pde1_gpu(uvm_va_block_t *block,
                                              uvm_gpu_va_space_t *gpu_va_space,
                                              uvm_tracker_t *pending_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 page_sizes = 0;
     uvm_gpu_t *gpu = gpu_va_space->gpu;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get_alloc(block, gpu);
@@ -5821,10 +5822,10 @@ static NV_STATUS block_pre_populate_pde1_gpu(uvm_va_block_t *block,
     }
 
     return block_alloc_ptes_with_retry(block, gpu, page_sizes, pending_tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_pre_populate_pde1_all_gpus(uvm_va_block_t *block, uvm_tracker_t *pending_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = block->va_range->va_space;
     NV_STATUS status = NV_OK;
 
@@ -5846,7 +5847,7 @@ static NV_STATUS block_pre_populate_pde1_all_gpus(uvm_va_block_t *block, uvm_tra
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmap the given big page from gpu in preparation for a swizzling change. See
 // block_gpu_big_page_change_swizzling.
@@ -5857,7 +5858,7 @@ static NV_STATUS block_gpu_big_page_change_swizzling_unmap(uvm_va_block_t *block
                                                            uvm_va_block_region_t big_page_region,
                                                            uvm_gpu_swizzle_op_t op,
                                                            uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -5913,7 +5914,7 @@ static NV_STATUS block_gpu_big_page_change_swizzling_unmap(uvm_va_block_t *block
     // format is not a performance-critical path.
     uvm_tracker_overwrite_with_push(tracker, &push);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Remap the given big page on gpu after completing a swizzling change. See
 // block_gpu_big_page_change_swizzling.
@@ -5924,7 +5925,7 @@ static NV_STATUS block_gpu_big_page_change_swizzling_remap(uvm_va_block_t *block
                                                            uvm_va_block_region_t big_page_region,
                                                            uvm_gpu_swizzle_op_t op,
                                                            uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_tree_t *tree = &uvm_va_block_get_gpu_va_space(block, gpu)->page_tables;
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
     uvm_tlb_batch_t *tlb_batch = &block_context->mapping.tlb_batch;
@@ -5973,7 +5974,7 @@ static NV_STATUS block_gpu_big_page_change_swizzling_remap(uvm_va_block_t *block
     // format is not a performance-critical path.
     uvm_tracker_overwrite_with_push(tracker, &push);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Swizzle or deswizzle big_page_index on resident_gpu. The sequence is:
 // - Unmap all GPUs which point to the physical memory
@@ -5997,7 +5998,7 @@ static NV_STATUS block_gpu_big_page_change_swizzling(uvm_va_block_t *block,
                                                      uvm_va_block_region_t big_page_region,
                                                      uvm_gpu_swizzle_op_t op,
                                                      uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = block->va_range->va_space;
     uvm_va_block_gpu_state_t *resident_gpu_state = block_gpu_state_get(block, resident_gpu->id);
     uvm_gpu_phys_address_t chunk_phys_addr;
@@ -6096,7 +6097,7 @@ static NV_STATUS block_gpu_big_page_change_swizzling(uvm_va_block_t *block,
     // swizzle operation to the block tracker so later map/unmaps which may be
     // part of this whole operation will wait for it.
     return uvm_tracker_add_tracker_safe(&block->tracker, tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Called prior to a mapping operation on mapping_gpu to swizzle those big pages
 // which will be mapped as big pages, and deswizzle those big pages which will
@@ -6113,7 +6114,7 @@ static NV_STATUS block_gpu_change_swizzling_map(uvm_va_block_t *block,
                                                 uvm_gpu_t *resident_gpu,
                                                 uvm_gpu_t *mapping_gpu,
                                                 uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_new_pte_state_t *new_pte_state = &block_context->mapping.new_pte_state;
     uvm_va_block_gpu_state_t *resident_gpu_state = block_gpu_state_get(block, resident_gpu->id);
     NvU32 big_page_size = uvm_va_block_gpu_big_page_size(block, mapping_gpu);
@@ -6176,7 +6177,7 @@ static NV_STATUS block_gpu_change_swizzling_map(uvm_va_block_t *block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Called prior to an unmap operation on mapping_gpu to deswizzle those big
 // pages which will be mapped as 4k pages. The pages are described by
@@ -6191,7 +6192,7 @@ static NV_STATUS block_gpu_change_swizzling_unmap(uvm_va_block_t *block,
                                                   uvm_va_block_context_t *block_context,
                                                   uvm_gpu_t *mapping_gpu,
                                                   uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, mapping_gpu->id);
     uvm_va_block_new_pte_state_t *new_pte_state = &block_context->mapping.new_pte_state;
     NvU32 big_page_size = uvm_va_block_gpu_big_page_size(block, mapping_gpu);
@@ -6245,14 +6246,14 @@ static NV_STATUS block_gpu_change_swizzling_unmap(uvm_va_block_t *block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_unmap_gpu(uvm_va_block_t *block,
                                  uvm_va_block_context_t *block_context,
                                  uvm_gpu_t *gpu,
                                  const uvm_page_mask_t *unmap_page_mask,
                                  uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_pte_bits_gpu_t pte_bit;
     uvm_push_t push;
@@ -6354,7 +6355,7 @@ static NV_STATUS block_unmap_gpu(uvm_va_block_t *block,
     UVM_ASSERT(block_check_mappings(block));
 
     return uvm_tracker_add_push_safe(out_tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_unmap(uvm_va_block_t *va_block,
                              uvm_va_block_context_t *va_block_context,
@@ -6362,7 +6363,7 @@ NV_STATUS uvm_va_block_unmap(uvm_va_block_t *va_block,
                              uvm_va_block_region_t region,
                              const uvm_page_mask_t *unmap_page_mask,
                              uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_page_mask_t *region_page_mask = &va_block_context->mapping.map_running_page_mask;
 
@@ -6378,7 +6379,7 @@ NV_STATUS uvm_va_block_unmap(uvm_va_block_t *va_block,
     uvm_page_mask_init_from_region(region_page_mask, region, unmap_page_mask);
 
     return block_unmap_gpu(va_block, va_block_context, block_get_gpu(va_block, id), region_page_mask, out_tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function essentially works as a wrapper around vm_insert_page (hence
 // the similar function prototype). This is needed since vm_insert_page
@@ -6392,7 +6393,7 @@ static NV_STATUS uvm_cpu_insert_page(struct vm_area_struct *vma,
                                      NvU64 addr,
                                      struct page *page,
                                      uvm_prot_t new_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_vma_wrapper_t *vma_wrapper;
     unsigned long target_flags;
     pgprot_t target_pgprot;
@@ -6432,7 +6433,7 @@ static NV_STATUS uvm_cpu_insert_page(struct vm_area_struct *vma,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Creates or upgrades a CPU mapping for the given page, updating the block's
 // mapping and pte_bits bitmaps as appropriate. Upon successful return, the page
@@ -6457,7 +6458,7 @@ static NV_STATUS block_map_cpu_page_to(uvm_va_block_t *block,
                                        uvm_processor_id_t resident_id,
                                        uvm_page_index_t page_index,
                                        uvm_prot_t new_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_prot_t curr_prot = block_page_prot_cpu(block, page_index);
     uvm_va_range_t *va_range = block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
@@ -6547,7 +6548,7 @@ static NV_STATUS block_map_cpu_page_to(uvm_va_block_t *block,
     }
 
     return uvm_cpu_insert_page(vma, addr, page, new_prot);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Maps the CPU to the given pages which are resident on resident_id.
 // map_page_mask is an in/out parameter: the pages which are mapped to
@@ -6563,7 +6564,7 @@ static NV_STATUS block_map_cpu_to(uvm_va_block_t *block,
                                   uvm_page_mask_t *map_page_mask,
                                   uvm_prot_t new_prot,
                                   uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = block->va_range->va_space;
     uvm_page_index_t page_index;
@@ -6641,7 +6642,7 @@ static NV_STATUS block_map_cpu_to(uvm_va_block_t *block,
     uvm_page_mask_andnot(map_page_mask, map_page_mask, pages_to_map);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Maps the GPU to the given pages which are resident on resident_id.
 // map_page_mask is an in/out parameter: the pages which are mapped
@@ -6657,7 +6658,7 @@ static NV_STATUS block_map_gpu_to(uvm_va_block_t *va_block,
                                   uvm_page_mask_t *map_page_mask,
                                   uvm_prot_t new_prot,
                                   uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu->id);
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
@@ -6782,12 +6783,12 @@ static NV_STATUS block_map_gpu_to(uvm_va_block_t *va_block,
     UVM_ASSERT(block_check_mappings(va_block));
 
     return uvm_tracker_add_push_safe(out_tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void map_get_allowed_destinations(uvm_va_block_t *block,
                                          uvm_processor_id_t id,
                                          uvm_processor_mask_t *allowed_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
 
@@ -6815,7 +6816,7 @@ static void map_get_allowed_destinations(uvm_va_block_t *block,
     // Clamp to resident and accessible processors
     uvm_processor_mask_and(allowed_mask, allowed_mask, &block->resident);
     uvm_processor_mask_and(allowed_mask, allowed_mask, &va_space->can_access[uvm_id_value(id)]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_map(uvm_va_block_t *va_block,
                            uvm_va_block_context_t *va_block_context,
@@ -6825,7 +6826,7 @@ NV_STATUS uvm_va_block_map(uvm_va_block_t *va_block,
                            uvm_prot_t new_prot,
                            UvmEventMapRemoteCause cause,
                            uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space;
     uvm_gpu_t *gpu = NULL;
@@ -6915,7 +6916,7 @@ NV_STATUS uvm_va_block_map(uvm_va_block_t *va_block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Revokes the given pages mapped by cpu. This is implemented by unmapping all
 // pages and mapping them later with the lower permission. This is required
@@ -6929,7 +6930,7 @@ static NV_STATUS block_revoke_cpu_write(uvm_va_block_t *block,
                                         uvm_va_block_region_t region,
                                         const uvm_page_mask_t *revoke_page_mask,
                                         uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
     uvm_va_block_region_t subregion;
@@ -6961,14 +6962,14 @@ static NV_STATUS block_revoke_cpu_write(uvm_va_block_t *block,
                             UVM_PROT_READ_ONLY,
                             UvmEventMapRemoteCauseInvalid,
                             out_tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_revoke_prot_gpu_perf_notify(uvm_va_block_t *block,
                                               uvm_va_block_context_t *block_context,
                                               uvm_gpu_t *gpu,
                                               uvm_prot_t prot_revoked,
                                               const uvm_page_mask_t *pages_revoked)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = block->va_range->va_space;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, gpu->id);
     uvm_va_block_region_t subregion, region = uvm_va_block_region_from_block(block);
@@ -6995,7 +6996,7 @@ static void block_revoke_prot_gpu_perf_notify(uvm_va_block_t *block,
                                              prot_revoked - 1);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Revokes the given pages mapped by gpu which are resident on resident_id.
 // revoke_page_mask is an in/out parameter: the pages which have the appropriate
@@ -7012,7 +7013,7 @@ static NV_STATUS block_revoke_prot_gpu_to(uvm_va_block_t *va_block,
                                           uvm_page_mask_t *revoke_page_mask,
                                           uvm_prot_t prot_to_revoke,
                                           uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu->id);
     uvm_push_t push;
     NV_STATUS status;
@@ -7107,7 +7108,7 @@ static NV_STATUS block_revoke_prot_gpu_to(uvm_va_block_t *va_block,
     UVM_ASSERT(block_check_mappings(va_block));
 
     return uvm_tracker_add_push_safe(out_tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_revoke_prot(uvm_va_block_t *va_block,
                                    uvm_va_block_context_t *va_block_context,
@@ -7116,7 +7117,7 @@ NV_STATUS uvm_va_block_revoke_prot(uvm_va_block_t *va_block,
                                    const uvm_page_mask_t *revoke_page_mask,
                                    uvm_prot_t prot_to_revoke,
                                    uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_va_block_gpu_state_t *gpu_state;
     uvm_processor_mask_t resident_procs;
@@ -7180,7 +7181,7 @@ NV_STATUS uvm_va_block_revoke_prot(uvm_va_block_t *va_block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_map_mask(uvm_va_block_t *va_block,
                                 uvm_va_block_context_t *va_block_context,
@@ -7189,7 +7190,7 @@ NV_STATUS uvm_va_block_map_mask(uvm_va_block_t *va_block,
                                 const uvm_page_mask_t *map_page_mask,
                                 uvm_prot_t new_prot,
                                 UvmEventMapRemoteCause cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
@@ -7216,14 +7217,14 @@ NV_STATUS uvm_va_block_map_mask(uvm_va_block_t *va_block,
     uvm_tracker_deinit(&local_tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_unmap_mask(uvm_va_block_t *va_block,
                                   uvm_va_block_context_t *va_block_context,
                                   const uvm_processor_mask_t *unmap_processor_mask,
                                   uvm_va_block_region_t region,
                                   const uvm_page_mask_t *unmap_page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
@@ -7245,7 +7246,7 @@ NV_STATUS uvm_va_block_unmap_mask(uvm_va_block_t *va_block,
     uvm_tracker_deinit(&local_tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_revoke_prot_mask(uvm_va_block_t *va_block,
                                         uvm_va_block_context_t *va_block_context,
@@ -7253,7 +7254,7 @@ NV_STATUS uvm_va_block_revoke_prot_mask(uvm_va_block_t *va_block,
                                         uvm_va_block_region_t region,
                                         const uvm_page_mask_t *revoke_page_mask,
                                         uvm_prot_t prot_to_revoke)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
@@ -7276,12 +7277,12 @@ NV_STATUS uvm_va_block_revoke_prot_mask(uvm_va_block_t *va_block,
     uvm_tracker_deinit(&local_tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Updates the read_duplicated_pages mask in the block when the state of GPU id
 // is being destroyed
 static void update_read_duplicated_pages_mask(uvm_va_block_t *block, uvm_gpu_id_t id, uvm_va_block_gpu_state_t *gpu_state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_id_t running_id;
     bool first = true;
     uvm_va_space_t *va_space = block->va_range->va_space;
@@ -7310,7 +7311,7 @@ static void update_read_duplicated_pages_mask(uvm_va_block_t *block, uvm_gpu_id_
 
         uvm_page_mask_or(running_page_mask, running_page_mask, running_residency_mask);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmaps all GPU mappings under this block, frees the page tables, and frees
 // all the GPU chunks. This simply drops the chunks on the floor, so the caller
@@ -7318,7 +7319,7 @@ static void update_read_duplicated_pages_mask(uvm_va_block_t *block, uvm_gpu_id_
 //
 // This serializes on the block tracker since it must unmap page tables.
 static void block_destroy_gpu_state(uvm_va_block_t *block, uvm_gpu_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(block, id);
     uvm_va_space_t *va_space;
     uvm_gpu_va_space_t *gpu_va_space;
@@ -7386,18 +7387,18 @@ static void block_destroy_gpu_state(uvm_va_block_t *block, uvm_gpu_id_t id)
 
     kmem_cache_free(g_uvm_va_block_gpu_state_cache, gpu_state);
     block->gpus[uvm_id_gpu_index(id)] = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_put_ptes_safe(uvm_page_tree_t *tree, uvm_page_table_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (range->table) {
         uvm_page_tree_put_ptes(tree, range);
         memset(range, 0, sizeof(*range));
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_add_gpu_va_space(uvm_va_block_t *va_block, uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_mutex_locked(&va_block->lock);
 
     if (!gpu_va_space->ats.enabled || !va_block->cpu.ever_mapped)
@@ -7406,10 +7407,10 @@ NV_STATUS uvm_va_block_add_gpu_va_space(uvm_va_block_t *va_block, uvm_gpu_va_spa
     // Pre-populate PDEs down to PDE1 for all GPU VA spaces on ATS systems. See
     // comments in pre_populate_pde1_gpu.
     return block_pre_populate_pde1_gpu(va_block, gpu_va_space, NULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_remove_gpu_va_space(uvm_va_block_t *va_block, uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     uvm_va_block_context_t *block_context = uvm_va_space_block_context(va_space);
     uvm_pte_batch_t *pte_batch = &block_context->mapping.pte_batch;
@@ -7497,10 +7498,10 @@ void uvm_va_block_remove_gpu_va_space(uvm_va_block_t *va_block, uvm_gpu_va_space
     bitmap_zero(gpu_state->big_ptes, MAX_BIG_PAGES_PER_UVM_VA_BLOCK);
 
     UVM_ASSERT(block_check_mappings(va_block));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_enable_peer(uvm_va_block_t *va_block, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = va_block->va_range->va_space;
 
@@ -7524,10 +7525,10 @@ NV_STATUS uvm_va_block_enable_peer(uvm_va_block_t *va_block, uvm_gpu_t *gpu0, uv
     //       call it here.
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_disable_peer(uvm_va_block_t *va_block, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     NV_STATUS status;
     uvm_tracker_t tracker = UVM_TRACKER_INIT();
@@ -7584,10 +7585,10 @@ void uvm_va_block_disable_peer(uvm_va_block_t *va_block, uvm_gpu_t *gpu0, uvm_gp
     status = uvm_tracker_wait_deinit(&tracker);
     if (status != NV_OK)
         UVM_ASSERT(status == uvm_global_get_status());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_unmap_preferred_location_uvm_lite(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
@@ -7618,14 +7619,14 @@ void uvm_va_block_unmap_preferred_location_uvm_lite(uvm_va_block_t *va_block, uv
                        "Unmapping failed: %s, GPU %s\n",
                        nvstatusToString(status), gpu->name);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Evict pages from the GPU by moving each resident region to the CPU
 //
 // Notably the caller needs to support allocation-retry as
 // uvm_va_block_migrate_locked() requires that.
 static NV_STATUS block_evict_pages_from_gpu(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     const uvm_page_mask_t *resident = uvm_va_block_resident_mask_get(va_block, gpu->id);
     uvm_va_block_region_t region = uvm_va_block_region_from_block(va_block);
@@ -7654,12 +7655,12 @@ static NV_STATUS block_evict_pages_from_gpu(uvm_va_block_t *va_block, uvm_gpu_t 
         UVM_ASSERT(!uvm_processor_mask_test(&va_block->resident, gpu->id));
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This handles allocation-retry internally and hence might unlock and relock
 // block's lock.
 static void block_unregister_gpu_locked(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get(va_block, gpu->id);
 
@@ -7694,17 +7695,17 @@ static void block_unregister_gpu_locked(uvm_va_block_t *va_block, uvm_gpu_t *gpu
     status = uvm_tracker_wait(&va_block->tracker);
     if (status != NV_OK)
         UVM_ASSERT(status == uvm_global_get_status());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_unregister_gpu(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Take the lock internally to not expose the caller to allocation-retry.
     uvm_mutex_lock(&va_block->lock);
 
     block_unregister_gpu_locked(va_block, gpu);
 
     uvm_mutex_unlock(&va_block->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Tears down everything within the block, but doesn't free the block itself.
 // Note that when uvm_va_block_kill is called, this is called twice: once for
@@ -7712,7 +7713,7 @@ void uvm_va_block_unregister_gpu(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
 // destroyed. block->va_range is used to track whether the block has already
 // been killed.
 static void block_kill(uvm_va_block_t *block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = block->va_range;
     uvm_va_space_t *va_space;
     uvm_perf_event_data_t event_data;
@@ -7780,11 +7781,11 @@ static void block_kill(uvm_va_block_t *block)
     }
 
     block->va_range = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Called when the block's ref count drops to 0
 void uvm_va_block_destroy(nv_kref_t *nv_kref)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *block = container_of(nv_kref, uvm_va_block_t, kref);
 
     // Nobody else should have a reference when freeing
@@ -7802,24 +7803,24 @@ void uvm_va_block_destroy(nv_kref_t *nv_kref)
     else {
         kmem_cache_free(g_uvm_va_block_cache, block);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_kill(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mutex_lock(&va_block->lock);
     block_kill(va_block);
     uvm_mutex_unlock(&va_block->lock);
 
     // May call block_kill again
     uvm_va_block_release(va_block);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Deswizzle the split point, if it's covered and populated by a big page on
 // this gpu.
 static NV_STATUS block_split_presplit_deswizzle_gpu(uvm_va_block_t *existing,
                                                     uvm_va_block_t *new,
                                                     uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *existing_gpu_state = block_gpu_state_get(existing, gpu->id);
     uvm_va_space_t *va_space = existing->va_range->va_space;
     uvm_va_block_region_t big_page_region;
@@ -7867,10 +7868,10 @@ out:
     // tracker.
     uvm_tracker_deinit(&tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_split_presplit_ptes_gpu(uvm_va_block_t *existing, uvm_va_block_t *new, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *existing_gpu_state = block_gpu_state_get(existing, gpu->id);
     uvm_va_space_t *va_space = existing->va_range->va_space;
     uvm_va_block_context_t *block_context = uvm_va_space_block_context(va_space);
@@ -7954,10 +7955,10 @@ static NV_STATUS block_split_presplit_ptes_gpu(uvm_va_block_t *existing, uvm_va_
     // to serialize on each other, but it's simpler than maintaining a separate
     // tracker and this path isn't performance-critical.
     return uvm_tracker_add_push_safe(&existing->tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_split_presplit_ptes(uvm_va_block_t *existing, uvm_va_block_t *new)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_gpu_id_t id;
     NV_STATUS status;
@@ -7990,7 +7991,7 @@ static NV_STATUS block_split_presplit_ptes(uvm_va_block_t *existing, uvm_va_bloc
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef struct
 {
@@ -8010,14 +8011,14 @@ static void block_gpu_chunk_get_split_state(block_gpu_chunk_split_state_t *state
                                             NvU64 end,
                                             uvm_page_index_t page_index,
                                             uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 size = end - start + 1;
     state->num_chunks = block_num_gpu_chunks_range(start, size, gpu);
     state->chunk_index = uvm_va_block_gpu_chunk_index_range(start, size, gpu, page_index, &state->chunk_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_merge_chunk(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_gpu_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *accessing_gpu;
     uvm_va_space_t *va_space = block->va_range->va_space;
 
@@ -8030,12 +8031,12 @@ static void block_merge_chunk(uvm_va_block_t *block, uvm_gpu_t *gpu, uvm_gpu_chu
                                                          peer_addr,
                                                          uvm_gpu_chunk_get_size(chunk));
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Perform any chunk splitting and array growing required for this block split,
 // but don't actually move chunk pointers anywhere.
 static NV_STATUS block_presplit_gpu_chunks(uvm_va_block_t *existing, uvm_va_block_t *new, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *existing_gpu_state = block_gpu_state_get(existing, gpu->id);
     uvm_gpu_t *accessing_gpu;
     uvm_va_space_t *va_space = existing->va_range->va_space;
@@ -8127,13 +8128,13 @@ error:
     block_merge_chunk(existing, gpu, original_chunk);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Pre-allocate everything which doesn't require retry on both existing and new
 // which will be needed to handle a split. If this fails, existing must remain
 // functionally unmodified.
 static NV_STATUS block_split_preallocate_no_retry(uvm_va_block_t *existing, uvm_va_block_t *new)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
     uvm_gpu_id_t id;
@@ -8193,7 +8194,7 @@ error:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Re-calculate the block's top-level processor masks:
 //   - block->mapped
@@ -8201,7 +8202,7 @@ error:
 //
 // This is called on block split.
 static void block_set_processor_masks(uvm_va_block_t *block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t num_pages = uvm_va_block_num_cpu_pages(block);
     uvm_va_block_region_t block_region = uvm_va_block_region(0, num_pages);
     uvm_gpu_id_t id;
@@ -8250,7 +8251,7 @@ static void block_set_processor_masks(uvm_va_block_t *block)
         else
             uvm_processor_mask_set(&block->evicted_gpus, id);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Split a PAGES_PER_UVM_VA_BLOCK sized bitmap into new and existing parts
 // corresponding to a block split.
@@ -8258,7 +8259,7 @@ static void block_split_page_mask(uvm_page_mask_t *existing_mask,
                                   size_t existing_pages,
                                   uvm_page_mask_t *new_mask,
                                   size_t new_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(existing_pages + new_pages <= PAGES_PER_UVM_VA_BLOCK, "existing %zu new %zu\n",
                    existing_pages, new_pages);
 
@@ -8269,12 +8270,12 @@ static void block_split_page_mask(uvm_page_mask_t *existing_mask,
     // size. That's ok since we don't scale them by block size.
     uvm_page_mask_shift_right(new_mask, existing_mask, existing_pages);
     uvm_page_mask_region_clear(existing_mask, uvm_va_block_region(existing_pages, existing_pages + new_pages));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Split the CPU state within the existing block. existing's start is correct
 // but its end has not yet been adjusted.
 static void block_split_cpu(uvm_va_block_t *existing, uvm_va_block_t *new)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct page **temp_pages;
     size_t existing_pages, new_pages = uvm_va_block_num_cpu_pages(new);
     uvm_pte_bits_cpu_t pte_bit;
@@ -8310,12 +8311,12 @@ static void block_split_cpu(uvm_va_block_t *existing, uvm_va_block_t *new)
 
     for (pte_bit = 0; pte_bit < UVM_PTE_BITS_CPU_MAX; pte_bit++)
         block_split_page_mask(&existing->cpu.pte_bits[pte_bit], existing_pages, &new->cpu.pte_bits[pte_bit], new_pages);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Fill out the blocks' chunks arrays with the chunks split by
 // block_presplit_gpu_chunks.
 static void block_copy_split_gpu_chunks(uvm_va_block_t *existing, uvm_va_block_t *new, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *existing_gpu_state = block_gpu_state_get(existing, gpu->id);
     uvm_va_block_gpu_state_t *new_gpu_state = block_gpu_state_get(new, gpu->id);
     uvm_gpu_chunk_t **temp_chunks;
@@ -8425,10 +8426,10 @@ static void block_copy_split_gpu_chunks(uvm_va_block_t *existing, uvm_va_block_t
         if (temp_chunks)
             existing_gpu_state->chunks = temp_chunks;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_split_gpu(uvm_va_block_t *existing, uvm_va_block_t *new, uvm_gpu_id_t gpu_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *existing_gpu_state = block_gpu_state_get(existing, gpu_id);
     uvm_va_block_gpu_state_t *new_gpu_state = block_gpu_state_get(new, gpu_id);
     uvm_va_space_t *va_space = existing->va_range->va_space;
@@ -8608,13 +8609,13 @@ static void block_split_gpu(uvm_va_block_t *existing, uvm_va_block_t *new, uvm_g
     }
 
     block_split_page_mask(&existing_gpu_state->evicted, existing_pages, &new_gpu_state->evicted, new_pages);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_split(uvm_va_block_t *existing_va_block,
                              NvU64 new_end,
                              uvm_va_block_t **new_va_block,
                              uvm_va_range_t *new_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_va_block_t *new_block = NULL;
     uvm_gpu_id_t id;
@@ -8738,11 +8739,11 @@ out:
         *new_va_block = new_block;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool block_region_might_read_duplicate(uvm_va_block_t *va_block,
                                               uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     uvm_va_space_t *va_space;
 
@@ -8760,7 +8761,7 @@ static bool block_region_might_read_duplicate(uvm_va_block_t *va_block,
         return false;
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the new access permission for the processor that faulted or
 // triggered access counter notifications on the given page
@@ -8773,7 +8774,7 @@ static uvm_prot_t compute_new_permission(uvm_va_block_t *va_block,
                                          uvm_processor_id_t fault_processor_id,
                                          uvm_processor_id_t new_residency,
                                          uvm_fault_access_type_t access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     uvm_va_space_t *va_space;
     uvm_prot_t logical_prot, new_prot;
@@ -8817,7 +8818,7 @@ static uvm_prot_t compute_new_permission(uvm_va_block_t *va_block,
     }
 
     return new_prot;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS do_block_add_mappings_after_migration(uvm_va_block_t *va_block,
                                                        uvm_va_block_context_t *va_block_context,
@@ -8829,7 +8830,7 @@ static NV_STATUS do_block_add_mappings_after_migration(uvm_va_block_t *va_block,
                                                        uvm_prot_t max_prot,
                                                        const uvm_processor_mask_t *thrashing_processors,
                                                        uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_processor_id_t map_processor_id;
     uvm_va_space_t *va_space = va_block->va_range->va_space;
@@ -8912,7 +8913,7 @@ static NV_STATUS do_block_add_mappings_after_migration(uvm_va_block_t *va_block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_add_mappings_after_migration(uvm_va_block_t *va_block,
                                                     uvm_va_block_context_t *va_block_context,
@@ -8922,7 +8923,7 @@ NV_STATUS uvm_va_block_add_mappings_after_migration(uvm_va_block_t *va_block,
                                                     const uvm_page_mask_t *map_page_mask,
                                                     uvm_prot_t max_prot,
                                                     const uvm_processor_mask_t *thrashing_processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS tracker_status, status = NV_OK;
     uvm_processor_mask_t map_other_processors, map_uvm_lite_gpus;
     uvm_processor_id_t map_processor_id;
@@ -9043,14 +9044,14 @@ out:
     tracker_status = uvm_tracker_add_tracker_safe(&va_block->tracker, &local_tracker);
     uvm_tracker_deinit(&local_tracker);
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1750144: check logical permissions from HMM to know what's the
 //       maximum allowed.
 uvm_prot_t uvm_va_block_page_compute_highest_permission(uvm_va_block_t *va_block,
                                                         uvm_processor_id_t processor_id,
                                                         uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
     uvm_processor_mask_t resident_processors;
@@ -9137,7 +9138,7 @@ uvm_prot_t uvm_va_block_page_compute_highest_permission(uvm_va_block_t *va_block
 
         return UVM_PROT_READ_WRITE;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_add_mappings(uvm_va_block_t *va_block,
                                     uvm_va_block_context_t *va_block_context,
@@ -9145,7 +9146,7 @@ NV_STATUS uvm_va_block_add_mappings(uvm_va_block_t *va_block,
                                     uvm_va_block_region_t region,
                                     const uvm_page_mask_t *page_mask,
                                     UvmEventMapRemoteCause cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_page_index_t page_index;
     uvm_range_group_range_iter_t iter;
@@ -9208,12 +9209,12 @@ NV_STATUS uvm_va_block_add_mappings(uvm_va_block_t *va_block,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool can_read_duplicate(uvm_va_block_t *va_block,
                                uvm_page_index_t page_index,
                                const uvm_perf_thrashing_hint_t *thrashing_hint)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_va_range_is_read_duplicate(va_block->va_range))
         return true;
 
@@ -9223,7 +9224,7 @@ static bool can_read_duplicate(uvm_va_block_t *va_block,
         return true;
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1827400: If the faulting processor has support for native
 //       atomics to the current location and the faults on the page were
@@ -9238,7 +9239,7 @@ static bool map_remote_on_atomic_fault(uvm_va_space_t *va_space,
                                        NvU32 access_type_mask,
                                        uvm_processor_id_t processor_id,
                                        uvm_processor_id_t residency)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // This policy can be enabled/disabled using a module parameter
     if (!uvm_perf_map_remote_on_native_atomics_fault)
         return false;
@@ -9262,7 +9263,7 @@ static bool map_remote_on_atomic_fault(uvm_va_space_t *va_space,
         return false;
 
     return uvm_processor_mask_test(&va_space->has_native_atomics[uvm_id_value(residency)], processor_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1766424: this function works on a single page at a time. This
 //       could be changed in the future to optimize multiple faults or access
@@ -9274,7 +9275,7 @@ static uvm_processor_id_t block_select_residency(uvm_va_block_t *va_block,
                                                  const uvm_perf_thrashing_hint_t *thrashing_hint,
                                                  uvm_service_operation_t operation,
                                                  bool *read_duplicate)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t closest_resident_processor;
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
@@ -9367,7 +9368,7 @@ static uvm_processor_id_t block_select_residency(uvm_va_block_t *va_block,
     // or the faulting processor can't access the preferred location, we select
     // the faulting processor as the new residency.
     return processor_id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_processor_id_t uvm_va_block_select_residency(uvm_va_block_t *va_block,
                                                  uvm_page_index_t page_index,
@@ -9376,7 +9377,7 @@ uvm_processor_id_t uvm_va_block_select_residency(uvm_va_block_t *va_block,
                                                  const uvm_perf_thrashing_hint_t *thrashing_hint,
                                                  uvm_service_operation_t operation,
                                                  bool *read_duplicate)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t id = block_select_residency(va_block,
                                                    page_index,
                                                    processor_id,
@@ -9392,7 +9393,7 @@ uvm_processor_id_t uvm_va_block_select_residency(uvm_va_block_t *va_block,
     }
 
     return id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool check_access_counters_dont_revoke(uvm_va_block_t *block,
                                               uvm_va_block_context_t *block_context,
@@ -9400,7 +9401,7 @@ static bool check_access_counters_dont_revoke(uvm_va_block_t *block,
                                               const uvm_processor_mask_t *revoke_processors,
                                               const uvm_page_mask_t *revoke_page_mask,
                                               uvm_prot_t revoke_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t id;
     for_each_id_in_mask(id, revoke_processors) {
         const uvm_page_mask_t *mapped_with_prot = block_map_with_prot_mask_get(block, id, revoke_prot);
@@ -9411,13 +9412,13 @@ static bool check_access_counters_dont_revoke(uvm_va_block_t *block,
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_service_locked(uvm_processor_id_t processor_id,
                                       uvm_va_block_t *va_block,
                                       uvm_va_block_retry_t *block_retry,
                                       uvm_service_block_context_t *service_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_processor_id_t new_residency;
     uvm_prot_t new_prot;
@@ -9840,7 +9841,7 @@ NV_STATUS uvm_va_block_service_locked(uvm_processor_id_t processor_id,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check if we are faulting on a page with valid permissions to check if we can
 // skip fault handling. See uvm_va_block_t::cpu::fault_authorized for more
@@ -9848,7 +9849,7 @@ NV_STATUS uvm_va_block_service_locked(uvm_processor_id_t processor_id,
 static bool skip_cpu_fault_with_valid_permissions(uvm_va_block_t *va_block,
                                                   uvm_page_index_t page_index,
                                                   uvm_fault_access_type_t fault_access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (uvm_va_block_page_is_processor_authorized(va_block,
                                                   page_index,
                                                   UVM_ID_CPU,
@@ -9883,14 +9884,14 @@ static bool skip_cpu_fault_with_valid_permissions(uvm_va_block_t *va_block,
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_cpu_fault_locked(uvm_va_block_t *va_block,
                                         uvm_va_block_retry_t *va_block_retry,
                                         NvU64 fault_addr,
                                         uvm_fault_access_type_t fault_access_type,
                                         uvm_service_block_context_t *service_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = va_block->va_range;
     NV_STATUS status = NV_OK;
     uvm_page_index_t page_index;
@@ -9992,13 +9993,13 @@ static NV_STATUS block_cpu_fault_locked(uvm_va_block_t *va_block,
     ++service_context->num_retries;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_cpu_fault(uvm_va_block_t *va_block,
                                  NvU64 fault_addr,
                                  bool is_write,
                                  uvm_service_block_context_t *service_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_retry_t va_block_retry;
     uvm_fault_access_type_t fault_access_type;
@@ -10031,10 +10032,10 @@ NV_STATUS uvm_va_block_cpu_fault(uvm_va_block_t *va_block,
                                                             fault_access_type,
                                                             service_context));
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_find(uvm_va_space_t *va_space, NvU64 addr, uvm_va_block_t **out_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     uvm_va_block_t *block;
     size_t index;
@@ -10050,10 +10051,10 @@ NV_STATUS uvm_va_block_find(uvm_va_space_t *va_space, NvU64 addr, uvm_va_block_t
 
     *out_block = block;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_find_create(uvm_va_space_t *va_space, NvU64 addr, uvm_va_block_t **out_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     size_t index;
 
@@ -10063,10 +10064,10 @@ NV_STATUS uvm_va_block_find_create(uvm_va_space_t *va_space, NvU64 addr, uvm_va_
 
     index = uvm_va_range_block_index(va_range, addr);
     return uvm_va_range_block_create(va_range, index, out_block);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_write_from_cpu(uvm_va_block_t *va_block, NvU64 dst, uvm_mem_t *src_mem, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_page_index_t page_index = uvm_va_block_cpu_page_index(va_block, dst);
     NvU64 page_offset = dst & (PAGE_SIZE - 1);
@@ -10146,10 +10147,10 @@ NV_STATUS uvm_va_block_write_from_cpu(uvm_va_block_t *va_block, NvU64 dst, uvm_m
 
     gpu->ce_hal->memcopy(&push, dst_gpu_address, src_gpu_address, size);
     return uvm_push_end_and_wait(&push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_read_to_cpu(uvm_va_block_t *va_block, uvm_mem_t *dst_mem, NvU64 src, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_page_index_t page_index = uvm_va_block_cpu_page_index(va_block, src);
     NvU64 page_offset = src & (PAGE_SIZE - 1);
@@ -10207,12 +10208,12 @@ NV_STATUS uvm_va_block_read_to_cpu(uvm_va_block_t *va_block, uvm_mem_t *dst_mem,
     gpu->ce_hal->memcopy(&push, dst_gpu_address, src_gpu_address, size);
 
     return uvm_push_end_and_wait(&push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Deferred work item reestablishing accessed by mappings after eviction. On
 // Volta+ GPUs, the evicted GPU will also get remote mappings.
 static void block_deferred_eviction_mappings(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block = (uvm_va_block_t*)args;
     uvm_va_range_t *va_range;
     uvm_va_space_t *va_space = NULL;
@@ -10312,18 +10313,18 @@ static void block_deferred_eviction_mappings(void *args)
     uvm_va_block_context_free(block_context);
 done:
     uvm_va_block_release(va_block);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_deferred_eviction_mappings_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(block_deferred_eviction_mappings(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_evict_chunks(uvm_va_block_t *va_block,
                                     uvm_gpu_t *gpu,
                                     uvm_gpu_chunk_t *root_chunk,
                                     uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU32 i;
     uvm_va_block_gpu_state_t *gpu_state;
@@ -10500,10 +10501,10 @@ NV_STATUS uvm_va_block_evict_chunks(uvm_va_block_t *va_block,
 out:
     uvm_va_block_context_free(block_context);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_gpu_force_4k_ptes(uvm_va_block_t *block, uvm_va_block_context_t *block_context, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_gpu_state_t *gpu_state = block_gpu_state_get_alloc(block, gpu);
     uvm_push_t push;
     NV_STATUS status;
@@ -10558,10 +10559,10 @@ static NV_STATUS block_gpu_force_4k_ptes(uvm_va_block_t *block, uvm_va_block_con
     UVM_ASSERT(block_check_mappings(block));
 
     return uvm_tracker_add_push_safe(&block->tracker, &push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_set_cancel(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_context_t *block_context;
     NV_STATUS status;
 
@@ -10582,10 +10583,10 @@ NV_STATUS uvm_va_block_set_cancel(uvm_va_block_t *va_block, uvm_gpu_t *gpu)
 
     uvm_va_block_context_free(block_context);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_block_inject_error(UVM_TEST_VA_BLOCK_INJECT_ERROR_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_block_t *va_block;
     uvm_va_block_test_t *va_block_test;
@@ -10622,7 +10623,7 @@ NV_STATUS uvm8_test_va_block_inject_error(UVM_TEST_VA_BLOCK_INJECT_ERROR_PARAMS 
 out:
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_prot_t g_uvm_test_pte_mapping_to_prot[UVM_TEST_PTE_MAPPING_MAX] =
 {
@@ -10641,7 +10642,7 @@ static UVM_TEST_PTE_MAPPING g_uvm_prot_to_test_pte_mapping[UVM_PROT_MAX] =
 };
 
 NV_STATUS uvm8_test_change_pte_mapping(UVM_TEST_CHANGE_PTE_MAPPING_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_block_t *block;
     NV_STATUS status = NV_OK;
@@ -10750,10 +10751,10 @@ out:
     uvm_va_block_context_free(block_context);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_block_info(UVM_TEST_VA_BLOCK_INFO_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_block_t *va_block;
     NV_STATUS status = NV_OK;
@@ -10780,10 +10781,10 @@ out:
     uvm_va_space_up_read(va_space);
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_residency_info(UVM_TEST_VA_RESIDENCY_INFO_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_va_range_t *va_range = NULL;
@@ -10940,19 +10941,19 @@ out:
     uvm_va_space_up_read(va_space);
     uvm_up_read_mmap_sem(&current->mm->mmap_sem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void block_mark_region_cpu_dirty(uvm_va_block_t *va_block, uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     uvm_assert_mutex_locked(&va_block->lock);
 
     for_each_va_block_page_in_region_mask(page_index, &va_block->cpu.resident, region)
         SetPageDirty(va_block->cpu.pages[page_index]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_block_mark_cpu_dirty(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_mark_region_cpu_dirty(va_block, uvm_va_block_region_from_block(va_block));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 

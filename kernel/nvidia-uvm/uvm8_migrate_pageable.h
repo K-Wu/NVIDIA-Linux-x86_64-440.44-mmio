@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018 NVIDIA Corporation
 
@@ -77,7 +78,7 @@ static NV_STATUS uvm_migrate_pageable(uvm_va_space_t *va_space,
                                       int dst_cpu_node_id,
                                       NvU64 *user_space_start,
                                       NvU64 *user_space_length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_populate_pageable(mm, start, length, 0);
 
     if (status != NV_OK)
@@ -88,16 +89,16 @@ static NV_STATUS uvm_migrate_pageable(uvm_va_space_t *va_space,
 
     return NV_WARN_NOTHING_TO_DO;
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_migrate_pageable_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_migrate_pageable_exit(void)
-{
-}
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif
 

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -43,28 +44,28 @@
 static bool processor_mask_array_test(const uvm_processor_mask_t *mask,
                                       uvm_processor_id_t mask_id,
                                       uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_processor_mask_test(&mask[uvm_id_value(mask_id)], id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void processor_mask_array_clear(uvm_processor_mask_t *mask,
                                        uvm_processor_id_t mask_id,
                                        uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_clear(&mask[uvm_id_value(mask_id)], id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void processor_mask_array_set(uvm_processor_mask_t *mask,
                                      uvm_processor_id_t mask_id,
                                      uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_set(&mask[uvm_id_value(mask_id)], id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool processor_mask_array_empty(const uvm_processor_mask_t *mask, uvm_processor_id_t mask_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_processor_mask_empty(&mask[uvm_id_value(mask_id)]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS enable_peers(uvm_va_space_t *va_space, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1);
 static void disable_peers(uvm_va_space_t *va_space,
@@ -75,7 +76,7 @@ static void remove_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space, struct list_he
 static void va_space_remove_dummy_thread_contexts(uvm_va_space_t *va_space);
 
 static void init_tools_data(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int i;
 
     uvm_init_rwsem(&va_space->tools.lock, UVM_LOCK_ORDER_VA_SPACE_TOOLS);
@@ -84,10 +85,10 @@ static void init_tools_data(uvm_va_space_t *va_space)
         INIT_LIST_HEAD(va_space->tools.counters + i);
     for (i = 0; i < ARRAY_SIZE(va_space->tools.queues); i++)
         INIT_LIST_HEAD(va_space->tools.queues + i);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS register_gpu_nvlink_peers(uvm_va_space_t *va_space, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *other_gpu;
 
     uvm_assert_rwsem_locked(&va_space->lock);
@@ -108,10 +109,10 @@ static NV_STATUS register_gpu_nvlink_peers(uvm_va_space_t *va_space, uvm_gpu_t *
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_space_create(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_kvmalloc_zero(sizeof(*va_space));
     uvm_gpu_id_t gpu_id;
@@ -217,7 +218,7 @@ fail:
     uvm_kvfree(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This does *not* release the GPU, nor this GPU's peer pairings. Those are
 // returned so the caller can do it after dropping the VA space lock.
@@ -225,7 +226,7 @@ static void unregister_gpu(uvm_va_space_t *va_space,
                            uvm_gpu_t *gpu,
                            struct list_head *deferred_free_list,
                            uvm_global_processor_mask_t *peers_to_release)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *peer_gpu;
     uvm_va_range_t *va_range;
     NvU32 peer_table_index;
@@ -306,10 +307,10 @@ static void unregister_gpu(uvm_va_space_t *va_space,
             }
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void gpu_va_space_stop_all_channels(uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *user_channel;
 
     list_for_each_entry(user_channel, &gpu_va_space->registered_channels, list_node)
@@ -319,7 +320,7 @@ static void gpu_va_space_stop_all_channels(uvm_gpu_va_space_t *gpu_va_space)
     // VA space lock shortly with the expectation that no more channels will
     // arrive.
     atomic_set(&gpu_va_space->disallow_new_channels, 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Detaches (unregisters) all user channels in a GPU VA space. The channels must
 // have previously been stopped.
@@ -329,21 +330,21 @@ static void gpu_va_space_stop_all_channels(uvm_gpu_va_space_t *gpu_va_space)
 // destroy operation.
 static void uvm_gpu_va_space_detach_all_user_channels(uvm_gpu_va_space_t *gpu_va_space,
                                                       struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *user_channel, *next_channel;
     list_for_each_entry_safe(user_channel, next_channel, &gpu_va_space->registered_channels, list_node)
         uvm_user_channel_detach(user_channel, deferred_free_list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_space_detach_all_user_channels(uvm_va_space_t *va_space, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space;
     for_each_gpu_va_space(gpu_va_space, va_space)
         uvm_gpu_va_space_detach_all_user_channels(gpu_va_space, deferred_free_list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_space_destroy(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range, *va_range_next;
     uvm_gpu_t *gpu;
     uvm_gpu_id_t gpu_id;
@@ -490,10 +491,10 @@ void uvm_va_space_destroy(uvm_va_space_t *va_space)
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     uvm_kvfree(va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_va_space_stop_all_user_channels(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_user_channel_t *user_channel;
 
@@ -512,10 +513,10 @@ void uvm_va_space_stop_all_user_channels(uvm_va_space_t *va_space)
     // could set this concurrently. user_channels_stopped never transitions back
     // to 0 after being set to 1 so that's not a problem.
     atomic_set(&va_space->user_channels_stopped, 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_t *uvm_va_space_get_gpu_by_uuid(uvm_va_space_t *va_space, const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_va_space_gpu(gpu, va_space) {
@@ -524,11 +525,11 @@ uvm_gpu_t *uvm_va_space_get_gpu_by_uuid(uvm_va_space_t *va_space, const NvProces
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_t *uvm_va_space_get_gpu_by_uuid_with_gpu_va_space(uvm_va_space_t *va_space,
                                                           const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     gpu = uvm_va_space_get_gpu_by_uuid(va_space, gpu_uuid);
@@ -536,10 +537,10 @@ uvm_gpu_t *uvm_va_space_get_gpu_by_uuid_with_gpu_va_space(uvm_va_space_t *va_spa
         return NULL;
 
     return gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_t *uvm_va_space_retain_gpu_by_uuid(uvm_va_space_t *va_space, const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     uvm_va_space_down_read(va_space);
@@ -551,10 +552,10 @@ uvm_gpu_t *uvm_va_space_retain_gpu_by_uuid(uvm_va_space_t *va_space, const NvPro
     uvm_va_space_up_read(va_space);
 
     return gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_space_can_read_duplicate(uvm_va_space_t *va_space, uvm_gpu_t *changing_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t changing_gpu_mask;
     uvm_processor_mask_t non_faultable_gpus;
     uvm_processor_mask_t registered_gpu_va_spaces;
@@ -569,7 +570,7 @@ bool uvm_va_space_can_read_duplicate(uvm_va_space_t *va_space, uvm_gpu_t *changi
 
     // Can't enable read-duplication if any non-fault-capable GPUs have GPU VA spaces registered
     return !uvm_processor_mask_andnot(&non_faultable_gpus, &registered_gpu_va_spaces, &va_space->faultable_processors);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Note that the "VA space" in the function name refers to a UVM per-process VA space.
 // (This is different from a per-GPU VA space.)
@@ -578,7 +579,7 @@ NV_STATUS uvm_va_space_register_gpu(uvm_va_space_t *va_space,
                                     const uvm_rm_user_object_t *user_rm_device,
                                     NvBool *numa_enabled,
                                     NvS32 *numa_node_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
     uvm_gpu_t *other_gpu;
@@ -718,10 +719,10 @@ done:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_space_unregister_gpu(uvm_va_space_t *va_space, const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_global_gpu_id_t peer_gpu_id;
@@ -813,14 +814,14 @@ NV_STATUS uvm_va_space_unregister_gpu(uvm_va_space_t *va_space, const NvProcesso
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This does *not* release the global GPU peer entry
 static void disable_peers(uvm_va_space_t *va_space,
                           uvm_gpu_t *gpu0,
                           uvm_gpu_t *gpu1,
                           struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 table_index = uvm_gpu_peer_table_index(gpu0->id, gpu1->id);
     uvm_va_range_t *va_range;
 
@@ -846,10 +847,10 @@ static void disable_peers(uvm_va_space_t *va_space,
     processor_mask_array_clear(va_space->has_native_atomics, gpu1->id, gpu0->id);
 
     __clear_bit(table_index, va_space->enabled_peers);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS enable_peers(uvm_va_space_t *va_space, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_va_space_t *gpu_va_space0, *gpu_va_space1;
     NvU32 table_index = 0;
@@ -928,7 +929,7 @@ static NV_STATUS enable_peers(uvm_va_space_t *va_space, uvm_gpu_t *gpu0, uvm_gpu
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // On success the GPUs and the P2P access have been retained, but the caller
 // must not assume that the GPUs are still registered in the VA space after the
@@ -938,7 +939,7 @@ static NV_STATUS retain_pcie_peers_from_uuids(uvm_va_space_t *va_space,
                                               const NvProcessorUuid *gpu_uuid_2,
                                               uvm_gpu_t **gpu0,
                                               uvm_gpu_t **gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     uvm_va_space_down_read_rm(va_space);
@@ -955,35 +956,35 @@ static NV_STATUS retain_pcie_peers_from_uuids(uvm_va_space_t *va_space,
     uvm_va_space_up_read_rm(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_va_space_pcie_peer_enabled(uvm_va_space_t *va_space, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return !processor_mask_array_test(va_space->has_nvlink, gpu0->id, gpu1->id) &&
            uvm_va_space_peer_enabled(va_space, gpu0, gpu1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_va_space_nvlink_peer_enabled(uvm_va_space_t *va_space, uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return processor_mask_array_test(va_space->has_nvlink, gpu0->id, gpu1->id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void free_gpu_va_space(nv_kref_t *nv_kref)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = container_of(nv_kref, uvm_gpu_va_space_t, kref);
     uvm_gpu_va_space_state_t state = uvm_gpu_va_space_state(gpu_va_space);
     UVM_ASSERT(state == UVM_GPU_VA_SPACE_STATE_INIT || state == UVM_GPU_VA_SPACE_STATE_DEAD);
     uvm_kvfree(gpu_va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_va_space_release(uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (gpu_va_space)
         nv_kref_put(&gpu_va_space->kref, free_gpu_va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_va_space_unset_page_dir(uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (gpu_va_space->va_space)
         uvm_assert_rwsem_locked_read(&gpu_va_space->va_space->lock);
 
@@ -995,10 +996,10 @@ void uvm_gpu_va_space_unset_page_dir(uvm_gpu_va_space_t *gpu_va_space)
                        gpu_va_space->gpu->name);
         gpu_va_space->did_set_page_directory = false;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void destroy_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_gpu_va_space_state_t state;
 
@@ -1054,12 +1055,12 @@ static void destroy_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space)
     uvm_ats_ibm_unregister_gpu_va_space(gpu_va_space);
 
     uvm_gpu_va_space_release(gpu_va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS create_gpu_va_space(uvm_gpu_t *gpu,
                                      uvm_rm_user_object_t *user_rm_va_space,
                                      uvm_gpu_va_space_t **out_gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_gpu_phys_address_t pdb_phys;
@@ -1154,10 +1155,10 @@ static NV_STATUS create_gpu_va_space(uvm_gpu_t *gpu,
 error:
     destroy_gpu_va_space(gpu_va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS add_gpu_va_space(uvm_va_space_t *va_space, uvm_gpu_va_space_t *gpu_va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = gpu_va_space->gpu;
     uvm_gpu_t *other_gpu;
     uvm_gpu_va_space_t *other_gpu_va_space;
@@ -1187,12 +1188,12 @@ static NV_STATUS add_gpu_va_space(uvm_va_space_t *va_space, uvm_gpu_va_space_t *
     gpu_va_space->state = UVM_GPU_VA_SPACE_STATE_ACTIVE;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_space_register_gpu_va_space(uvm_va_space_t *va_space,
                                              uvm_rm_user_object_t *user_rm_va_space,
                                              const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
     uvm_gpu_va_space_t *gpu_va_space;
@@ -1288,12 +1289,12 @@ error:
 
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // The caller must have stopped all channels under this gpu_va_space before
 // calling this function.
 static void remove_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_va_range_t *va_range;
 
@@ -1325,10 +1326,10 @@ static void remove_gpu_va_space(uvm_gpu_va_space_t *gpu_va_space, struct list_he
     uvm_processor_mask_clear(&va_space->registered_gpu_va_spaces, gpu_va_space->gpu->id);
     va_space->gpu_va_spaces[uvm_id_gpu_index(gpu_va_space->gpu->id)] = NULL;
     gpu_va_space->state = UVM_GPU_VA_SPACE_STATE_DEAD;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_space_unregister_gpu_va_space(uvm_va_space_t *va_space, const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     uvm_gpu_va_space_t *gpu_va_space;
@@ -1380,10 +1381,10 @@ NV_STATUS uvm_va_space_unregister_gpu_va_space(uvm_va_space_t *va_space, const N
     uvm_gpu_va_space_release(gpu_va_space);
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_va_space_peer_enabled(uvm_va_space_t *va_space, uvm_gpu_t *gpu1, uvm_gpu_t *gpu2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t table_index;
 
     UVM_ASSERT(uvm_processor_mask_test(&va_space->registered_gpus, gpu1->id));
@@ -1391,12 +1392,12 @@ bool uvm_va_space_peer_enabled(uvm_va_space_t *va_space, uvm_gpu_t *gpu1, uvm_gp
 
     table_index = uvm_gpu_peer_table_index(gpu1->id, gpu2->id);
     return !!test_bit(table_index, va_space->enabled_peers);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_processor_id_t uvm_processor_mask_find_closest_id(uvm_va_space_t *va_space,
                                                       const uvm_processor_mask_t *candidates,
                                                       uvm_processor_id_t src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t mask;
     uvm_processor_id_t id;
 
@@ -1441,10 +1442,10 @@ uvm_processor_id_t uvm_processor_mask_find_closest_id(uvm_va_space_t *va_space,
     // No GPUs with direct access, or the CPU, are in the mask. Just pick the
     // first GPU in the mask, if any.
     return uvm_processor_mask_find_first_gpu_id(candidates);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_deferred_free_object_channel(uvm_deferred_free_object_t *object, uvm_processor_mask_t *flushed_gpus)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *channel = container_of(object, uvm_user_channel_t, deferred_free);
     uvm_gpu_t *gpu = channel->gpu;
 
@@ -1457,10 +1458,10 @@ static void uvm_deferred_free_object_channel(uvm_deferred_free_object_t *object,
     }
 
     uvm_user_channel_destroy_detached(channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_deferred_free_object_list(struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_deferred_free_object_t *object, *next;
     uvm_processor_mask_t flushed_gpus;
 
@@ -1484,11 +1485,11 @@ void uvm_deferred_free_object_list(struct list_head *deferred_free_list)
                 UVM_ASSERT_MSG(0, "Invalid type %d\n", object->type);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_user_channel_t *uvm_gpu_va_space_get_user_channel(uvm_gpu_va_space_t *gpu_va_space,
                                                       uvm_gpu_phys_address_t instance_ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_user_channel_t *user_channel;
     uvm_va_space_t *va_space = gpu_va_space->va_space;
 
@@ -1506,10 +1507,10 @@ uvm_user_channel_t *uvm_gpu_va_space_get_user_channel(uvm_gpu_va_space_t *gpu_va
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_enable_peer_access(UVM_ENABLE_PEER_ACCESS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu0 = NULL;
@@ -1539,10 +1540,10 @@ NV_STATUS uvm_api_enable_peer_access(UVM_ENABLE_PEER_ACCESS_PARAMS *params, stru
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_disable_peer_access(UVM_DISABLE_PEER_ACCESS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu0, *gpu1;
@@ -1586,10 +1587,10 @@ NV_STATUS uvm_api_disable_peer_access(UVM_DISABLE_PEER_ACCESS_PARAMS *params, st
 error:
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_flush_deferred_work(UVM_TEST_FLUSH_DEFERRED_WORK_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmTestDeferredWorkType work_type = params->work_type;
 
     switch (work_type) {
@@ -1599,10 +1600,10 @@ NV_STATUS uvm8_test_flush_deferred_work(UVM_TEST_FLUSH_DEFERRED_WORK_PARAMS *par
         default:
             return NV_ERR_INVALID_ARGUMENT;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_enable_nvlink_peer_access(UVM_TEST_ENABLE_NVLINK_PEER_ACCESS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu0 = NULL;
@@ -1637,10 +1638,10 @@ NV_STATUS uvm8_test_enable_nvlink_peer_access(UVM_TEST_ENABLE_NVLINK_PEER_ACCESS
     uvm_va_space_up_write(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_disable_nvlink_peer_access(UVM_TEST_DISABLE_NVLINK_PEER_ACCESS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu0, *gpu1;
@@ -1677,23 +1678,23 @@ NV_STATUS uvm8_test_disable_nvlink_peer_access(UVM_TEST_DISABLE_NVLINK_PEER_ACCE
 error:
     uvm_va_space_up_write(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_space_inject_error(UVM_TEST_VA_SPACE_INJECT_ERROR_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     atomic_set(&va_space->test.migrate_vma_allocation_fail_nth, params->migrate_vma_allocation_fail_nth);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Add a fixed number of dummy thread contexts to each thread context table.
 // The newly added thread contexts are removed by calling
 // uvm8_test_va_space_remove_dummy_thread_contexts, or during VA space shutdown.
 NV_STATUS uvm8_test_va_space_add_dummy_thread_contexts(UVM_TEST_VA_SPACE_ADD_DUMMY_THREAD_CONTEXTS_PARAMS *params,
                                                        struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
     uvm_va_space_t *va_space;
     size_t total_dummy_thread_contexts = params->num_dummy_thread_contexts * UVM_THREAD_CONTEXT_TABLE_SIZE;
@@ -1743,10 +1744,10 @@ out:
     uvm_va_space_up_write(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void va_space_remove_dummy_thread_contexts(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
 
     uvm_assert_rwsem_locked_write(&va_space->lock);
@@ -1769,11 +1770,11 @@ static void va_space_remove_dummy_thread_contexts(uvm_va_space_t *va_space)
     uvm_kvfree(va_space->test.dummy_thread_context_wrappers);
     va_space->test.dummy_thread_context_wrappers = NULL;
     va_space->test.num_dummy_thread_context_wrappers = 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_space_remove_dummy_thread_contexts(UVM_TEST_VA_SPACE_REMOVE_DUMMY_THREAD_CONTEXTS_PARAMS *params,
                                                           struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     uvm_va_space_down_write(va_space);
@@ -1783,4 +1784,4 @@ NV_STATUS uvm8_test_va_space_remove_dummy_thread_contexts(UVM_TEST_VA_SPACE_REMO
     uvm_va_space_up_write(va_space);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

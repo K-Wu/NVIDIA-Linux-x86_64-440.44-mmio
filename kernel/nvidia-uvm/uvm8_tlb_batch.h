@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -99,12 +100,12 @@ void uvm_tlb_batch_end(uvm_tlb_batch_t *batch, uvm_push_t *push, uvm_membar_t tl
 // Internally begins and ends a TLB batch.
 static void uvm_tlb_batch_single_invalidate(uvm_page_tree_t *tree, uvm_push_t *push,
         NvU64 start, NvU64 size, NvU32 page_sizes, uvm_membar_t tlb_membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tlb_batch_t batch;
 
     uvm_tlb_batch_begin(tree, &batch);
     uvm_tlb_batch_invalidate(&batch, start, size, page_sizes, UVM_MEMBAR_NONE);
     uvm_tlb_batch_end(&batch, push, tlb_membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // __UVM8_TLB_BATCH_H__

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -49,7 +50,7 @@ static struct UvmOpsUvmEvents g_exported_uvm8_ops;
 static bool g_ops_registered = false;
 
 static NV_STATUS uvm8_register_callbacks(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     g_exported_uvm8_ops.suspend = uvm_suspend_entry;
@@ -65,25 +66,25 @@ static NV_STATUS uvm8_register_callbacks(void)
 
     g_ops_registered = true;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Calling this function more than once is harmless:
 static void uvm8_unregister_callbacks(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (g_ops_registered) {
         uvm_rm_locked_call_void(nvUvmInterfaceDeRegisterUvmOps());
         g_ops_registered = false;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void ats_init(const UvmPlatformInfo *platform_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_uvm_global.ats.supported = platform_info->atsSupported;
     g_uvm_global.ats.enabled   = uvm8_ats_mode && g_uvm_global.ats.supported && UVM_KERNEL_SUPPORTS_IBM_ATS();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_global_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     UvmPlatformInfo platform_info;
 
@@ -199,10 +200,10 @@ NV_STATUS uvm_global_init(void)
 error:
     uvm_global_exit();
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_global_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_mutex_unlocked(&g_uvm_global.global_lock);
 
     // Guarantee completion of any release callbacks scheduled after the flush
@@ -232,21 +233,21 @@ void uvm_global_exit(void)
 
     uvm_thread_context_global_exit();
     uvm_kvmalloc_exit();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Signal to the top-half ISR whether calls from the RM's top-half ISR are to
 // be completed without processing.
 static void uvm_gpu_set_isr_suspended(uvm_gpu_t *gpu, bool is_suspended)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_spin_lock_irqsave(&gpu->isr.interrupts_lock);
 
     gpu->isr.is_suspended = is_suspended;
 
     uvm_spin_unlock_irqrestore(&gpu->isr.interrupts_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_suspend(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = NULL;
     uvm_global_gpu_id_t gpu_id;
     uvm_gpu_t *gpu;
@@ -326,15 +327,15 @@ static NV_STATUS uvm_suspend(void)
     g_uvm_global.pm.is_suspended = true;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_suspend_entry(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_suspend());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_resume(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = NULL;
     uvm_global_gpu_id_t gpu_id;
     uvm_gpu_t *gpu;
@@ -381,20 +382,20 @@ static NV_STATUS uvm_resume(void)
     nv_kthread_q_flush(&g_uvm_global.deferred_release_q);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_resume_entry(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_resume());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_global_is_suspended(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return g_uvm_global.pm.is_suspended;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_global_set_fatal_error_impl(NV_STATUS error)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS previous_error;
 
     UVM_ASSERT(error != NV_OK);
@@ -408,27 +409,27 @@ void uvm_global_set_fatal_error_impl(NV_STATUS error)
         UVM_ERR_PRINT("Encountered a global fatal error: %s after a global error has been already set: %s\n",
                 nvstatusToString(error), nvstatusToString(previous_error));
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_global_reset_fatal_error(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_enable_builtin_tests) {
         UVM_ASSERT_MSG(0, "Resetting global fatal error without tests being enabled\n");
         return NV_ERR_INVALID_STATE;
     }
 
     return nv_atomic_xchg(&g_uvm_global.fatal_error, NV_OK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_global_mask_retain(const uvm_global_processor_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     for_each_global_gpu_in_mask(gpu, mask)
         uvm_gpu_retain(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_global_mask_release(const uvm_global_processor_mask_t *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_global_gpu_id_t gpu_id;
 
     if (uvm_global_processor_mask_empty(mask))
@@ -442,10 +443,10 @@ void uvm_global_mask_release(const uvm_global_processor_mask_t *mask)
         uvm_gpu_release_locked(uvm_gpu_get(gpu_id));
 
     uvm_mutex_unlock(&g_uvm_global.global_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_global_mask_check_ecc_error(uvm_global_processor_mask_t *gpus)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_global_gpu_in_mask(gpu, gpus) {
@@ -455,20 +456,20 @@ NV_STATUS uvm_global_mask_check_ecc_error(uvm_global_processor_mask_t *gpus)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_pageable_mem_access_supported(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // We might have systems with both ATS and HMM support. ATS gets priority.
     if (g_uvm_global.ats.supported)
         return g_uvm_global.ats.enabled;
 
     return uvm_hmm_is_enabled(va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_pageable_mem_access(UVM_PAGEABLE_MEM_ACCESS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     params->pageableMemAccess = uvm_pageable_mem_access_supported(va_space) ? NV_TRUE : NV_FALSE;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017-2018 NVIDIA Corporation
 
@@ -35,23 +36,23 @@
 #define MMU_SMALL 1
 
 static NvU32 entries_per_index_volta(NvU32 depth)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 5);
     if (depth == 3)
         return 2;
     return 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvLength entry_offset_volta(NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 5);
     if (page_size == UVM_PAGE_SIZE_4K && depth == 3)
         return MMU_SMALL;
     return MMU_BIG;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 single_pde_volta(uvm_mmu_page_table_alloc_t *phys_alloc, NvU32 depth)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pde_bits = 0;
 
     if (phys_alloc != NULL) {
@@ -91,10 +92,10 @@ static NvU64 single_pde_volta(uvm_mmu_page_table_alloc_t *phys_alloc, NvU32 dept
     }
 
     return pde_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 big_half_pde_volta(uvm_mmu_page_table_alloc_t *phys_alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pde_bits = 0;
 
     if (phys_alloc != NULL) {
@@ -117,10 +118,10 @@ static NvU64 big_half_pde_volta(uvm_mmu_page_table_alloc_t *phys_alloc)
     }
 
     return pde_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 small_half_pde_volta(uvm_mmu_page_table_alloc_t *phys_alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pde_bits = 0;
 
     if (phys_alloc != NULL) {
@@ -143,10 +144,10 @@ static NvU64 small_half_pde_volta(uvm_mmu_page_table_alloc_t *phys_alloc)
     }
 
     return pde_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void make_pde_volta(void *entry, uvm_mmu_page_table_alloc_t **phys_allocs, NvU32 depth)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 entry_count = entries_per_index_volta(depth);
     NvU64 *entry_bits = (NvU64 *)entry;
 
@@ -163,11 +164,11 @@ static void make_pde_volta(void *entry, uvm_mmu_page_table_alloc_t **phys_allocs
     else {
         UVM_ASSERT_MSG(0, "Invalid number of entries per index: %d\n", entry_count);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Direct copy of make_pte_pascal, but adds the bits necessary for 47-bit physical addressing
 static NvU64 make_pte_volta(uvm_aperture_t aperture, NvU64 address, uvm_prot_t prot, bool vol, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU8 aperture_bits = 0;
     NvU64 pte_bits = 0;
 
@@ -238,12 +239,12 @@ static NvU64 make_pte_volta(uvm_aperture_t aperture, NvU64 address, uvm_prot_t p
     pte_bits |= HWVALUE64(_MMU_VER2, PTE, KIND, NV_MMU_PTE_KIND_PITCH);
 
     return pte_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_mmu_mode_hal_t volta_mmu_mode_hal;
 
 uvm_mmu_mode_hal_t *uvm_hal_mmu_mode_volta(NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     static bool initialized = false;
 
     UVM_ASSERT(big_page_size == UVM_PAGE_SIZE_64K || big_page_size == UVM_PAGE_SIZE_128K);
@@ -269,10 +270,10 @@ uvm_mmu_mode_hal_t *uvm_hal_mmu_mode_volta(NvU32 big_page_size)
     }
 
     return &volta_mmu_mode_hal;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_mmu_engine_type_t uvm_hal_volta_mmu_engine_id_to_type(NvU16 mmu_engine_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (mmu_engine_id >= NV_PFAULT_MMU_ENG_ID_HOST0 && mmu_engine_id <= NV_PFAULT_MMU_ENG_ID_HOST13)
         return UVM_MMU_ENGINE_TYPE_HOST;
 
@@ -283,10 +284,10 @@ uvm_mmu_engine_type_t uvm_hal_volta_mmu_engine_id_to_type(NvU16 mmu_engine_id)
     UVM_ASSERT_MSG(mmu_engine_id >= NV_PFAULT_MMU_ENG_ID_GRAPHICS, "Unexpected engine ID: 0x%x\n", mmu_engine_id);
 
     return UVM_MMU_ENGINE_TYPE_GRAPHICS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU16 uvm_hal_volta_mmu_client_id_to_utlb_id(NvU16 client_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (client_id) {
         case NV_PFAULT_CLIENT_GPC_RAST:
         case NV_PFAULT_CLIENT_GPC_GCC:
@@ -337,4 +338,4 @@ NvU16 uvm_hal_volta_mmu_client_id_to_utlb_id(NvU16 client_id)
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

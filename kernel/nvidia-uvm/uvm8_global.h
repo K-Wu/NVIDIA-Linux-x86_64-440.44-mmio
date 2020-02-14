@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -139,9 +140,9 @@ NV_STATUS uvm_resume_entry(void);
 // LOCKING: requires that you hold the gpu_table_lock, the global_lock, or have
 // retained the gpu.
 static uvm_gpu_t *uvm_gpu_get(uvm_global_gpu_id_t gpu_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return g_uvm_global.gpus[uvm_global_id_gpu_index(gpu_id)];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get a gpu by its processor id.
 // Returns a pointer to the GPU object, or NULL if not found.
@@ -156,23 +157,23 @@ static uvm_gpu_t *uvm_gpu_get(uvm_global_gpu_id_t gpu_id)
 
 
 static uvm_gpu_t *uvm_gpu_get_by_processor_id(uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_global_gpu_id_t global_id = uvm_global_gpu_id(uvm_id_value(id));
     uvm_gpu_t *gpu = uvm_gpu_get(global_id);
 
     UVM_ASSERT(uvm_id_value(gpu->id) == uvm_global_id_value(gpu->global_id));
 
     return gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvmGpuSessionHandle uvm_gpu_session_handle(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 
 
 
 
     return g_uvm_global.rm_session_handle;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Use these READ_ONCE()/WRITE_ONCE() wrappers when accessing GPU resources
 // in BAR0/BAR1 to detect cases in which GPUs are accessed when UVM is
@@ -188,13 +189,13 @@ static uvmGpuSessionHandle uvm_gpu_session_handle(uvm_gpu_t *gpu)
     })
 
 static bool global_is_fatal_error_assert_disabled(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Only allow the assert to be disabled if tests are enabled
     if (!uvm_enable_builtin_tests)
         return false;
 
     return g_uvm_global.disable_fatal_error_assert;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Set a global fatal error
 // Once that happens the the driver should refuse to do anything other than try
@@ -213,9 +214,9 @@ void uvm_global_set_fatal_error_impl(NV_STATUS error);
 
 // Get the global status
 static NV_STATUS uvm_global_get_status(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return atomic_read(&g_uvm_global.fatal_error);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Reset global fatal error
 // This is to be used by tests triggering the global error on purpose only.
@@ -229,7 +230,7 @@ NV_STATUS uvm_global_reset_fatal_error(void);
 bool uvm_pageable_mem_access_supported(uvm_va_space_t *va_space);
 
 static uvm_gpu_t *uvm_global_processor_mask_find_first_gpu(const uvm_global_processor_mask_t *global_gpus)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     uvm_global_gpu_id_t gpu_id = uvm_global_processor_mask_find_first_gpu_id(global_gpus);
 
@@ -246,10 +247,10 @@ static uvm_gpu_t *uvm_global_processor_mask_find_first_gpu(const uvm_global_proc
     UVM_ASSERT_MSG(gpu, "gpu_id %u\n", uvm_global_id_value(gpu_id));
 
     return gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_t *__uvm_global_processor_mask_find_next_gpu(const uvm_global_processor_mask_t *global_gpus, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_global_gpu_id_t gpu_id;
 
     UVM_ASSERT(gpu);
@@ -264,15 +265,15 @@ static uvm_gpu_t *__uvm_global_processor_mask_find_next_gpu(const uvm_global_pro
     UVM_ASSERT_MSG(gpu, "gpu_id %u\n", uvm_global_id_value(gpu_id));
 
     return gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_t *uvm_global_processor_mask_find_next_gpu(const uvm_global_processor_mask_t *global_gpus, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (gpu == NULL)
         return NULL;
 
     return __uvm_global_processor_mask_find_next_gpu(global_gpus, gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper to iterate over all GPUs in the input mask
 #define for_each_global_gpu_in_mask(gpu, global_mask)                                         \

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -163,9 +164,9 @@ typedef enum
 } uvm_pmm_list_zero_t;
 
 static void uvm_pmm_list_zero_checks(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_PMM_LIST_ZERO_COUNT > 2);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Maximum chunk sizes per type of allocation in single GPU.
 // The worst case today is Maxwell with 4 allocations sizes for page tables and
@@ -373,14 +374,14 @@ NV_STATUS uvm_pmm_gpu_init(uvm_gpu_t *gpu, uvm_pmm_gpu_t *pmm);
 void uvm_pmm_gpu_deinit(uvm_pmm_gpu_t *pmm);
 
 static uvm_chunk_size_t uvm_gpu_chunk_get_size(uvm_gpu_chunk_t *chunk)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return ((uvm_chunk_size_t)1) << chunk->log2_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_gpu_chunk_set_size(uvm_gpu_chunk_t *chunk, uvm_chunk_size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     chunk->log2_size = ilog2(size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Retrieve the GPU associated with the chunk. Users of this helper must only
 // use it if the owning GPU is retained.
@@ -438,9 +439,9 @@ static NV_STATUS uvm_pmm_gpu_alloc_user(uvm_pmm_gpu_t *pmm,
                                         uvm_pmm_alloc_flags_t flags,
                                         uvm_gpu_chunk_t **chunks,
                                         uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_pmm_gpu_alloc(pmm, num_chunks, chunk_size, UVM_PMM_GPU_MEMORY_TYPE_USER, flags, chunks, out_tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unpin a temporarily pinned chunk and set its reverse map to a VA block
 //
@@ -565,45 +566,45 @@ void uvm_pmm_gpu_mark_root_chunk_used(uvm_pmm_gpu_t *pmm, uvm_gpu_chunk_t *chunk
 void uvm_pmm_gpu_mark_root_chunk_unused(uvm_pmm_gpu_t *pmm, uvm_gpu_chunk_t *chunk);
 
 static bool uvm_gpu_chunk_same_root(uvm_gpu_chunk_t *chunk1, uvm_gpu_chunk_t *chunk2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return UVM_ALIGN_DOWN(chunk1->address, UVM_CHUNK_SIZE_MAX) == UVM_ALIGN_DOWN(chunk2->address, UVM_CHUNK_SIZE_MAX);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Finds the first (smallest) size in the chunk_sizes mask
 static uvm_chunk_size_t uvm_chunk_find_first_size(uvm_chunk_sizes_mask_t chunk_sizes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(chunk_sizes);
     return (uvm_chunk_size_t)1 << __ffs(chunk_sizes);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Finds the last (biggest) size in the chunk_sizes mask
 static uvm_chunk_size_t uvm_chunk_find_last_size(uvm_chunk_sizes_mask_t chunk_sizes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(chunk_sizes);
     return (uvm_chunk_size_t)1 << __fls(chunk_sizes);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Finds the smallest size in the chunk_sizes mask which is larger than
 // chunk_size. If there is no such value returns UVM_CHUNK_SIZE_INVALID.
 static uvm_chunk_size_t uvm_chunk_find_next_size(uvm_chunk_sizes_mask_t chunk_sizes, uvm_chunk_size_t chunk_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(is_power_of_2(chunk_size));
     UVM_ASSERT(chunk_sizes & chunk_size);
     BUILD_BUG_ON(sizeof(chunk_sizes) > sizeof(unsigned long));
     return (uvm_chunk_size_t)1 << __ffs((chunk_sizes & ~((chunk_size << 1) - 1)) | UVM_CHUNK_SIZE_INVALID);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Finds the largest size in the chunk_sizes mask which is smaller than
 // chunk_size. If there is no such value returns UVM_CHUNK_SIZE_INVALID.
 static uvm_chunk_size_t uvm_chunk_find_prev_size(uvm_chunk_sizes_mask_t chunk_sizes, uvm_chunk_size_t chunk_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(is_power_of_2(chunk_size));
     UVM_ASSERT(chunk_sizes & chunk_size);
     chunk_sizes = chunk_sizes & (chunk_size - 1);
     if (!chunk_sizes)
         return UVM_CHUNK_SIZE_INVALID;
     return (uvm_chunk_size_t)1 << __fls(chunk_sizes);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Obtain the {va_block, virt_addr} information for the chunks in the given
 // [phys_addr:phys_addr + region_size) range. One entry per chunk is returned.

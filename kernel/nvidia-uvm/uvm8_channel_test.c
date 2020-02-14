@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -40,7 +41,7 @@
 // verify that all the values are correct on the CPU.
 // GK110+ is required for the CE semaphore reduction method.
 static NV_STATUS test_ordering(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
     NvU32 i, j;
@@ -154,10 +155,10 @@ done:
     uvm_rm_mem_free(mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_test_rc_for_channel_manager(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     uvm_channel_t *channel;
     uvm_gpfifo_entry_t *fatal_entry;
@@ -224,10 +225,10 @@ static NV_STATUS uvm_test_rc_for_channel_manager(uvm_channel_manager_t *manager)
     TEST_CHECK_RET(uvm_global_reset_fatal_error() == NV_ERR_RC_ERROR);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_rc(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NV_STATUS status;
 
@@ -246,7 +247,7 @@ static NV_STATUS test_rc(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 typedef struct
@@ -273,7 +274,7 @@ static void snapshot_counter(uvm_push_t *push,
                              uvm_rm_mem_t *snapshot_mem,
                              NvU32 index,
                              NvU32 counters_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     NvU64 counter_gpu_va = uvm_rm_mem_get_gpu_va(counter_mem, gpu);
     NvU64 snapshot_gpu_va = uvm_rm_mem_get_gpu_va(snapshot_mem, gpu) + index * 2 * sizeof(NvU32);
@@ -296,22 +297,22 @@ static void snapshot_counter(uvm_push_t *push,
     uvm_push_set_flag(push, UVM_PUSH_FLAG_CE_NEXT_MEMBAR_NONE);
     uvm_push_set_flag(push, UVM_PUSH_FLAG_CE_NEXT_PIPELINED);
     gpu->ce_hal->memcopy_v_to_v(push, snapshot_gpu_va, counter_gpu_va, sizeof(NvU32));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void set_counter(uvm_push_t *push, uvm_rm_mem_t *counter_mem, NvU32 value, NvU32 count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     NvU64 counter_gpu_va = uvm_rm_mem_get_gpu_va(counter_mem, gpu);
     gpu->ce_hal->memset_v_4(push, counter_gpu_va, value, count * sizeof(NvU32));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_channel_type_t random_channel_type(uvm_test_rng_t *rng)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (uvm_channel_type_t)uvm_test_rng_range_32(rng, 0, UVM_CHANNEL_TYPE_COUNT - 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_t *random_va_space_gpu(uvm_test_rng_t *rng, uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NvU32 gpu_count = uvm_processor_mask_get_gpu_count(&va_space->registered_gpus);
     NvU32 gpu_index = uvm_test_rng_range_32(rng, 0, gpu_count - 1);
@@ -325,11 +326,11 @@ static uvm_gpu_t *random_va_space_gpu(uvm_test_rng_t *rng, uvm_va_space_t *va_sp
 
     UVM_ASSERT(0);
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 static void test_memset_rm_mem(uvm_push_t *push, uvm_rm_mem_t *rm_mem, NvU32 value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NvU64 gpu_va;
 
@@ -339,7 +340,7 @@ static void test_memset_rm_mem(uvm_push_t *push, uvm_rm_mem_t *rm_mem, NvU32 val
     gpu_va = uvm_rm_mem_get_gpu_va(rm_mem, gpu);
 
     gpu->ce_hal->memset_v_4(push, gpu_va, value, rm_mem->size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This test schedules a randomly sized memset on a random channel and GPU in a
 // "stream" that has operations ordered by acquiring the tracker of the previous
@@ -355,7 +356,7 @@ static NV_STATUS stress_test_all_gpus_in_va(uvm_va_space_t *va_space,
                                             NvU32 iterations_per_stream,
                                             NvU32 seed,
                                             NvU32 verbose)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     NvU32 i, j;
@@ -571,11 +572,11 @@ done:
         UVM_TEST_PRINT("Cleanup done\n");
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 NV_STATUS uvm8_test_channel_sanity(UVM_TEST_CHANNEL_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -597,11 +598,11 @@ done:
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_test_channel_stress_stream(uvm_va_space_t *va_space,
                                                 const UVM_TEST_CHANNEL_STRESS_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     if (params->iterations == 0 || params->num_streams == 0)
@@ -625,11 +626,11 @@ done:
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_test_channel_stress_update_channels(uvm_va_space_t *va_space,
                                                          const UVM_TEST_CHANNEL_STRESS_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_test_rng_t rng;
     NvU32 i;
@@ -652,11 +653,11 @@ done:
     uvm_va_space_up_read(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_test_channel_noop_push(uvm_va_space_t *va_space,
                                             const UVM_TEST_CHANNEL_STRESS_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_push_t push;
     uvm_test_rng_t rng;
@@ -699,10 +700,10 @@ done:
     uvm_va_space_up_read(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_channel_stress(UVM_TEST_CHANNEL_STRESS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
     switch (params->mode) {
@@ -715,4 +716,4 @@ NV_STATUS uvm8_test_channel_stress(UVM_TEST_CHANNEL_STRESS_PARAMS *params, struc
         default:
             return NV_ERR_INVALID_PARAMETER;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

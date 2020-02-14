@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -27,13 +28,13 @@
 #include "uvm8_kvmalloc.h"
 
 static inline size_t leaves_to_levels(size_t leaf_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return ilog2(roundup_pow_of_two(leaf_count)) + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper function to compute all the nodes required to store a complete binary tree for the given number of leaves
 static inline size_t leaves_to_nodes(size_t leaf_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t ret = 0;
     do {
         ret += leaf_count;
@@ -41,10 +42,10 @@ static inline size_t leaves_to_nodes(size_t leaf_count)
     } while (leaf_count > 0);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_tree_init(uvm_perf_tree_t *tree, size_t node_size, size_t leaf_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     size_t bytes;
 
@@ -63,22 +64,22 @@ NV_STATUS uvm_perf_tree_init(uvm_perf_tree_t *tree, size_t node_size, size_t lea
     if (!tree->nodes)
         status = NV_ERR_NO_MEMORY;
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_tree_destroy(uvm_perf_tree_t *tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(tree);
     UVM_ASSERT(tree->nodes);
 
     uvm_kvfree(tree->nodes);
     tree->leaf_count = 0;
     tree->nodes = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_tree_clear(uvm_perf_tree_t *tree, size_t node_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(tree);
     UVM_ASSERT(tree->nodes);
 
     memset(tree->nodes, 0, tree->node_count * node_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

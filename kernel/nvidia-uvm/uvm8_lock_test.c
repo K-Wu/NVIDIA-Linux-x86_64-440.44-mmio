@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -30,54 +31,54 @@
 #define UVM_LOCK_ORDER_SECOND (UVM_LOCK_ORDER_INVALID + 2)
 
 static bool fake_lock(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Just use the lock_order as the void * handle for the lock
     return __uvm_record_lock((void*)(long)lock_order, lock_order, flags);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fake_unlock_common(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Just use the lock_order as the void * handle for the lock
     return __uvm_record_unlock((void*)(long)lock_order, lock_order, flags);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fake_unlock(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return fake_unlock_common(lock_order, flags);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fake_unlock_out_of_order(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return fake_unlock_common(lock_order, flags | UVM_LOCK_FLAGS_OUT_OF_ORDER);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fake_downgrade(uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Just use the lock_order as the void * handle for the lock
     return __uvm_record_downgrade((void*)(long)lock_order, lock_order);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fake_check_locked(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return __uvm_check_locked((void*)(long)lock_order, lock_order, flags);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1799173: The lock asserts verify that the RM GPU lock isn't taken
 //       with the VA space lock in exclusive mode, and that the RM GPU lock
 //       isn't taken with mmap_sem held in any mode. Hack around this in the
 //       test to enable the checks until we figure out something better.
 static bool skip_lock(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_lock_flags_t mode_flags = (flags & UVM_LOCK_FLAGS_MODE_MASK);
 
     if (lock_order == UVM_LOCK_ORDER_RM_GPUS)
         return mode_flags == UVM_LOCK_FLAGS_MODE_EXCLUSIVE;
 
     return lock_order == UVM_LOCK_ORDER_MMAP_SEM;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_all_locks_from(uvm_lock_order_t from_lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 exclusive;
     uvm_lock_flags_t flags;
     NvU32 out_of_order;
@@ -145,19 +146,19 @@ static NV_STATUS test_all_locks_from(uvm_lock_order_t from_lock_order)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_all_locks(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(test_all_locks_from(UVM_LOCK_ORDER_FIRST) == NV_OK);
 
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_locking_first_as_shared_then_test_higher_order_locks(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_SHARED));
     TEST_CHECK_RET(test_all_locks_from(UVM_LOCK_ORDER_FIRST + 1) == NV_OK);
     TEST_CHECK_RET(fake_unlock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_SHARED));
@@ -165,10 +166,10 @@ static NV_STATUS test_locking_first_as_shared_then_test_higher_order_locks(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_locking_second_as_exclusive_then_test_higher_order_locks(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(test_all_locks_from(UVM_LOCK_ORDER_SECOND + 1) == NV_OK);
     TEST_CHECK_RET(fake_unlock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -176,20 +177,20 @@ static NV_STATUS test_locking_second_as_exclusive_then_test_higher_order_locks(v
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_unlocking_without_locking(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Unlocking a lock w/o locking any lock at all
     TEST_CHECK_RET(!fake_unlock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
 
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_unlocking_different_lock_order_than_locked(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Unlocking a different lock than locked
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!fake_unlock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -201,10 +202,10 @@ static NV_STATUS test_unlocking_different_lock_order_than_locked(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_unlocking_different_lock_instance_than_locked(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Unlocking a different instance of a lock than locked
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!__uvm_record_unlock(NULL, UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -212,10 +213,10 @@ static NV_STATUS test_unlocking_different_lock_instance_than_locked(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_unlocking_with_different_mode_than_locked(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Unlocking with different mode
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!fake_unlock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_SHARED));
@@ -225,10 +226,10 @@ static NV_STATUS test_unlocking_with_different_mode_than_locked(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_unlocking_in_different_order_than_locked(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Unlocking in different order than locked
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -247,10 +248,10 @@ static NV_STATUS test_unlocking_in_different_order_than_locked(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_locking_out_of_order(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Locking in wrong order
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -260,10 +261,10 @@ static NV_STATUS test_locking_out_of_order(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_locking_same_order_twice(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Locking the same order twice (lock tracking doesn't support this case although
     // it's not necessarily incorrect)
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -274,10 +275,10 @@ static NV_STATUS test_locking_same_order_twice(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_checking_locked_when_no_locks_held(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Nothing locked
     TEST_CHECK_RET(!fake_check_locked(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_SHARED));
     TEST_CHECK_RET(!fake_check_locked(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -286,10 +287,10 @@ static NV_STATUS test_checking_locked_when_no_locks_held(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_checking_exclusive_when_locked_as_shared(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Expecting exclusive while locked as shared
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_SHARED));
     TEST_CHECK_RET(!fake_check_locked(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -298,10 +299,10 @@ static NV_STATUS test_checking_exclusive_when_locked_as_shared(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_checking_shared_when_locked_as_exclusive(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Expecting shared while locked as exclusive
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!fake_check_locked(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_SHARED));
@@ -310,10 +311,10 @@ static NV_STATUS test_checking_shared_when_locked_as_exclusive(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_checking_locked_when_different_instance_held(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Wrong instance of a lock held
     TEST_CHECK_RET(__uvm_record_lock(NULL, UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!fake_check_locked(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -322,10 +323,10 @@ static NV_STATUS test_checking_locked_when_different_instance_held(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_checking_all_unlocked_when_lock_held(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_SHARED));
     TEST_CHECK_RET(!__uvm_thread_check_all_unlocked());
     TEST_CHECK_RET(fake_unlock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_SHARED));
@@ -333,10 +334,10 @@ static NV_STATUS test_checking_all_unlocked_when_lock_held(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_downgrading(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Lock downgrade
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(fake_check_locked(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
@@ -354,20 +355,20 @@ static NV_STATUS test_downgrading(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_downgrading_without_locking(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Downgrading a lock w/o locking any lock at all
     TEST_CHECK_RET(!fake_downgrade(UVM_LOCK_ORDER_FIRST));
 
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_downgrading_when_different_instance_held(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Wrong instance of lock to downgrade
     TEST_CHECK_RET(__uvm_record_lock(NULL, UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(!fake_downgrade(UVM_LOCK_ORDER_FIRST));
@@ -376,10 +377,10 @@ static NV_STATUS test_downgrading_when_different_instance_held(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_downgrading_when_locked_as_shared(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Downgrading a lock that was acquired as shared
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_SHARED));
     TEST_CHECK_RET(!fake_downgrade(UVM_LOCK_ORDER_FIRST));
@@ -388,10 +389,10 @@ static NV_STATUS test_downgrading_when_locked_as_shared(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_try_locking_out_of_order(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Try-locking in wrong order
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_SECOND, UVM_LOCK_FLAGS_MODE_EXCLUSIVE));
     TEST_CHECK_RET(fake_lock(UVM_LOCK_ORDER_FIRST, UVM_LOCK_FLAGS_MODE_EXCLUSIVE | UVM_LOCK_FLAGS_TRYLOCK));
@@ -408,10 +409,10 @@ static NV_STATUS test_try_locking_out_of_order(void)
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS run_all_lock_tests(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // The test needs all locks to be released initially
     TEST_CHECK_RET(__uvm_thread_check_all_unlocked());
 
@@ -437,10 +438,10 @@ static NV_STATUS run_all_lock_tests(void)
     TEST_CHECK_RET(test_try_locking_out_of_order() == NV_OK);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_lock_sanity(UVM_TEST_LOCK_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_thread_context_wrapper_t thread_context_wrapper_backup;
 
@@ -457,4 +458,4 @@ NV_STATUS uvm8_test_lock_sanity(UVM_TEST_LOCK_SANITY_PARAMS *params, struct file
     uvm_thread_context_restore(&thread_context_wrapper_backup.context);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

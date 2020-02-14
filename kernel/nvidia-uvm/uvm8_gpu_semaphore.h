@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -160,8 +161,8 @@ NvU64 uvm_gpu_tracking_semaphore_update_completed_value(uvm_gpu_tracking_semapho
 
 // See the comments for uvm_gpu_tracking_semaphore_is_value_completed
 static bool uvm_gpu_tracking_semaphore_is_completed(uvm_gpu_tracking_semaphore_t *tracking_sem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_tracking_semaphore_is_value_completed(tracking_sem, tracking_sem->queued_value);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // __UVM8_GPU_SEMAPHORE_H__

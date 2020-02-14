@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -348,7 +349,7 @@ static uvm_hal_class_ops_t access_counter_buffer_table[] =
 };
 
 static inline uvm_hal_class_ops_t *ops_find_by_id(uvm_hal_class_ops_t *table, NvU32 row_count, NvU32 id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvLength i;
 
     // go through array and match on class.
@@ -358,28 +359,28 @@ static inline uvm_hal_class_ops_t *ops_find_by_id(uvm_hal_class_ops_t *table, Nv
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // use memcmp to check for function pointer assignment in a well defined, general way.
 static inline bool op_is_null(uvm_hal_class_ops_t *row, NvLength op_idx, NvLength op_offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *temp = NULL;
     return memcmp(&temp, (char *)row + op_offset + sizeof(void *) * op_idx, sizeof(void *)) == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // use memcpy to copy function pointers in a well defined, general way.
 static inline void op_copy(uvm_hal_class_ops_t *dst, uvm_hal_class_ops_t *src, NvLength op_idx, NvLength op_offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *m_dst = (char *)dst + op_offset + sizeof(void *) * op_idx;
     void *m_src = (char *)src + op_offset + sizeof(void *) * op_idx;
     memcpy(m_dst, m_src, sizeof(void *));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline NV_STATUS ops_init_from_parent(uvm_hal_class_ops_t *table,
                                              NvU32 row_count,
                                              NvLength op_count,
                                              NvLength op_offset)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvLength i;
 
     for (i = 0; i < row_count; i++) {
@@ -406,10 +407,10 @@ static inline NV_STATUS ops_init_from_parent(uvm_hal_class_ops_t *table,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_hal_init_table(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = ops_init_from_parent(ce_table, ARRAY_SIZE(ce_table), CE_OP_COUNT, offsetof(uvm_hal_class_ops_t, u.ce_ops));
@@ -447,10 +448,10 @@ NV_STATUS uvm_hal_init_table(void)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_hal_init_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_hal_class_ops_t *class_ops = ops_find_by_id(ce_table, ARRAY_SIZE(ce_table), gpu->rm_info.ceClass);
     if (class_ops == NULL) {
         UVM_ERR_PRINT("Unsupported ce class: 0x%X, GPU %s\n", gpu->rm_info.ceClass, gpu->name);
@@ -507,10 +508,10 @@ NV_STATUS uvm_hal_init_gpu(uvm_gpu_t *gpu)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_tlb_invalidate_membar(uvm_push_t *push, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NvU32 i;
 
@@ -523,10 +524,10 @@ void uvm_hal_tlb_invalidate_membar(uvm_push_t *push, uvm_membar_t membar)
         gpu->host_hal->membar_gpu(push);
 
     uvm_hal_membar(gpu, push, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_aperture_string(uvm_aperture_t aperture)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_APERTURE_MAX != 12);
 
     switch (aperture) {
@@ -544,10 +545,10 @@ const char *uvm_aperture_string(uvm_aperture_t aperture)
         UVM_ENUM_STRING_CASE(UVM_APERTURE_DEFAULT);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_prot_string(uvm_prot_t prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_PROT_MAX != 4);
 
     switch (prot) {
@@ -557,10 +558,10 @@ const char *uvm_prot_string(uvm_prot_t prot)
         UVM_ENUM_STRING_CASE(UVM_PROT_READ_WRITE_ATOMIC);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_membar_string(uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (membar) {
         UVM_ENUM_STRING_CASE(UVM_MEMBAR_SYS);
         UVM_ENUM_STRING_CASE(UVM_MEMBAR_GPU);
@@ -568,10 +569,10 @@ const char *uvm_membar_string(uvm_membar_t membar)
     }
 
     return "UNKNOWN";
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_fault_access_type_string(uvm_fault_access_type_t fault_access_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_FAULT_ACCESS_TYPE_COUNT != 5);
 
     switch (fault_access_type) {
@@ -582,10 +583,10 @@ const char *uvm_fault_access_type_string(uvm_fault_access_type_t fault_access_ty
         UVM_ENUM_STRING_CASE(UVM_FAULT_ACCESS_TYPE_PREFETCH);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_fault_type_string(uvm_fault_type_t fault_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_FAULT_TYPE_COUNT != 16);
 
     switch (fault_type) {
@@ -607,10 +608,10 @@ const char *uvm_fault_type_string(uvm_fault_type_t fault_type)
         UVM_ENUM_STRING_CASE(UVM_FAULT_TYPE_POISONED);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_fault_client_type_string(uvm_fault_client_type_t fault_client_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_FAULT_CLIENT_TYPE_COUNT != 2);
 
     switch (fault_client_type) {
@@ -618,10 +619,10 @@ const char *uvm_fault_client_type_string(uvm_fault_client_type_t fault_client_ty
         UVM_ENUM_STRING_CASE(UVM_FAULT_CLIENT_TYPE_HUB);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_mmu_engine_type_string(uvm_mmu_engine_type_t mmu_engine_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_MMU_ENGINE_TYPE_COUNT != 3);
 
     switch (mmu_engine_type) {
@@ -630,10 +631,10 @@ const char *uvm_mmu_engine_type_string(uvm_mmu_engine_type_t mmu_engine_type)
         UVM_ENUM_STRING_CASE(UVM_MMU_ENGINE_TYPE_CE);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_print_fault_entry(const uvm_fault_buffer_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_DBG_PRINT("fault_address:                    0x%llx\n", entry->fault_address);
     UVM_DBG_PRINT("    fault_instance_ptr:           {0x%llx:%s}\n", entry->instance_ptr.address,
                                                                      uvm_aperture_string(entry->instance_ptr.aperture));
@@ -649,10 +650,10 @@ void uvm_hal_print_fault_entry(const uvm_fault_buffer_entry_t *entry)
     UVM_DBG_PRINT("    fault_source.mmu_engine_type: %s\n",
                   uvm_mmu_engine_type_string(entry->fault_source.mmu_engine_type));
     UVM_DBG_PRINT("    timestamp:                    %llu\n", entry->timestamp);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_access_counter_type_string(uvm_access_counter_type_t access_counter_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_ACCESS_COUNTER_TYPE_MAX != 2);
 
     switch (access_counter_type) {
@@ -660,10 +661,10 @@ const char *uvm_access_counter_type_string(uvm_access_counter_type_t access_coun
         UVM_ENUM_STRING_CASE(UVM_ACCESS_COUNTER_TYPE_MOMC);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_print_access_counter_buffer_entry(const uvm_access_counter_buffer_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!entry->address.is_virtual) {
         UVM_DBG_PRINT("physical address: {0x%llx:%s}\n", entry->address.address,
                                                          uvm_aperture_string(entry->address.aperture));
@@ -683,4 +684,4 @@ void uvm_hal_print_access_counter_buffer_entry(const uvm_access_counter_buffer_e
     UVM_DBG_PRINT("    subgranularity  0x%08x\n", entry->sub_granularity);
     UVM_DBG_PRINT("    bank            %u\n", entry->bank);
     UVM_DBG_PRINT("    tag             %x\n", entry->tag);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

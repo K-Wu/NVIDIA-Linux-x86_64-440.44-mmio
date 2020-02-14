@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -40,7 +41,7 @@ module_param(uvm_debug_enable_push_acquire_info, uint, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(uvm_debug_enable_push_acquire_info, "Enable push acquire information tracking");
 
 static uvm_push_acquire_info_t *push_acquire_info_from_push(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = push->channel;
 
     UVM_ASSERT(channel != NULL);
@@ -52,14 +53,14 @@ static uvm_push_acquire_info_t *push_acquire_info_from_push(uvm_push_t *push)
         return NULL;
 
     return &channel->push_acquire_infos[push->push_info_index];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Acquire a single tracker entry. Subsequently pushed GPU work will not start
 // before the work tracked by tracker entry is complete.
 static void push_acquire_tracker_entry(uvm_push_t *push,
                                        uvm_tracker_entry_t *tracker_entry,
                                        uvm_push_acquire_info_t *push_acquire_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *entry_channel = tracker_entry->channel;
     uvm_channel_t *channel = push->channel;
     uvm_gpu_t *gpu = uvm_channel_get_gpu(channel);
@@ -87,10 +88,10 @@ static void push_acquire_tracker_entry(uvm_push_t *push,
         }
         ++push_acquire_info->num_values;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_push_acquire_tracker(uvm_push_t *push, uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t *entry;
     uvm_push_acquire_info_t *push_acquire_info;
 
@@ -105,13 +106,13 @@ void uvm_push_acquire_tracker(uvm_push_t *push, uvm_tracker_t *tracker)
 
     for_each_tracker_entry(entry, tracker)
         push_acquire_tracker_entry(push, entry, push_acquire_info);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS push_reserve_channel(uvm_channel_manager_t *manager,
                                       uvm_channel_type_t channel_type,
                                       uvm_gpu_t *dst_gpu,
                                       uvm_channel_t **channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     // Pick a channel and reserve a GPFIFO entry
@@ -126,7 +127,7 @@ static NV_STATUS push_reserve_channel(uvm_channel_manager_t *manager,
         UVM_ASSERT(*channel);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Internal helper to fill info push info as part of beginning a push.
 static void push_fill_info(uvm_push_t *push,
@@ -135,7 +136,7 @@ static void push_fill_info(uvm_push_t *push,
                            int line,
                            const char *format,
                            va_list args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = push->channel;
     uvm_push_info_t *push_info;
     uvm_push_acquire_info_t *push_acquire_info;
@@ -154,7 +155,7 @@ static void push_fill_info(uvm_push_t *push,
 
     if (uvm_push_info_is_tracking_descriptions())
         vsnprintf(push_info->description, sizeof(push_info->description), format, args);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS push_begin_acquire_with_info(uvm_channel_t *channel,
                                               uvm_tracker_t *tracker,
@@ -164,7 +165,7 @@ static NV_STATUS push_begin_acquire_with_info(uvm_channel_t *channel,
                                               int line,
                                               const char *format,
                                               va_list args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     memset(push, 0, sizeof(*push));
@@ -180,7 +181,7 @@ static NV_STATUS push_begin_acquire_with_info(uvm_channel_t *channel,
     uvm_push_acquire_tracker(push, tracker);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 __attribute__ ((format(printf, 9, 10)))
 NV_STATUS __uvm_push_begin_acquire_with_info(uvm_channel_manager_t *manager,
@@ -192,7 +193,7 @@ NV_STATUS __uvm_push_begin_acquire_with_info(uvm_channel_manager_t *manager,
                                              const char *function,
                                              int line,
                                              const char *format, ...)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_list args;
     NV_STATUS status;
     uvm_channel_t *channel;
@@ -213,7 +214,7 @@ NV_STATUS __uvm_push_begin_acquire_with_info(uvm_channel_manager_t *manager,
     va_end(args);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 __attribute__ ((format(printf, 7, 8)))
 NV_STATUS __uvm_push_begin_acquire_on_channel_with_info(uvm_channel_t *channel,
@@ -223,7 +224,7 @@ NV_STATUS __uvm_push_begin_acquire_on_channel_with_info(uvm_channel_t *channel,
                                                         const char *function,
                                                         int line,
                                                         const char *format, ...)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_list args;
     NV_STATUS status;
 
@@ -236,20 +237,20 @@ NV_STATUS __uvm_push_begin_acquire_on_channel_with_info(uvm_channel_t *channel,
     va_end(args);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_push_info_is_tracking_descriptions()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_debug_enable_push_desc != 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_push_info_is_tracking_acquires()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_debug_enable_push_acquire_info != 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_push_end(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_flag_t flag;
     uvm_channel_end_push(push);
 
@@ -257,25 +258,25 @@ void uvm_push_end(uvm_push_t *push)
 
     // All flags should be reset by the end of the push
     UVM_ASSERT_MSG(flag == UVM_PUSH_FLAG_COUNT, "first flag set %d\n", flag);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_push_wait(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t entry;
     uvm_push_get_tracker_entry(push, &entry);
 
     return uvm_tracker_wait_for_entry(&entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_push_end_and_wait(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_end(push);
 
     return uvm_push_wait(push);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_push_begin_fake(uvm_gpu_t *gpu, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(push, 0, sizeof(*push));
     push->begin = (NvU32 *)uvm_kvmalloc(UVM_MAX_PUSH_SIZE);
     if (!push->begin)
@@ -285,16 +286,16 @@ NV_STATUS uvm_push_begin_fake(uvm_gpu_t *gpu, uvm_push_t *push)
     push->gpu = gpu;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_push_end_fake(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_kvfree(push->begin);
     push->begin = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *uvm_push_inline_data_get(uvm_push_inline_data_t *data, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *buffer = data->next_data;
 
     UVM_ASSERT(!uvm_global_is_suspended());
@@ -309,10 +310,10 @@ void *uvm_push_inline_data_get(uvm_push_inline_data_t *data, size_t size)
     data->next_data += size;
 
     return buffer;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *uvm_push_inline_data_get_aligned(uvm_push_inline_data_t *data, size_t size, size_t alignment)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 next_ptr = (NvU64)(uintptr_t)data->next_data;
     size_t offset = 0;
     char *buffer;
@@ -323,10 +324,10 @@ void *uvm_push_inline_data_get_aligned(uvm_push_inline_data_t *data, size_t size
 
     buffer = (char *)uvm_push_inline_data_get(data, size + offset);
     return buffer + offset;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_address_t uvm_push_inline_data_end(uvm_push_inline_data_t *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t *push = data->push;
     uvm_gpu_address_t inline_data_addr;
 
@@ -350,7 +351,7 @@ uvm_gpu_address_t uvm_push_inline_data_end(uvm_push_inline_data_t *data)
     uvm_push_get_gpu(push)->host_hal->noop(push, noop_size + UVM_METHOD_SIZE);
 
     return inline_data_addr;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Same as uvm_push_get_single_inline_buffer() but provides the specified
 // alignment.
@@ -358,7 +359,7 @@ static void *push_get_single_inline_buffer_aligned(uvm_push_t *push,
                                                    size_t size,
                                                    size_t alignment,
                                                    uvm_gpu_address_t *gpu_address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_inline_data_t data;
     void *buffer;
 
@@ -369,15 +370,15 @@ static void *push_get_single_inline_buffer_aligned(uvm_push_t *push,
     gpu_address->address = UVM_ALIGN_UP(gpu_address->address, alignment);
 
     return buffer;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void *uvm_push_get_single_inline_buffer(uvm_push_t *push, size_t size, uvm_gpu_address_t *gpu_address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return push_get_single_inline_buffer_aligned(push, size, UVM_METHOD_SIZE, gpu_address);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 *uvm_push_timestamp(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     const size_t timestamp_size = 16;
     NvU64 *timestamp;
@@ -390,5 +391,5 @@ NvU64 *uvm_push_timestamp(uvm_push_t *push)
     gpu->ce_hal->semaphore_timestamp(push, address.address);
 
     return timestamp;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 

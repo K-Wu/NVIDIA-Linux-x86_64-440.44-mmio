@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -99,7 +100,7 @@ module_param(uvm_perf_fault_coalesce, uint, S_IRUGO);
 // This function is used for both the initial fault buffer initialization and
 // the power management resume path.
 static void fault_buffer_reinit_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
 
     // Read the current get/put pointers, as this might not be the first time
@@ -114,12 +115,12 @@ static void fault_buffer_reinit_replayable_faults(uvm_gpu_t *gpu)
         gpu->arch_hal->enable_prefetch_faults(gpu);
     else
         gpu->arch_hal->disable_prefetch_faults(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // There is no error handling in this function. The caller is in charge of
 // calling fault_buffer_deinit_replayable_faults on failure.
 static NV_STATUS fault_buffer_init_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
     uvm_fault_service_batch_context_t *batch_context = &replayable_faults->batch_service_context;
@@ -194,10 +195,10 @@ static NV_STATUS fault_buffer_init_replayable_faults(uvm_gpu_t *gpu)
     fault_buffer_reinit_replayable_faults(gpu);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void fault_buffer_deinit_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
     uvm_fault_service_batch_context_t *batch_context = &replayable_faults->batch_service_context;
@@ -220,10 +221,10 @@ static void fault_buffer_deinit_replayable_faults(uvm_gpu_t *gpu)
     batch_context->fault_cache         = NULL;
     batch_context->ordered_fault_cache = NULL;
     batch_context->utlbs               = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_fault_buffer_init(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     uvm_assert_mutex_locked(&g_uvm_global.global_lock);
@@ -259,19 +260,19 @@ fail:
     uvm_gpu_fault_buffer_deinit(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Reinitialize state relevant to replayable fault handling after returning
 // from a power management cycle.
 void uvm_gpu_fault_buffer_resume(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->replayable_faults_supported);
 
     fault_buffer_reinit_replayable_faults(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_fault_buffer_deinit(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     uvm_assert_mutex_locked(&g_uvm_global.global_lock);
@@ -290,11 +291,11 @@ void uvm_gpu_fault_buffer_deinit(uvm_gpu_t *gpu)
 
         gpu->fault_buffer_info.rm_info.faultBufferHandle = 0;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 bool uvm_gpu_replayable_faults_pending(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
 
     UVM_ASSERT(gpu->replayable_faults_supported);
@@ -316,7 +317,7 @@ bool uvm_gpu_replayable_faults_pending(uvm_gpu_t *gpu)
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Push a fault cancel method on the given client. Any failure during this
 // operation may lead to application hang (requiring manual Ctrl+C from the
@@ -326,7 +327,7 @@ bool uvm_gpu_replayable_faults_pending(uvm_gpu_t *gpu)
 // This function acquires both the given tracker and the replay tracker
 static NV_STATUS push_cancel_on_gpu(uvm_gpu_t *gpu, uvm_gpu_phys_address_t instance_ptr, NvU32 gpc_id, NvU32 client_id,
                                     uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
@@ -365,7 +366,7 @@ static NV_STATUS push_cancel_on_gpu(uvm_gpu_t *gpu, uvm_gpu_phys_address_t insta
     uvm_tracker_clear(&replayable_faults->replay_tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Volta implements a targeted VA fault cancel that simplifies the fault cancel
 // process. You only need to specify the address, type, and mmu_engine_id for
@@ -374,7 +375,7 @@ static NV_STATUS push_cancel_on_gpu(uvm_gpu_t *gpu, uvm_gpu_phys_address_t insta
 static NV_STATUS cancel_fault_precise_va(uvm_gpu_t *gpu,
                                          uvm_fault_buffer_entry_t *fault_entry,
                                          uvm_fault_cancel_va_mode_t cancel_va_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_gpu_phys_address_t pdb;
@@ -427,10 +428,10 @@ static NV_STATUS cancel_fault_precise_va(uvm_gpu_t *gpu,
     uvm_tracker_clear(&replayable_faults->replay_tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS push_replay_on_gpu(uvm_gpu_t *gpu, uvm_fault_replay_type_t type, uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
@@ -468,10 +469,10 @@ static NV_STATUS push_replay_on_gpu(uvm_gpu_t *gpu, uvm_fault_replay_type_t type
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void write_get(uvm_gpu_t *gpu, NvU32 get)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
 
     UVM_ASSERT(mutex_is_locked(&gpu->isr.replayable_faults.service_lock.m));
@@ -484,13 +485,13 @@ static void write_get(uvm_gpu_t *gpu, NvU32 get)
 
     // Update get pointer on the GPU
     gpu->fault_buffer_hal->write_get(gpu, get);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS fault_buffer_flush_locked(uvm_gpu_t *gpu,
                                            uvm_gpu_buffer_flush_mode_t flush_mode,
                                            uvm_fault_replay_type_t fault_replay,
                                            uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 get;
     NvU32 put;
     uvm_spin_loop_t spin;
@@ -523,10 +524,10 @@ static NV_STATUS fault_buffer_flush_locked(uvm_gpu_t *gpu,
 
     // Issue fault replay
     return push_replay_on_gpu(gpu, fault_replay, batch_context);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_fault_buffer_flush(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     UVM_ASSERT(gpu->replayable_faults_supported);
@@ -543,34 +544,34 @@ NV_STATUS uvm_gpu_fault_buffer_flush(uvm_gpu_t *gpu)
     // replay brought any back in
     uvm_gpu_replayable_faults_isr_unlock(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static inline int cmp_fault_instance_ptr(const uvm_fault_buffer_entry_t *a,
                                          const uvm_fault_buffer_entry_t *b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result = uvm_gpu_phys_addr_cmp(a->instance_ptr, b->instance_ptr);
     // On Volta+ we need to sort by {instance_ptr + subctx_id} pair since it can
     // map to a different VA space
     if (result != 0)
         return result;
     return UVM_CMP_DEFAULT(a->fault_source.ve_id, b->fault_source.ve_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compare two VA spaces
 static inline int cmp_va_space(const uvm_va_space_t *a, const uvm_va_space_t *b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return UVM_CMP_DEFAULT(a, b);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compare two virtual addresses
 static inline int cmp_addr(NvU64 a, NvU64 b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return UVM_CMP_DEFAULT(a, b);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compare two fault access types
 static inline int cmp_access_type(uvm_fault_access_type_t a, uvm_fault_access_type_t b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(a >= 0 && a < UVM_FAULT_ACCESS_TYPE_COUNT);
     UVM_ASSERT(b >= 0 && b < UVM_FAULT_ACCESS_TYPE_COUNT);
 
@@ -581,7 +582,7 @@ static inline int cmp_access_type(uvm_fault_access_type_t a, uvm_fault_access_ty
     BUILD_BUG_ON(UVM_FAULT_ACCESS_TYPE_READ <= UVM_FAULT_ACCESS_TYPE_PREFETCH);
 
     return b - a;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -599,7 +600,7 @@ typedef enum
 
 static void fetch_fault_buffer_merge_entry(uvm_fault_buffer_entry_t *current_entry,
                                            uvm_fault_buffer_entry_t *last_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(last_entry->num_instances > 0);
 
     ++last_entry->num_instances;
@@ -624,13 +625,13 @@ static void fetch_fault_buffer_merge_entry(uvm_fault_buffer_entry_t *current_ent
         current_entry->filtered = true;
         list_add(&current_entry->merged_instances_list, &last_entry->merged_instances_list);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool fetch_fault_buffer_try_merge_entry(uvm_fault_buffer_entry_t *current_entry,
                                                uvm_fault_service_batch_context_t *batch_context,
                                                uvm_fault_utlb_info_t *current_tlb,
                                                bool is_same_instance_ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_fault_buffer_entry_t *last_tlb_entry = current_tlb->last_fault;
     uvm_fault_buffer_entry_t *last_global_entry = batch_context->last_fault;
 
@@ -664,7 +665,7 @@ static bool fetch_fault_buffer_try_merge_entry(uvm_fault_buffer_entry_t *current
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Fetch entries from the fault buffer, decode them and store them in the batch
 // context. We implement the fetch modes described above.
@@ -691,7 +692,7 @@ static bool fetch_fault_buffer_try_merge_entry(uvm_fault_buffer_entry_t *current
 static void fetch_fault_buffer_entries(uvm_gpu_t *gpu,
                                        uvm_fault_service_batch_context_t *batch_context,
                                        fault_fetch_mode_t fetch_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 get;
     NvU32 put;
     NvU32 fault_index;
@@ -823,22 +824,22 @@ done:
 
     batch_context->num_cached_faults = fault_index;
     batch_context->num_coalesced_faults = num_coalesced_faults;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sort comparator for pointers to fault buffer entries that sorts by
 // instance pointer
 static int cmp_sort_fault_entry_by_instance_ptr(const void *_a, const void *_b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const uvm_fault_buffer_entry_t **a = (const uvm_fault_buffer_entry_t **)_a;
     const uvm_fault_buffer_entry_t **b = (const uvm_fault_buffer_entry_t **)_b;
 
     return cmp_fault_instance_ptr(*a, *b);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sort comparator for pointers to fault buffer entries that sorts by va_space,
 // fault address and fault access type
 static int cmp_sort_fault_entry_by_va_space_address_access_type(const void *_a, const void *_b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const uvm_fault_buffer_entry_t **a = (const uvm_fault_buffer_entry_t **)_a;
     const uvm_fault_buffer_entry_t **b = (const uvm_fault_buffer_entry_t **)_b;
 
@@ -853,7 +854,7 @@ static int cmp_sort_fault_entry_by_va_space_address_access_type(const void *_a, 
         return result;
 
     return cmp_access_type((*a)->fault_access_type, (*b)->fault_access_type);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Translate all instance pointers to VA spaces. Since the buffer is ordered by
 // instance_ptr, we minimize the number of translations
@@ -863,7 +864,7 @@ static int cmp_sort_fault_entry_by_va_space_address_access_type(const void *_a, 
 // NV_OK otherwise.
 static NV_STATUS translate_instance_ptrs(uvm_gpu_t *gpu,
                                          uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NV_STATUS status;
 
@@ -927,7 +928,7 @@ static NV_STATUS translate_instance_ptrs(uvm_gpu_t *gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Fault cache preprocessing for fault coalescing
 //
@@ -946,7 +947,7 @@ static NV_STATUS translate_instance_ptrs(uvm_gpu_t *gpu,
 // 3) sort by va_space, fault address (fault_address is page-aligned at this
 //    point) and access type
 static NV_STATUS preprocess_fault_batch(uvm_gpu_t *gpu, uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU32 i, j;
     uvm_fault_buffer_entry_t **ordered_fault_cache = batch_context->ordered_fault_cache;
@@ -988,7 +989,7 @@ static NV_STATUS preprocess_fault_batch(uvm_gpu_t *gpu, uvm_fault_service_batch_
          NULL);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function computes the maximum access type that can be serviced for the
 // reported fault instances given the logical permissions of the VA range. If
@@ -1013,7 +1014,7 @@ static uvm_fault_access_type_t check_fault_access_permissions(uvm_gpu_t *gpu,
                                                               uvm_va_block_t *va_block,
                                                               uvm_fault_buffer_entry_t *fault_entry,
                                                               bool allow_migration)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS perm_status;
 
     perm_status = uvm_va_range_check_logical_permissions(va_block->va_range,
@@ -1056,7 +1057,7 @@ static uvm_fault_access_type_t check_fault_access_permissions(uvm_gpu_t *gpu,
     }
 
     return UVM_FAULT_ACCESS_TYPE_COUNT;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // We notify the fault event for all faults within the block so that the
 // performance heuristics are updated. Then, all required actions for the block
@@ -1077,7 +1078,7 @@ static NV_STATUS service_batch_managed_faults_in_block_locked(uvm_gpu_t *gpu,
                                                               NvU32 first_fault_index,
                                                               uvm_fault_service_batch_context_t *batch_context,
                                                               NvU32 *block_faults)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU32 i;
     uvm_page_index_t first_page_index;
@@ -1286,7 +1287,7 @@ static NV_STATUS service_batch_managed_faults_in_block_locked(uvm_gpu_t *gpu,
         status = uvm_va_block_set_cancel(va_block, gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // We notify the fault event for all faults within the block so that the
 // performance heuristics are updated. The VA block lock is taken for the whole
@@ -1301,7 +1302,7 @@ static NV_STATUS service_batch_managed_faults_in_block(uvm_gpu_t *gpu,
                                                        NvU32 first_fault_index,
                                                        uvm_fault_service_batch_context_t *batch_context,
                                                        NvU32 *block_faults)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_retry_t va_block_retry;
     NV_STATUS tracker_status;
@@ -1326,7 +1327,7 @@ static NV_STATUS service_batch_managed_faults_in_block(uvm_gpu_t *gpu,
     uvm_mutex_unlock(&va_block->lock);
 
     return status == NV_OK? tracker_status: status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -1346,7 +1347,7 @@ static NV_STATUS service_non_managed_fault(uvm_fault_buffer_entry_t *current_ent
                                            uvm_fault_service_batch_context_t *batch_context,
                                            uvm_ats_fault_invalidate_t *ats_invalidate,
                                            uvm_fault_utlb_info_t *utlb)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = lookup_status;
     bool is_duplicate = false;
     UVM_ASSERT(utlb->num_pending_faults > 0);
@@ -1421,7 +1422,7 @@ static NV_STATUS service_non_managed_fault(uvm_fault_buffer_entry_t *current_ent
         batch_context->has_throttled_faults = true;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Scan the ordered view of faults and group them by different va_blocks.
 // Service faults for each va_block, in batch.
@@ -1432,7 +1433,7 @@ static NV_STATUS service_non_managed_fault(uvm_fault_buffer_entry_t *current_ent
 static NV_STATUS service_fault_batch(uvm_gpu_t *gpu,
                                      fault_service_mode_t service_mode,
                                      uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU32 i;
     uvm_va_space_t *va_space = NULL;
@@ -1596,11 +1597,11 @@ fail:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Tells if the given fault entry is the first one in its uTLB
 static bool is_first_fault_in_utlb(uvm_fault_service_batch_context_t *batch_context, NvU32 fault_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU32 utlb_id = batch_context->fault_cache[fault_index].fault_source.utlb_id;
 
@@ -1613,7 +1614,7 @@ static bool is_first_fault_in_utlb(uvm_fault_service_batch_context_t *batch_cont
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compute the number of fatal and non-fatal faults for a page in the given uTLB
 static void faults_for_page_in_utlb(uvm_fault_service_batch_context_t *batch_context,
@@ -1622,7 +1623,7 @@ static void faults_for_page_in_utlb(uvm_fault_service_batch_context_t *batch_con
                                     NvU32 utlb_id,
                                     NvU32 *fatal_faults,
                                     NvU32 *non_fatal_faults)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     *fatal_faults = 0;
@@ -1643,14 +1644,14 @@ static void faults_for_page_in_utlb(uvm_fault_service_batch_context_t *batch_con
                 ++(*non_fatal_faults);
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Function that tells if there are addresses (reminder: they are aligned to 4K)
 // with non-fatal faults only
 static bool no_fatal_pages_in_utlb(uvm_fault_service_batch_context_t *batch_context,
                                    NvU32 start_index,
                                    NvU32 utlb_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     // Fault filtering is not allowed in the TLB-based fault cancel path
@@ -1677,10 +1678,10 @@ static bool no_fatal_pages_in_utlb(uvm_fault_service_batch_context_t *batch_cont
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_fatal_fault_helper(uvm_gpu_t *gpu, uvm_fault_buffer_entry_t *entry, UvmEventFatalReason reason)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
 
     va_space = entry->va_space;
@@ -1689,7 +1690,7 @@ static void record_fatal_fault_helper(uvm_gpu_t *gpu, uvm_fault_buffer_entry_t *
     // Record fatal fault event
     uvm_tools_record_gpu_fatal_fault(gpu->id, va_space, entry, reason);
     uvm_va_space_up_read(va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function tries to find and issue a cancel for each uTLB that meets
 // the requirements to guarantee precise fault attribution:
@@ -1706,7 +1707,7 @@ static void record_fatal_fault_helper(uvm_gpu_t *gpu, uvm_fault_buffer_entry_t *
 // - Build a list with all the faults within a uTLB
 // - Sort by uTLB id
 static NV_STATUS try_to_cancel_utlbs(uvm_gpu_t *gpu, uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     // Fault filtering is not allowed in the TLB-based fault cancel path
@@ -1746,11 +1747,11 @@ static NV_STATUS try_to_cancel_utlbs(uvm_gpu_t *gpu, uvm_fault_service_batch_con
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 find_fatal_fault_in_utlb(uvm_fault_service_batch_context_t *batch_context,
                                       NvU32 utlb_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     // Fault filtering is not allowed in the TLB-based fault cancel path
@@ -1763,11 +1764,11 @@ static NvU32 find_fatal_fault_in_utlb(uvm_fault_service_batch_context_t *batch_c
     }
 
     return i;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 is_fatal_fault_in_buffer(uvm_fault_service_batch_context_t *batch_context,
                                       uvm_fault_buffer_entry_t *fault)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     // Fault filtering is not allowed in the TLB-based fault cancel path
@@ -1784,7 +1785,7 @@ static NvU32 is_fatal_fault_in_buffer(uvm_fault_service_batch_context_t *batch_c
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef enum
 {
@@ -1807,7 +1808,7 @@ static NV_STATUS cancel_faults_precise_va(uvm_gpu_t *gpu,
                                           uvm_fault_service_batch_context_t *batch_context,
                                           fault_cancel_mode_t cancel_mode,
                                           UvmEventFatalReason reason)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = NULL;
     NvU32 i;
@@ -1870,7 +1871,7 @@ static NV_STATUS cancel_faults_precise_va(uvm_gpu_t *gpu,
         uvm_va_space_up_read(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Function called when the system has found a global error and needs to
 // trigger RC in RM.
@@ -1878,7 +1879,7 @@ static NV_STATUS cancel_faults_precise_va(uvm_gpu_t *gpu,
 static void cancel_fault_batch_tlb(uvm_gpu_t *gpu,
                                    uvm_fault_service_batch_context_t *batch_context,
                                    UvmEventFatalReason reason)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     // Fault filtering is not allowed in the TLB-based fault cancel path
@@ -1908,19 +1909,19 @@ static void cancel_fault_batch_tlb(uvm_gpu_t *gpu,
 
         utlb->cancelled = true;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void cancel_fault_batch(uvm_gpu_t *gpu,
                                uvm_fault_service_batch_context_t *batch_context,
                                UvmEventFatalReason reason)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (gpu->fault_cancel_va_supported) {
         cancel_faults_precise_va(gpu, batch_context, FAULT_CANCEL_MODE_ALL, reason);
         return;
     }
 
     cancel_fault_batch_tlb(gpu, batch_context, reason);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // Current fault cancel algorithm
@@ -1947,7 +1948,7 @@ static void cancel_fault_batch(uvm_gpu_t *gpu,
 // flushing the fault buffer afterwards (prefetch faults are not replayed and,
 // therefore, will not show up again)
 static NV_STATUS cancel_faults_precise_tlb(uvm_gpu_t *gpu, uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NV_STATUS tracker_status;
     uvm_replayable_fault_buffer_info_t *replayable_faults = &gpu->fault_buffer_info.replayable;
@@ -2074,10 +2075,10 @@ static NV_STATUS cancel_faults_precise_tlb(uvm_gpu_t *gpu, uvm_fault_service_bat
     tracker_status = uvm_tracker_wait(&batch_context->tracker);
 
     return status == NV_OK? tracker_status: status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS cancel_faults_precise(uvm_gpu_t *gpu, uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(batch_context->has_fatal_faults);
     if (gpu->fault_cancel_va_supported) {
         return cancel_faults_precise_va(gpu,
@@ -2087,10 +2088,10 @@ static NV_STATUS cancel_faults_precise(uvm_gpu_t *gpu, uvm_fault_service_batch_c
     }
 
     return cancel_faults_precise_tlb(gpu, batch_context);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void enable_disable_prefetch_faults(uvm_gpu_t *gpu, uvm_fault_service_batch_context_t *batch_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!gpu->prefetch_fault_supported)
         return;
 
@@ -2108,10 +2109,10 @@ static void enable_disable_prefetch_faults(uvm_gpu_t *gpu, uvm_fault_service_bat
         if (lapse > ((NvU64)uvm_perf_reenable_prefetch_faults_lapse_msec * (1000 * 1000)))
             uvm_gpu_enable_prefetch_faults(gpu);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_service_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 num_replays = 0;
     NvU32 num_batches = 0;
     NvU32 num_throttled = 0;
@@ -2227,10 +2228,10 @@ void uvm_gpu_service_replayable_faults(uvm_gpu_t *gpu)
 
     if (status != NV_OK)
         UVM_DBG_PRINT("Error servicing replayable faults on GPU: %s\n", gpu->name);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_enable_prefetch_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->isr.replayable_faults.handling);
     UVM_ASSERT(gpu->prefetch_fault_supported);
 
@@ -2238,10 +2239,10 @@ void uvm_gpu_enable_prefetch_faults(uvm_gpu_t *gpu)
         gpu->arch_hal->enable_prefetch_faults(gpu);
         gpu->fault_buffer_info.prefetch_faults_enabled = true;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_disable_prefetch_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->isr.replayable_faults.handling);
     UVM_ASSERT(gpu->prefetch_fault_supported);
 
@@ -2250,10 +2251,10 @@ void uvm_gpu_disable_prefetch_faults(uvm_gpu_t *gpu)
         gpu->fault_buffer_info.prefetch_faults_enabled = false;
         gpu->fault_buffer_info.disable_prefetch_faults_timestamp = NV_GETTIME();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_perf_fault_replay_policy_string(uvm_perf_fault_replay_policy_t replay_policy)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_PERF_FAULT_REPLAY_POLICY_MAX != 4);
 
     switch (replay_policy) {
@@ -2263,26 +2264,26 @@ const char *uvm_perf_fault_replay_policy_string(uvm_perf_fault_replay_policy_t r
         UVM_ENUM_STRING_CASE(UVM_PERF_FAULT_REPLAY_POLICY_ONCE);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_get_prefetch_faults_reenable_lapse(UVM_TEST_GET_PREFETCH_FAULTS_REENABLE_LAPSE_PARAMS *params,
                                                        struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     params->reenable_lapse = uvm_perf_reenable_prefetch_faults_lapse_msec;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_set_prefetch_faults_reenable_lapse(UVM_TEST_SET_PREFETCH_FAULTS_REENABLE_LAPSE_PARAMS *params,
                                                        struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_reenable_prefetch_faults_lapse_msec = params->reenable_lapse;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_drain_replayable_faults(UVM_TEST_DRAIN_REPLAYABLE_FAULTS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NV_STATUS status = NV_OK;
     uvm_spin_loop_t spin;
@@ -2317,4 +2318,4 @@ NV_STATUS uvm8_test_drain_replayable_faults(UVM_TEST_DRAIN_REPLAYABLE_FAULTS_PAR
     uvm_gpu_release(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

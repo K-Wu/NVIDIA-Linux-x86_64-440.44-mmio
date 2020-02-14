@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -73,9 +74,9 @@ typedef struct
 // Initialize a tracker
 // This is guaranteed not to allocate any memory.
 static void uvm_tracker_init(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     *tracker = (uvm_tracker_t)UVM_TRACKER_INIT();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Deinitialize a tracker
 // This will free any dynamic entries from the tracker
@@ -96,9 +97,9 @@ NV_STATUS uvm_tracker_init_from(uvm_tracker_t *dst, uvm_tracker_t *src);
 //
 // This won't change the max size of the tracker.
 static void uvm_tracker_clear(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     tracker->size = 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Reserve enough space so min_free_entries can be added to the tracker
 // without requiring memory allocation.
@@ -163,11 +164,11 @@ NV_STATUS uvm_tracker_wait_for_other_gpus(uvm_tracker_t *tracker, uvm_gpu_t *gpu
 
 // Helper to wait for a tracker, then deinit it.
 static NV_STATUS uvm_tracker_wait_deinit(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_wait(tracker);
     uvm_tracker_deinit(tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Wait for a single tracker entry
 //
@@ -204,9 +205,9 @@ void uvm_tracker_remove_completed(uvm_tracker_t *tracker);
 uvm_tracker_entry_t *uvm_tracker_get_entries(uvm_tracker_t *tracker);
 
 static bool uvm_tracker_is_empty(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tracker->size == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_t *uvm_tracker_entry_gpu(uvm_tracker_entry_t *entry);
 

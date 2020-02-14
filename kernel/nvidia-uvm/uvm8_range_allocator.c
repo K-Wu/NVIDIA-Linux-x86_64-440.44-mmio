@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -25,7 +26,7 @@
 #include "uvm8_kvmalloc.h"
 
 NV_STATUS uvm_range_allocator_init(NvU64 size, uvm_range_allocator_t *range_allocator)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_tree_node_t *node;
 
@@ -47,10 +48,10 @@ NV_STATUS uvm_range_allocator_init(NvU64 size, uvm_range_allocator_t *range_allo
     range_allocator->size = size;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_allocator_deinit(uvm_range_allocator_t *range_allocator)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
 
     node = uvm_range_tree_iter_first(&range_allocator->range_tree, 0, range_allocator->size - 1);
@@ -62,10 +63,10 @@ void uvm_range_allocator_deinit(uvm_range_allocator_t *range_allocator)
     uvm_range_tree_remove(&range_allocator->range_tree, node);
 
     uvm_kvfree(node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_range_allocator_alloc(uvm_range_allocator_t *range_allocator, NvU64 size, NvU64 alignment, uvm_range_allocation_t *range_alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
     bool found = false;
 
@@ -135,10 +136,10 @@ NV_STATUS uvm_range_allocator_alloc(uvm_range_allocator_t *range_allocator, NvU6
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_allocator_free(uvm_range_allocator_t *range_allocator, uvm_range_allocation_t *range_alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_tree_node_t *adjacent_node;
 
@@ -165,4 +166,4 @@ void uvm_range_allocator_free(uvm_range_allocator_t *range_allocator, uvm_range_
     uvm_spin_unlock(&range_allocator->lock);
 
     range_alloc->node = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

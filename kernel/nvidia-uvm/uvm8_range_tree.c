@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -25,14 +26,14 @@
 #include "uvm8_range_tree.h"
 
 static uvm_range_tree_node_t *get_range_node(struct rb_node *rb_node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return rb_entry(rb_node, uvm_range_tree_node_t, rb_node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool range_nodes_overlap(uvm_range_tree_node_t *a, uvm_range_tree_node_t *b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_ranges_overlap(a->start, a->end, b->start, b->end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Workhorse tree walking function.
 //
@@ -56,7 +57,7 @@ static uvm_range_tree_node_t *range_node_find(uvm_range_tree_t *tree,
                                               NvU64 addr,
                                               uvm_range_tree_node_t **parent,
                                               uvm_range_tree_node_t **next)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct rb_node *rb_node = tree->rb_root.rb_node;
     uvm_range_tree_node_t *node = NULL;
     uvm_range_tree_node_t *_parent = NULL;
@@ -93,17 +94,17 @@ static uvm_range_tree_node_t *range_node_find(uvm_range_tree_t *tree,
     }
 
     return node;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_tree_init(uvm_range_tree_t *tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(tree, 0, sizeof(*tree));
     tree->rb_root = RB_ROOT;
     INIT_LIST_HEAD(&tree->head);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_range_tree_add(uvm_range_tree_t *tree, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *match, *parent, *prev, *next;
 
     UVM_ASSERT(node->start <= node->end);
@@ -151,10 +152,10 @@ NV_STATUS uvm_range_tree_add(uvm_range_tree_t *tree, uvm_range_tree_node_t *node
 
     rb_insert_color(&node->rb_node, &tree->rb_root);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_tree_shrink_node(uvm_range_tree_t *tree, uvm_range_tree_node_t *node, NvU64 new_start, NvU64 new_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(new_start <= new_end, "new_start 0x%llx new_end 0x%llx\n", new_start, new_end);
     UVM_ASSERT_MSG(node->start <= new_start, "start 0x%llx new_start 0x%llx\n", node->start, new_start);
     UVM_ASSERT_MSG(node->end >= new_end, "end 0x%llx new_end 0x%llx\n", node->end, new_end);
@@ -164,12 +165,12 @@ void uvm_range_tree_shrink_node(uvm_range_tree_t *tree, uvm_range_tree_node_t *n
 
     node->start = new_start;
     node->end = new_end;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_range_tree_split(uvm_range_tree_t *tree,
                           uvm_range_tree_node_t *existing,
                           uvm_range_tree_node_t *new)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     UVM_ASSERT(new->start > existing->start);
@@ -184,10 +185,10 @@ void uvm_range_tree_split(uvm_range_tree_t *tree,
     existing->end = new->start - 1;
     status = uvm_range_tree_add(tree, new);
     UVM_ASSERT(status == NV_OK); // There shouldn't be any collisions
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_tree_node_t *uvm_range_tree_merge_prev(uvm_range_tree_t *tree, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *prev = uvm_range_tree_prev(tree, node);
     if (!prev || prev->end != node->start - 1)
         return NULL;
@@ -195,10 +196,10 @@ uvm_range_tree_node_t *uvm_range_tree_merge_prev(uvm_range_tree_t *tree, uvm_ran
     uvm_range_tree_remove(tree, prev);
     node->start = prev->start;
     return prev;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_tree_node_t *uvm_range_tree_merge_next(uvm_range_tree_t *tree, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *next = uvm_range_tree_next(tree, node);
     if (!next || next->start != node->end + 1)
         return NULL;
@@ -206,15 +207,15 @@ uvm_range_tree_node_t *uvm_range_tree_merge_next(uvm_range_tree_t *tree, uvm_ran
     uvm_range_tree_remove(tree, next);
     node->end = next->end;
     return next;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_tree_node_t *uvm_range_tree_find(uvm_range_tree_t *tree, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return range_node_find(tree, addr, NULL, NULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_range_tree_node_t *uvm_range_tree_iter_first(uvm_range_tree_t *tree, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node, *next;
 
     UVM_ASSERT(start <= end);
@@ -236,4 +237,4 @@ uvm_range_tree_node_t *uvm_range_tree_iter_first(uvm_range_tree_t *tree, NvU64 s
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

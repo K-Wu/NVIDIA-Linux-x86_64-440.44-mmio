@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -102,7 +103,7 @@ static NV_STATUS check_chunks(uvm_pmm_gpu_t *pmm,
                               size_t num_chunks,
                               uvm_chunk_size_t chunk_size,
                               uvm_pmm_gpu_memory_type_t mem_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
     for (i = 0; i < num_chunks; i++) {
         TEST_CHECK_RET(chunks[i]);
@@ -114,10 +115,10 @@ static NV_STATUS check_chunks(uvm_pmm_gpu_t *pmm,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS check_alloc_tracker(uvm_pmm_gpu_t *pmm, uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t *tracker_entry;
 
     // The tracker entries returned from an alloc are not allowed to contain
@@ -128,7 +129,7 @@ static NV_STATUS check_alloc_tracker(uvm_pmm_gpu_t *pmm, uvm_tracker_t *tracker)
         TEST_CHECK_RET(uvm_tracker_entry_gpu(tracker_entry) == pmm->gpu);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS chunk_alloc_check_common(uvm_pmm_gpu_t *pmm,
                                           size_t num_chunks,
@@ -138,7 +139,7 @@ static NV_STATUS chunk_alloc_check_common(uvm_pmm_gpu_t *pmm,
                                           uvm_gpu_chunk_t **chunks,
                                           uvm_tracker_t *local_tracker,
                                           uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NV_STATUS check_status;
 
@@ -160,7 +161,7 @@ static NV_STATUS chunk_alloc_check_common(uvm_pmm_gpu_t *pmm,
         return check_status;
 
     return check_chunks(pmm, chunks, num_chunks, chunk_size, mem_type);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS chunk_alloc_check(uvm_pmm_gpu_t *pmm,
                                    size_t num_chunks,
@@ -169,7 +170,7 @@ static NV_STATUS chunk_alloc_check(uvm_pmm_gpu_t *pmm,
                                    uvm_pmm_alloc_flags_t flags,
                                    uvm_gpu_chunk_t **chunks,
                                    uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
 
@@ -184,7 +185,7 @@ static NV_STATUS chunk_alloc_check(uvm_pmm_gpu_t *pmm,
         return status;
 
     return chunk_alloc_check_common(pmm, num_chunks, chunk_size, mem_type, flags, chunks, &local_tracker, tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS chunk_alloc_user_check(uvm_pmm_gpu_t *pmm,
                                         size_t num_chunks,
@@ -192,7 +193,7 @@ static NV_STATUS chunk_alloc_user_check(uvm_pmm_gpu_t *pmm,
                                         uvm_pmm_alloc_flags_t flags,
                                         uvm_gpu_chunk_t **chunks,
                                         uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
 
@@ -202,10 +203,10 @@ static NV_STATUS chunk_alloc_user_check(uvm_pmm_gpu_t *pmm,
 
     return chunk_alloc_check_common(pmm, num_chunks, chunk_size, UVM_PMM_GPU_MEMORY_TYPE_USER,
             flags, chunks, &local_tracker, tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS check_leak(uvm_gpu_t *gpu, uvm_chunk_size_t chunk_size, NvS64 limit, NvU64 *chunks)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     pmm_leak_bucket_t *bucket, *next;
     LIST_HEAD(allocations);
@@ -252,11 +253,11 @@ cleanup:
         kfree(bucket);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Tracker is an in/out dependency
 static NV_STATUS do_memset_4(uvm_gpu_t *gpu, uvm_gpu_address_t dst, NvU32 val, size_t size, uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
 
@@ -277,7 +278,7 @@ static NV_STATUS do_memset_4(uvm_gpu_t *gpu, uvm_gpu_address_t dst, NvU32 val, s
     uvm_tracker_overwrite_with_push(tracker, &push);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Tracker is an in/out dependency
 static NV_STATUS gpu_mem_check(uvm_gpu_t *gpu,
@@ -286,7 +287,7 @@ static NV_STATUS gpu_mem_check(uvm_gpu_t *gpu,
                                size_t size,
                                NvU32 expected,
                                uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_push_t push;
     uvm_gpu_address_t verif_gpu_addr;
@@ -326,7 +327,7 @@ static NV_STATUS gpu_mem_check(uvm_gpu_t *gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS init_test_chunk(uvm_va_space_t *va_space,
                                  uvm_pmm_gpu_t *pmm,
@@ -334,7 +335,7 @@ static NV_STATUS init_test_chunk(uvm_va_space_t *va_space,
                                  uvm_pmm_gpu_memory_type_t type,
                                  uvm_chunk_size_t size,
                                  NvU32 pattern)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_push_t push;
     uvm_gpu_address_t chunk_addr;
@@ -378,10 +379,10 @@ out:
         uvm_tracker_deinit(&test_chunk->tracker);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS destroy_test_chunk(uvm_pmm_gpu_t *pmm, test_chunk_t *test_chunk, uvm_mem_t *verif_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_address_t chunk_addr;
     uvm_gpu_chunk_t *chunk = test_chunk->chunk;
@@ -394,19 +395,19 @@ static NV_STATUS destroy_test_chunk(uvm_pmm_gpu_t *pmm, test_chunk_t *test_chunk
     uvm_pmm_gpu_free(pmm, chunk, &test_chunk->tracker);
     uvm_tracker_deinit(&test_chunk->tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool basic_test_should_free(basic_test_state_t *test_state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (test_state->free_pattern == BASIC_TEST_FREE_PATTERN_IMMEDIATE)
         return true;
 
     return test_state->free_pattern == BASIC_TEST_FREE_PATTERN_EVERY_N &&
            (test_state->num_chunks_total % BASIC_TEST_FREE_EVERY_N) == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS basic_test_alloc(basic_test_state_t *test_state, uvm_chunk_size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     test_chunk_t *test_chunk;
     NvU32 pattern;
     NV_STATUS status = NV_OK;
@@ -435,10 +436,10 @@ static NV_STATUS basic_test_alloc(basic_test_state_t *test_state, uvm_chunk_size
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS basic_test_free_all(basic_test_state_t *test_state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     test_chunk_t *test_chunk;
     NV_STATUS temp_status, status = NV_OK;
 
@@ -456,14 +457,14 @@ static NV_STATUS basic_test_free_all(basic_test_state_t *test_state)
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Try to allocate enough smaller chunks to fully fill the largest chunk, plus
 // a little extra.
 static size_t basic_test_num_allocations(uvm_chunk_size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (UVM_CHUNK_SIZE_MAX / size) + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // - Allocate multiple chunks of all possible sizes and types using various
 //   patterns
@@ -471,7 +472,7 @@ static size_t basic_test_num_allocations(uvm_chunk_size_t size)
 // - Free those chunks in various patterns, verifying the unique value
 static NV_STATUS basic_test(uvm_va_space_t *va_space, uvm_gpu_t *gpu,
                             UvmTestPmmSanityMode mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_chunk_size_t size;
     uvm_chunk_sizes_mask_t chunk_sizes;
     basic_test_state_t test_state;
@@ -555,13 +556,13 @@ out:
     UVM_ASSERT(list_empty(&test_state.list));
     uvm_mem_free(test_state.verif_mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS get_subchunks_test(uvm_pmm_gpu_t *pmm,
                                     uvm_gpu_chunk_t *parent,
                                     uvm_gpu_chunk_t **expected_children,
                                     size_t num_children)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_chunk_t **subchunks = NULL;
     NV_STATUS status = NV_OK;
     size_t count, start_index, size = num_children * sizeof(subchunks[0]);
@@ -596,7 +597,7 @@ static NV_STATUS get_subchunks_test(uvm_pmm_gpu_t *pmm,
 out:
     uvm_kvfree(subchunks);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Always frees parent chunk, even on error return
 static NV_STATUS split_test_single(uvm_pmm_gpu_t *pmm,
@@ -604,7 +605,7 @@ static NV_STATUS split_test_single(uvm_pmm_gpu_t *pmm,
                                    uvm_chunk_size_t child_size,
                                    split_test_mode_t mode,
                                    uvm_mem_t *verif_mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pmm_gpu_memory_type_t parent_type = parent->chunk->type;
     uvm_chunk_size_t parent_size = uvm_gpu_chunk_get_size(parent->chunk);
     NvU64 parent_addr = parent->chunk->address;
@@ -708,12 +709,12 @@ error:
 
     uvm_kvfree(split_chunks);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Splits each possible non-leaf chunk size into all possible sizes below that
 // size, and verifies that the data in the chunk remains intact.
 static NV_STATUS split_test(uvm_va_space_t *va_space, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pmm_gpu_memory_type_t type;
     uvm_chunk_size_t parent_size, child_size;
     NvU32 pattern;
@@ -760,10 +761,10 @@ static NV_STATUS split_test(uvm_va_space_t *va_space, uvm_gpu_t *gpu)
 out:
     uvm_mem_free(verif_mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_query(UVM_TEST_PMM_QUERY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
@@ -784,10 +785,10 @@ NV_STATUS uvm8_test_pmm_query(UVM_TEST_PMM_QUERY_PARAMS *params, struct file *fi
 
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_sanity(UVM_TEST_PMM_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_gpu_t *gpu;
@@ -812,10 +813,10 @@ NV_STATUS uvm8_test_pmm_sanity(UVM_TEST_PMM_SANITY_PARAMS *params, struct file *
 out:
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_check_leak(UVM_TEST_PMM_CHECK_LEAK_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
@@ -831,10 +832,10 @@ NV_STATUS uvm8_test_pmm_check_leak(UVM_TEST_PMM_CHECK_LEAK_PARAMS *params, struc
 
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_async_alloc(UVM_TEST_PMM_ASYNC_ALLOC_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
@@ -932,12 +933,12 @@ out:
     uvm_kvfree(chunks);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_reverse_map_t g_reverse_map_entries[PAGES_PER_UVM_VA_BLOCK * 4];
 
 static NV_STATUS test_pmm_reverse_map_single(uvm_gpu_t *gpu, uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU32 num_translations;
     uvm_va_block_t *va_block;
@@ -973,10 +974,10 @@ static NV_STATUS test_pmm_reverse_map_single(uvm_gpu_t *gpu, uvm_va_space_t *va_
     uvm_va_block_release(va_block);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_pmm_reverse_map_many_blocks(uvm_gpu_t *gpu, uvm_va_space_t *va_space, NvU64 addr, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     uvm_va_block_t *va_block = NULL;
     NvU32 num_blocks;
@@ -1057,10 +1058,10 @@ static NV_STATUS test_pmm_reverse_map_many_blocks(uvm_gpu_t *gpu, uvm_va_space_t
     TEST_CHECK_RET(index == num_blocks);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_reverse_map(UVM_TEST_PMM_REVERSE_MAP_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu;
     uvm_va_space_t *va_space;
@@ -1088,10 +1089,10 @@ exit_unlock:
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_indirect_peers(uvm_gpu_t *owning_gpu, uvm_gpu_t *accessing_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pmm_gpu_t *pmm = &owning_gpu->pmm;
     size_t chunk_size = uvm_chunk_find_first_size(pmm->chunk_sizes[UVM_PMM_GPU_MEMORY_TYPE_USER]);
     uvm_gpu_chunk_t *parent_chunk = NULL;
@@ -1176,10 +1177,10 @@ out:
 
     uvm_kvfree(chunks);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_indirect_peers(UVM_TEST_PMM_INDIRECT_PEERS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_gpu_t *owning_gpu, *accessing_gpu;
@@ -1202,10 +1203,10 @@ NV_STATUS uvm8_test_pmm_indirect_peers(UVM_TEST_PMM_INDIRECT_PEERS_PARAMS *param
 out:
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_chunk_with_elevated_page(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pmm_gpu_t *pmm = &gpu->pmm;
     size_t chunk_size = uvm_chunk_find_first_size(pmm->chunk_sizes[UVM_PMM_GPU_MEMORY_TYPE_USER]);
     uvm_gpu_chunk_t *parent_chunk = NULL, *parent_root = NULL;
@@ -1287,10 +1288,10 @@ out:
 
     uvm_kvfree(chunks);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_chunk_with_elevated_page(UVM_TEST_PMM_CHUNK_WITH_ELEVATED_PAGE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_gpu_t *gpu;
@@ -1314,4 +1315,4 @@ NV_STATUS uvm8_test_pmm_chunk_with_elevated_page(UVM_TEST_PMM_CHUNK_WITH_ELEVATE
 out:
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

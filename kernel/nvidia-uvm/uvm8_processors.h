@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -282,20 +283,20 @@ typedef uvm_global_id_t uvm_global_gpu_id_t;
 #define UVM_GLOBAL_ID_CHECK_BOUNDS(id) UVM_ASSERT_MSG(id.val <= UVM_GLOBAL_ID_MAX_PROCESSORS, "id %u\n", id.val)
 
 static bool uvm_id_equal(uvm_processor_id_t id1, uvm_processor_id_t id2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ID_CHECK_BOUNDS(id1);
     UVM_ID_CHECK_BOUNDS(id2);
 
     return id1.val == id2.val;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_global_id_equal(uvm_global_id_t id1, uvm_global_id_t id2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_GLOBAL_ID_CHECK_BOUNDS(id1);
     UVM_GLOBAL_ID_CHECK_BOUNDS(id2);
 
     return id1.val == id2.val;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define UVM_ID_IS_CPU(id)     uvm_id_equal(id, UVM_ID_CPU)
 #define UVM_ID_IS_INVALID(id) uvm_id_equal(id, UVM_ID_INVALID)
@@ -308,59 +309,59 @@ static bool uvm_global_id_equal(uvm_global_id_t id1, uvm_global_id_t id2)
 #define UVM_GLOBAL_ID_IS_GPU(id)     (!UVM_GLOBAL_ID_IS_CPU(id) && !UVM_GLOBAL_ID_IS_INVALID(id))
 
 static uvm_processor_id_t uvm_id(NvU32 val)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t ret = { .val = val };
 
     UVM_ID_CHECK_BOUNDS(ret);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_id_t uvm_gpu_id(NvU32 val)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_id_t ret = uvm_id(val);
 
     UVM_ASSERT(!UVM_ID_IS_CPU(ret));
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_global_id_t uvm_global_id(NvU32 val)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_global_id_t ret = { .val = val };
 
     UVM_GLOBAL_ID_CHECK_BOUNDS(ret);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_global_gpu_id_t uvm_global_gpu_id(NvU32 val)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_global_gpu_id_t ret = uvm_global_id(val);
 
     UVM_ASSERT(!UVM_GLOBAL_ID_IS_CPU(ret));
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a GPU id from the given GPU id index (previously obtained via
 // uvm_id_gpu_index)
 static uvm_gpu_id_t uvm_gpu_id_from_index(NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_id(index + UVM_ID_GPU0_VALUE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_processor_id_t uvm_id_next(uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     ++id.val;
 
     UVM_ID_CHECK_BOUNDS(id);
 
     return id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_id_t uvm_gpu_id_next(uvm_gpu_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(UVM_ID_IS_GPU(id));
 
     ++id.val;
@@ -368,25 +369,25 @@ static uvm_gpu_id_t uvm_gpu_id_next(uvm_gpu_id_t id)
     UVM_ID_CHECK_BOUNDS(id);
 
     return id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Same as uvm_gpu_id_from_index but for uvm_global_id_t
 static uvm_global_gpu_id_t uvm_global_gpu_id_from_index(NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_global_gpu_id(index + UVM_ID_GPU0_VALUE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_global_id_t uvm_global_id_next(uvm_global_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     ++id.val;
 
     UVM_GLOBAL_ID_CHECK_BOUNDS(id);
 
     return id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_global_gpu_id_t uvm_global_gpu_id_next(uvm_global_gpu_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(UVM_GLOBAL_ID_IS_GPU(id));
 
     ++id.val;
@@ -394,43 +395,43 @@ static uvm_global_gpu_id_t uvm_global_gpu_id_next(uvm_global_gpu_id_t id)
     UVM_GLOBAL_ID_CHECK_BOUNDS(id);
 
     return id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function returns the numerical value within [0, UVM_ID_MAX_PROCESSORS)
 // of the given processor id
 static NvU32 uvm_id_value(uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ID_CHECK_BOUNDS(id);
 
     return id.val;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function returns the numerical value within
 // [0, UVM_GLOBAL_ID_MAX_PROCESSORS) of the given processor id
 static NvU32 uvm_global_id_value(uvm_global_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_GLOBAL_ID_CHECK_BOUNDS(id);
 
     return id.val;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function returns the index of the given GPU id within the GPU id space
 // [0, UVM_ID_MAX_GPUS)
 static NvU32 uvm_id_gpu_index(uvm_gpu_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(UVM_ID_IS_GPU(id));
 
     return id.val - UVM_ID_GPU0_VALUE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function returns the index of the given GPU id within the GPU id space
 // [0, UVM_GLOBAL_ID_MAX_GPUS)
 static NvU32 uvm_global_id_gpu_index(uvm_global_gpu_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(UVM_GLOBAL_ID_IS_GPU(id));
 
     return id.val - UVM_ID_GPU0_VALUE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 UVM_PROCESSOR_MASK(uvm_processor_mask_t,              \
                    uvm_processor_mask,                \
@@ -477,14 +478,14 @@ UVM_PROCESSOR_MASK(uvm_global_processor_mask_t,       \
 #define for_each_global_id(i) for (i = UVM_GLOBAL_ID_CPU; UVM_GLOBAL_ID_IS_VALID(i); i = uvm_global_id_next(i))
 
 static bool uvm_processor_uuid_eq(const NvProcessorUuid *uuid1, const NvProcessorUuid *uuid2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return memcmp(uuid1, uuid2, sizeof(*uuid1)) == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Copies a UUID from source (src) to destination (dst).
 static void uvm_processor_uuid_copy(NvProcessorUuid *dst, const NvProcessorUuid *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memcpy(dst, src, sizeof(*dst));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -40,7 +41,7 @@ NV_STATUS uvm_api_tools_get_processor_uuid_table(UVM_TOOLS_GET_PROCESSOR_UUID_TA
 NV_STATUS uvm_api_tools_flush_events(UVM_TOOLS_FLUSH_EVENTS_PARAMS *params, struct file *filp);
 
 static UvmEventFatalReason uvm_tools_status_to_fatal_fault_reason(NV_STATUS status)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (status) {
         case NV_OK:
             return UvmEventFatalReasonInvalid;
@@ -55,7 +56,7 @@ static UvmEventFatalReason uvm_tools_status_to_fatal_fault_reason(NV_STATUS stat
         default:
             return UvmEventFatalReasonInternalError;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_cpu_fatal_fault(uvm_va_space_t *va_space,
                                       NvU64 address,

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -51,7 +52,7 @@ static NV_STATUS get_rm_ptes(uvm_va_range_t *va_range,
                              NvU64 map_offset,
                              NvU64 map_size,
                              UvmGpuExternalMappingInfo *mapping_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = uvm_gpu_va_space_get(va_range->va_space, gpu);
     uvm_ext_gpu_map_t *ext_gpu_map;
     NV_STATUS status;
@@ -81,7 +82,7 @@ static NV_STATUS get_rm_ptes(uvm_va_range_t *va_range,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 typedef struct
 {
@@ -129,7 +130,7 @@ static NV_STATUS uvm_pte_buffer_init(uvm_va_range_t *va_range,
                                      const uvm_map_rm_params_t *map_rm_params,
                                      NvU32 page_size,
                                      uvm_pte_buffer_t *pte_buffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = uvm_gpu_va_space_get(va_range->va_space, gpu);
     uvm_page_tree_t *tree = &gpu_va_space->page_tables;
     size_t num_all_ptes;
@@ -153,19 +154,19 @@ static NV_STATUS uvm_pte_buffer_init(uvm_va_range_t *va_range,
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_pte_buffer_deinit(uvm_pte_buffer_t *pte_buffer)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_kvfree(pte_buffer->mapping_info.pteBuffer);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the PTEs for mapping the [map_offset, map_offset + map_size) VA range.
 static NV_STATUS uvm_pte_buffer_get(uvm_pte_buffer_t *pte_buffer,
                                     NvU64 map_offset,
                                     NvU64 map_size,
                                     NvU64 **ptes_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     size_t pte_offset;
     size_t num_ptes;
@@ -210,7 +211,7 @@ static NV_STATUS uvm_pte_buffer_get(uvm_pte_buffer_t *pte_buffer,
     *ptes_out = pte_buffer->mapping_info.pteBuffer;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Copies the input ptes buffer to the given physical address, with an optional
 // TLB invalidate. The copy acquires the input tracker then updates it.
@@ -223,7 +224,7 @@ static NV_STATUS copy_ptes(uvm_page_tree_t *tree,
                            NvU64 range_start,
                            NvU64 range_end,
                            uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     NV_STATUS status;
     NvU32 pte_size = uvm_mmu_pte_size(tree, page_size);
@@ -269,7 +270,7 @@ static NV_STATUS copy_ptes(uvm_page_tree_t *tree,
     uvm_tracker_overwrite_with_push(tracker, &push);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Map all of pt_range, which is contained with the va_range and begins at
 // virtual address start. The PTE values are queried from RM and the pushed
@@ -284,7 +285,7 @@ static NV_STATUS map_rm_pt_range(uvm_va_range_t *va_range,
                                  NvU64 start,
                                  NvU64 map_offset,
                                  uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_phys_address_t pte_addr;
     NvU64 page_size = pt_range->page_size;
     NvU32 pte_size = uvm_mmu_pte_size(tree, page_size);
@@ -345,12 +346,12 @@ static NV_STATUS map_rm_pt_range(uvm_va_range_t *va_range,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Determine the appropriate membar for downgrades on a VA range with type
 // UVM_VA_RANGE_TYPE_EXTERNAL or UVM_VA_RANGE_TYPE_CHANNEL.
 static uvm_membar_t va_range_downgrade_membar(uvm_va_range_t *va_range, uvm_gpu_t *mapped_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_ext_gpu_map_t *ext_gpu_map;
 
     if (va_range->type == UVM_VA_RANGE_TYPE_CHANNEL) {
@@ -363,14 +364,14 @@ static uvm_membar_t va_range_downgrade_membar(uvm_va_range_t *va_range, uvm_gpu_
     if (ext_gpu_map->is_sysmem || mapped_gpu != ext_gpu_map->owning_gpu)
         return UVM_MEMBAR_SYS;
     return UVM_MEMBAR_GPU;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_range_map_rm_allocation(uvm_va_range_t *va_range,
                                          uvm_gpu_t *mapping_gpu,
                                          const UvmGpuMemoryInfo *mem_info,
                                          const uvm_map_rm_params_t *map_rm_params,
                                          uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space = uvm_gpu_va_space_get(va_range->va_space, mapping_gpu);
     uvm_page_tree_t *page_tree;
     uvm_pte_buffer_t pte_buffer;
@@ -464,10 +465,10 @@ out:
     uvm_pte_buffer_deinit(&pte_buffer);
     uvm_tracker_deinit(&local_tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_api_mapping_type_invalid(UvmGpuMappingType map_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (map_type) {
         case UvmGpuMappingTypeDefault:
         case UvmGpuMappingTypeReadWriteAtomic:
@@ -476,10 +477,10 @@ static bool uvm_api_mapping_type_invalid(UvmGpuMappingType map_type)
             return false;
     }
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_api_caching_type_invalid(UvmGpuCachingType cache_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (cache_type) {
         case UvmGpuCachingTypeDefault:
         case UvmGpuCachingTypeForceUncached:
@@ -487,10 +488,10 @@ static bool uvm_api_caching_type_invalid(UvmGpuCachingType cache_type)
             return false;
     }
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_api_kind_type_invalid(UvmGpuFormatType format_type, UvmGpuFormatElementBits element_bits)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (format_type) {
         case UvmGpuFormatTypeDefault:
         case UvmGpuFormatTypeBlockLinear:
@@ -517,13 +518,13 @@ static bool uvm_api_kind_type_invalid(UvmGpuFormatType format_type, UvmGpuFormat
         return true;
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS set_ext_gpu_map_location(uvm_ext_gpu_map_t *ext_gpu_map,
                                           uvm_va_space_t *va_space,
                                           uvm_gpu_t *mapping_gpu,
                                           const UvmGpuMemoryInfo *mem_info)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *owning_gpu;
 
 
@@ -568,14 +569,14 @@ static NV_STATUS set_ext_gpu_map_location(uvm_ext_gpu_map_t *ext_gpu_map,
     ext_gpu_map->owning_gpu = owning_gpu;
     ext_gpu_map->is_sysmem = false;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_map_external_allocation_on_gpu(uvm_va_range_t *va_range,
                                                     uvm_gpu_t *mapping_gpu,
                                                     const uvm_rm_user_object_t *user_rm_mem,
                                                     const uvm_map_rm_params_t *map_rm_params,
                                                     uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_range->va_space;
     uvm_ext_gpu_map_t *ext_gpu_map;
     UvmGpuMemoryInfo mem_info;
@@ -635,10 +636,10 @@ static NV_STATUS uvm_map_external_allocation_on_gpu(uvm_va_range_t *va_range,
 error:
     uvm_ext_gpu_map_destroy(va_range, mapping_gpu, NULL);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS find_create_va_range(uvm_va_space_t *va_space, NvU64 base, NvU64 length, uvm_va_range_t **out_va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     NV_STATUS status;
 
@@ -665,11 +666,11 @@ static NV_STATUS find_create_va_range(uvm_va_space_t *va_space, NvU64 base, NvU6
 
     *out_va_range = va_range;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Actual implementation of UvmMapExternalAllocation
 static NV_STATUS uvm_map_external_allocation(uvm_va_space_t *va_space, UVM_MAP_EXTERNAL_ALLOCATION_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = NULL;
     uvm_gpu_t *mapping_gpu;
     uvm_processor_mask_t mapped_gpus;
@@ -795,17 +796,17 @@ error:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_map_external_allocation(UVM_MAP_EXTERNAL_ALLOCATION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     return uvm_map_external_allocation(va_space, params);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Version of free which returns but doesn't release the owning GPU
 static uvm_gpu_t *uvm_ext_gpu_map_free_internal(uvm_ext_gpu_map_t *ext_gpu_map)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *owning_gpu;
 
@@ -824,17 +825,17 @@ static uvm_gpu_t *uvm_ext_gpu_map_free_internal(uvm_ext_gpu_map_t *ext_gpu_map)
     uvm_kvfree(ext_gpu_map);
 
     return owning_gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_ext_gpu_map_free(uvm_ext_gpu_map_t *ext_gpu_map)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *owning_gpu = uvm_ext_gpu_map_free_internal(ext_gpu_map);
     if (owning_gpu)
         uvm_gpu_release(owning_gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_ext_gpu_map_destroy(uvm_va_range_t *va_range, uvm_gpu_t *mapped_gpu, struct list_head *deferred_free_list)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_va_space_t *gpu_va_space;
     uvm_ext_gpu_map_t *ext_gpu_map = uvm_va_range_ext_gpu_map(va_range, mapped_gpu);
 
@@ -867,10 +868,10 @@ void uvm_ext_gpu_map_destroy(uvm_va_range_t *va_range, uvm_gpu_t *mapped_gpu, st
 
     va_range->external.gpu_maps[uvm_id_gpu_index(mapped_gpu->id)] = NULL;
     uvm_processor_mask_clear(&va_range->external.mapped_gpus, mapped_gpu->id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_unmap_external_allocation(uvm_va_space_t *va_space, NvU64 base, const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     uvm_gpu_t *gpu = NULL;
     NV_STATUS status = NV_OK;
@@ -908,19 +909,19 @@ out:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_unmap_external_allocation(UVM_UNMAP_EXTERNAL_ALLOCATION_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     return uvm_unmap_external_allocation(va_space, params->base, &params->gpuUuid);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This destroys VA ranges created by UvmMapExternalAllocation,
 // UvmMapDynamicParallelismRegion, and UvmAllocSemaphorePool *only*. VA ranges
 // created by UvmMemMap and UvmAlloc go through mmap/munmap.
 static NV_STATUS uvm_free(uvm_va_space_t *va_space, NvU64 base, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range;
     NV_STATUS status = NV_OK;
     uvm_global_processor_mask_t retained_mask;
@@ -973,10 +974,10 @@ out:
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_free(UVM_FREE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     return uvm_free(va_space, params->base, params->length);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

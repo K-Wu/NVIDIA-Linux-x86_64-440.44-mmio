@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -300,9 +301,9 @@ NV_STATUS uvm_page_tree_wait(uvm_page_tree_t *tree);
 
 // Returns the physical allocation that contains the root directory
 static uvm_mmu_page_table_alloc_t *uvm_page_tree_pdb(uvm_page_tree_t *tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return &tree->root->phys_alloc;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Initialize a page table range vector covering the specified VA range [start, start + size)
 //
@@ -366,25 +367,25 @@ void uvm_mmu_destroy_peer_identity_mappings(uvm_gpu_t *gpu, uvm_gpu_t *peer);
 uvm_gpu_address_t uvm_mmu_gpu_address_for_big_page_physical(uvm_gpu_address_t physical, uvm_gpu_t *gpu);
 
 static NvU64 uvm_mmu_page_tree_entries(uvm_page_tree_t *tree, NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return 1ull << tree->hal->index_bits(depth, page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_mmu_pde_coverage(uvm_page_tree_t *tree, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 depth = tree->hal->page_table_depth(page_size);
     return uvm_mmu_page_tree_entries(tree, depth, page_size) * page_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_mmu_page_size_supported(uvm_page_tree_t *tree, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(is_power_of_2(page_size), "0x%x\n", page_size);
 
     return (tree->hal->page_sizes() & page_size) != 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 uvm_mmu_biggest_page_size_up_to(uvm_page_tree_t *tree, NvU32 max_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 page_sizes;
     NvU32 page_size;
 
@@ -399,27 +400,27 @@ static NvU32 uvm_mmu_biggest_page_size_up_to(uvm_page_tree_t *tree, NvU32 max_pa
     UVM_ASSERT_MSG(uvm_mmu_page_size_supported(tree, page_size), "page_size 0x%x", page_size);
 
     return page_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 uvm_mmu_biggest_page_size(uvm_page_tree_t *tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return 1 << __fls(tree->hal->page_sizes());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 uvm_mmu_pte_size(uvm_page_tree_t *tree, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tree->hal->entry_size(tree->hal->page_table_depth(page_size));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 uvm_page_table_range_size(uvm_page_table_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return range->entry_count * range->page_size;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the physical address of the entry at entry_index within the range (counted from range->start_index).
 static uvm_gpu_phys_address_t uvm_page_table_range_entry_address(uvm_page_tree_t *tree, uvm_page_table_range_t *range,
         size_t entry_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 entry_size = uvm_mmu_pte_size(tree, range->page_size);
     uvm_gpu_phys_address_t entry = range->table->phys_alloc.addr;
 
@@ -427,12 +428,12 @@ static uvm_gpu_phys_address_t uvm_page_table_range_entry_address(uvm_page_tree_t
 
     entry.address += (range->start_index + entry_index) * entry_size;
     return entry;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_aperture_t uvm_page_table_range_aperture(uvm_page_table_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return range->table->phys_alloc.addr.aperture;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_invalidate_tlb(UVM_TEST_INVALIDATE_TLB_PARAMS *params, struct file *filp);
 

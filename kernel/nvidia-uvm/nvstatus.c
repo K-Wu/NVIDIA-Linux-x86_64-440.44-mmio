@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2014 NVidia Corporation
 
@@ -54,7 +55,7 @@ static struct NvStatusCodeString
  *
 */
 const char *nvstatusToString(NV_STATUS nvStatusIn)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU32 n = ((NvU32)(sizeof(g_StatusCodeList))/(NvU32)(sizeof(g_StatusCodeList[0])));
     for (i = 0; i < n; i++)
@@ -66,4 +67,4 @@ const char *nvstatusToString(NV_STATUS nvStatusIn)
     }
 
     return "Unknown error code!";
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

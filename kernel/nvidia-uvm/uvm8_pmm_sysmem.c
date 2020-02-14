@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017-2019 NVIDIA Corporation
 
@@ -30,22 +31,22 @@
 static struct kmem_cache *g_reverse_page_map_cache __read_mostly;
 
 NV_STATUS uvm_pmm_sysmem_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_reverse_page_map_cache = NV_KMEM_CACHE_CREATE("uvm_pmm_sysmem_page_reverse_map_t",
                                                     uvm_reverse_map_t);
     if (!g_reverse_page_map_cache)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pmm_sysmem_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     kmem_cache_destroy_safe(&g_reverse_page_map_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_pmm_sysmem_mappings_init(uvm_gpu_t *gpu, uvm_pmm_sysmem_mappings_t *sysmem_mappings)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(sysmem_mappings, 0, sizeof(*sysmem_mappings));
 
     sysmem_mappings->gpu = gpu;
@@ -54,10 +55,10 @@ NV_STATUS uvm_pmm_sysmem_mappings_init(uvm_gpu_t *gpu, uvm_pmm_sysmem_mappings_t
     uvm_init_radix_tree_preloadable(&sysmem_mappings->reverse_map_tree);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pmm_sysmem_mappings_deinit(uvm_pmm_sysmem_mappings_t *sysmem_mappings)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (sysmem_mappings->gpu) {
         UVM_ASSERT_MSG(radix_tree_empty(&sysmem_mappings->reverse_map_tree),
                        "radix_tree not empty for GPU %s\n",
@@ -65,7 +66,7 @@ void uvm_pmm_sysmem_mappings_deinit(uvm_pmm_sysmem_mappings_t *sysmem_mappings)
     }
 
     sysmem_mappings->gpu = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1995015: use a more efficient data structure for
 // physically-contiguous allocations.
@@ -75,7 +76,7 @@ NV_STATUS uvm_pmm_sysmem_mappings_add_gpu_mapping(uvm_pmm_sysmem_mappings_t *sys
                                                   NvU64 region_size,
                                                   uvm_va_block_t *va_block,
                                                   uvm_processor_id_t owner)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int ret;
     uvm_reverse_map_t *new_reverse_map;
     NvU64 key;
@@ -134,12 +135,12 @@ NV_STATUS uvm_pmm_sysmem_mappings_add_gpu_mapping(uvm_pmm_sysmem_mappings_t *sys
 
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void pmm_sysmem_mappings_remove_gpu_mapping(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                    NvU64 dma_addr,
                                                    bool check_mapping)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_reverse_map_t *reverse_map;
     NvU64 key;
     const NvU64 base_key = dma_addr / PAGE_SIZE;
@@ -168,22 +169,22 @@ static void pmm_sysmem_mappings_remove_gpu_mapping(uvm_pmm_sysmem_mappings_t *sy
     uvm_spin_unlock(&sysmem_mappings->reverse_map_lock);
 
     kmem_cache_free(g_reverse_page_map_cache, reverse_map);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pmm_sysmem_mappings_remove_gpu_mapping(uvm_pmm_sysmem_mappings_t *sysmem_mappings, NvU64 dma_addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     pmm_sysmem_mappings_remove_gpu_mapping(sysmem_mappings, dma_addr, true);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pmm_sysmem_mappings_remove_gpu_mapping_on_eviction(uvm_pmm_sysmem_mappings_t *sysmem_mappings, NvU64 dma_addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     pmm_sysmem_mappings_remove_gpu_mapping(sysmem_mappings, dma_addr, false);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pmm_sysmem_mappings_reparent_gpu_mapping(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                   NvU64 dma_addr,
                                                   uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 virt_addr;
     uvm_reverse_map_t *reverse_map;
     const NvU64 base_key = dma_addr / PAGE_SIZE;
@@ -214,12 +215,12 @@ void uvm_pmm_sysmem_mappings_reparent_gpu_mapping(uvm_pmm_sysmem_mappings_t *sys
     UVM_ASSERT(uvm_va_block_contains_address(va_block, uvm_reverse_map_end(reverse_map)));
 
     uvm_spin_unlock(&sysmem_mappings->reverse_map_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_pmm_sysmem_mappings_split_gpu_mappings(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                      NvU64 dma_addr,
                                                      NvU64 new_region_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_reverse_map_t *orig_reverse_map;
     const NvU64 base_key = dma_addr / PAGE_SIZE;
     const size_t num_pages = new_region_size / PAGE_SIZE;
@@ -295,12 +296,12 @@ NV_STATUS uvm_pmm_sysmem_mappings_split_gpu_mappings(uvm_pmm_sysmem_mappings_t *
 
     uvm_kvfree(new_reverse_maps);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pmm_sysmem_mappings_merge_gpu_mappings(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                                 NvU64 dma_addr,
                                                 NvU64 new_region_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_reverse_map_t *first_reverse_map;
     uvm_page_index_t running_page_index;
     NvU64 key;
@@ -370,14 +371,14 @@ void uvm_pmm_sysmem_mappings_merge_gpu_mappings(uvm_pmm_sysmem_mappings_t *sysme
 
 unlock_no_update:
     uvm_spin_unlock(&sysmem_mappings->reverse_map_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 size_t uvm_pmm_sysmem_mappings_dma_to_virt(uvm_pmm_sysmem_mappings_t *sysmem_mappings,
                                            NvU64 dma_addr,
                                            NvU64 region_size,
                                            uvm_reverse_map_t *out_mappings,
                                            size_t max_out_mappings)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 key;
     size_t num_mappings = 0;
     const NvU64 base_key = dma_addr / PAGE_SIZE;
@@ -423,4 +424,4 @@ size_t uvm_pmm_sysmem_mappings_dma_to_virt(uvm_pmm_sysmem_mappings_t *sysmem_map
     uvm_spin_unlock(&sysmem_mappings->reverse_map_lock);
 
     return num_mappings;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -211,15 +212,15 @@ NV_STATUS uvm_pushbuffer_create_common(uvm_channel_manager_t *channel_manager, b
 
 // Create a pushbuffer with procfs
 static NV_STATUS uvm_pushbuffer_create(uvm_channel_manager_t *channel_manager, uvm_pushbuffer_t **pushbuffer_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_pushbuffer_create_common(channel_manager, true, pushbuffer_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a pushbuffer without procfs
 static NV_STATUS uvm_pushbuffer_create_no_procfs(uvm_channel_manager_t *channel_manager, uvm_pushbuffer_t **pushbuffer_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_pushbuffer_create_common(channel_manager, false, pushbuffer_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Destroy the pushbuffer
 void uvm_pushbuffer_destroy(uvm_pushbuffer_t *pushbuffer);

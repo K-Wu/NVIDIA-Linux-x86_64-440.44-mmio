@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -376,24 +377,24 @@ static unsigned g_uvm_perf_thrashing_max_resets;
 
 // Helpers to get/set the time stamp
 static NvU64 page_thrashing_get_time_stamp(page_thrashing_info_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return entry->last_time_stamp << (64 - PAGE_THRASHING_LAST_TIME_STAMP_BITS);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void page_thrashing_set_time_stamp(page_thrashing_info_t *entry, NvU64 time_stamp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     entry->last_time_stamp = time_stamp >> (64 - PAGE_THRASHING_LAST_TIME_STAMP_BITS);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 page_thrashing_get_throttling_end_time_stamp(page_thrashing_info_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return entry->throttling_end_time_stamp << (64 - PAGE_THRASHING_THROTTLING_END_TIME_STAMP_BITS);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void page_thrashing_set_throttling_end_time_stamp(page_thrashing_info_t *entry, NvU64 time_stamp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     entry->throttling_end_time_stamp = time_stamp >> (64 - PAGE_THRASHING_THROTTLING_END_TIME_STAMP_BITS);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Performance heuristics module for thrashing
 static uvm_perf_module_t g_module_thrashing;
@@ -411,7 +412,7 @@ static uvm_perf_module_event_callback_desc_t g_callbacks_thrashing[] = {
 };
 
 static int nv_procfs_read_thrashing_stats(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     processor_thrashing_stats_t *processor_stats = (processor_thrashing_stats_t *)s->private;
 
     UVM_ASSERT(processor_stats);
@@ -427,12 +428,12 @@ static int nv_procfs_read_thrashing_stats(struct seq_file *s, void *v)
     uvm_up_read(&g_uvm_global.pm.lock);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_thrashing_stats_entry(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(nv_procfs_read_thrashing_stats(s, v));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 UVM_DEFINE_SINGLE_PROCFS_FILE(thrashing_stats_entry);
 
@@ -441,7 +442,7 @@ UVM_DEFINE_SINGLE_PROCFS_FILE(thrashing_stats_entry);
 // Initialization/deinitialization of CPU thrashing stats
 //
 static NV_STATUS cpu_thrashing_stats_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct proc_dir_entry *cpu_base_dir_entry = uvm_procfs_get_cpu_base_dir();
 
     if (uvm_procfs_is_debug_enabled()) {
@@ -455,27 +456,27 @@ static NV_STATUS cpu_thrashing_stats_init(void)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void cpu_thrashing_stats_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (g_cpu_thrashing_stats.procfs_file) {
         UVM_ASSERT(uvm_procfs_is_debug_enabled());
         uvm_procfs_destroy_entry(g_cpu_thrashing_stats.procfs_file);
         g_cpu_thrashing_stats.procfs_file = NULL;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the thrashing stats struct for the given VA space if it exists
 //
 // No lock may be held. Therefore, the stats must be updated using atomics
 static processor_thrashing_stats_t *gpu_thrashing_stats_get_or_null(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_perf_module_type_data(gpu->perf_modules_data, UVM_PERF_MODULE_TYPE_THRASHING);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static processor_thrashing_stats_t *thrashing_stats_get_or_null(uvm_va_space_t *va_space, uvm_processor_id_t id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_CPU(id)) {
         if (g_cpu_thrashing_stats.procfs_file)
             return &g_cpu_thrashing_stats;
@@ -484,13 +485,13 @@ static processor_thrashing_stats_t *thrashing_stats_get_or_null(uvm_va_space_t *
     }
 
     return gpu_thrashing_stats_get_or_null(uvm_va_space_get_gpu(va_space, id));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create the thrashing stats struct for the given GPU
 //
 // Global lock needs to be held
 static NV_STATUS gpu_thrashing_stats_create(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     processor_thrashing_stats_t *gpu_thrashing;
 
     uvm_assert_mutex_locked(&g_uvm_global.global_lock);
@@ -513,10 +514,10 @@ static NV_STATUS gpu_thrashing_stats_create(uvm_gpu_t *gpu)
     uvm_perf_module_type_set_data(gpu->perf_modules_data, gpu_thrashing, UVM_PERF_MODULE_TYPE_THRASHING);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void gpu_thrashing_stats_destroy(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     processor_thrashing_stats_t *gpu_thrashing = gpu_thrashing_stats_get_or_null(gpu);
 
     uvm_assert_mutex_locked(&g_uvm_global.global_lock);
@@ -529,32 +530,32 @@ static void gpu_thrashing_stats_destroy(uvm_gpu_t *gpu)
 
         uvm_kvfree(gpu_thrashing);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the thrashing detection struct for the given VA space if it exists
 //
 // VA space lock needs to be held
 static va_space_thrashing_info_t *va_space_thrashing_info_get_or_null(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->lock);
 
     return uvm_perf_module_type_data(va_space->perf_modules_data, UVM_PERF_MODULE_TYPE_THRASHING);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the thrashing detection struct for the given VA space. It asserts that
 // the information has been previously created.
 //
 // VA space lock needs to be held
 static va_space_thrashing_info_t *va_space_thrashing_info_get(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get_or_null(va_space);
     UVM_ASSERT(va_space_thrashing);
 
     return va_space_thrashing;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void va_space_thrashing_info_init_params(va_space_thrashing_info_t *va_space_thrashing)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(!va_space_thrashing->params.test_overrides);
 
     va_space_thrashing->params.enable = g_uvm_perf_thrashing_enable;
@@ -584,13 +585,13 @@ static void va_space_thrashing_info_init_params(va_space_thrashing_info_t *va_sp
     }
 
     va_space_thrashing->params.max_resets    = g_uvm_perf_thrashing_max_resets;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create the thrashing detection struct for the given VA space
 //
 // VA space lock needs to be held in write mode
 static va_space_thrashing_info_t *va_space_thrashing_info_create(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing;
     uvm_assert_rwsem_locked_write(&va_space->lock);
 
@@ -606,13 +607,13 @@ static va_space_thrashing_info_t *va_space_thrashing_info_create(uvm_va_space_t 
     }
 
     return va_space_thrashing;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Destroy the thrashing detection struct for the given VA space
 //
 // VA space lock needs to be in write mode
 static void va_space_thrashing_info_destroy(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get_or_null(va_space);
     uvm_assert_rwsem_locked_write(&va_space->lock);
 
@@ -620,19 +621,19 @@ static void va_space_thrashing_info_destroy(uvm_va_space_t *va_space)
         uvm_perf_module_type_unset_data(va_space->perf_modules_data, UVM_PERF_MODULE_TYPE_THRASHING);
         uvm_kvfree(va_space_thrashing);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the thrashing detection struct for the given block
 static block_thrashing_info_t *thrashing_info_get(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_mutex_locked(&va_block->lock);
     return uvm_perf_module_type_data(va_block->perf_modules_data, UVM_PERF_MODULE_TYPE_THRASHING);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the thrashing detection struct for the given block or create it if it
 // does not exist
 static block_thrashing_info_t *thrashing_info_get_create(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_thrashing_info_t *block_thrashing = thrashing_info_get(va_block);
 
     BUILD_BUG_ON((1 << 8 * sizeof(block_thrashing->num_thrashing_pages)) < PAGES_PER_UVM_VA_BLOCK);
@@ -651,13 +652,13 @@ static block_thrashing_info_t *thrashing_info_get_create(uvm_va_block_t *va_bloc
 
 done:
     return block_thrashing;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thrashing_reset_pages_in_region(uvm_va_block_t *va_block, NvU64 address, NvU64 bytes);
 
 // Destroy the thrashing detection struct for the given block
 static void thrashing_info_destroy(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_thrashing_info_t *block_thrashing = thrashing_info_get(va_block);
 
     if (block_thrashing) {
@@ -668,10 +669,10 @@ static void thrashing_info_destroy(uvm_va_block_t *va_block)
         uvm_kvfree(block_thrashing->pages);
         kmem_cache_free(g_va_block_thrashing_info_cache, block_thrashing);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void thrashing_block_destroy_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
 
     UVM_ASSERT(g_uvm_perf_thrashing_enable);
@@ -691,14 +692,14 @@ void thrashing_block_destroy_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t
         return;
 
     thrashing_info_destroy(va_block);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Sanity checks of the thrashing tracking state
 static bool thrashing_state_checks(uvm_va_block_t *va_block,
                                    block_thrashing_info_t *block_thrashing,
                                    page_thrashing_info_t *page_thrashing,
                                    uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get(va_space);
@@ -743,7 +744,7 @@ static bool thrashing_state_checks(uvm_va_block_t *va_block,
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Update throttling heuristics. Mainly check if a new throttling period has
 // started and choose the next processor not to be throttled. This function
@@ -753,7 +754,7 @@ static void thrashing_throttle_update(va_space_thrashing_info_t *va_space_thrash
                                       page_thrashing_info_t *page_thrashing,
                                       uvm_processor_id_t processor,
                                       NvU64 time_stamp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 current_end_time_stamp = page_thrashing_get_throttling_end_time_stamp(page_thrashing);
 
     uvm_assert_mutex_locked(&va_block->lock);
@@ -771,7 +772,7 @@ static void thrashing_throttle_update(va_space_thrashing_info_t *va_space_thrash
     else if (UVM_ID_IS_INVALID(uvm_id(page_thrashing->do_not_throttle_processor_idx))) {
         page_thrashing->do_not_throttle_processor_idx = uvm_id_value(processor);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Throttle the execution of a processor. If this is the first processor being
 // throttled for a throttling period, compute the time stamp until which the
@@ -786,7 +787,7 @@ static void thrashing_throttle_processor(uvm_va_block_t *va_block,
                                          page_thrashing_info_t *page_thrashing,
                                          uvm_page_index_t page_index,
                                          uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     NvU64 address = uvm_va_block_cpu_page_address(va_block, page_index);
 
@@ -811,7 +812,7 @@ static void thrashing_throttle_processor(uvm_va_block_t *va_block,
     }
 
     UVM_ASSERT(thrashing_state_checks(va_block, block_thrashing, page_thrashing, page_index));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Stop throttling on the given processor. If this is the last processor being
 // throttled for a throttling period, it will clear the throttling period.
@@ -825,7 +826,7 @@ static void thrashing_throttle_end_processor(uvm_va_block_t *va_block,
                                              page_thrashing_info_t *page_thrashing,
                                              uvm_page_index_t page_index,
                                              uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     NvU64 address = uvm_va_block_cpu_page_address(va_block, page_index);
 
@@ -844,7 +845,7 @@ static void thrashing_throttle_end_processor(uvm_va_block_t *va_block,
         uvm_tools_record_throttling_end(va_space, address, processor);
 
     UVM_ASSERT(thrashing_state_checks(va_block, block_thrashing, page_thrashing, page_index));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Clear the throttling state for all processors. This is used while
 // transitioning to pinned state and during thrashing information reset.
@@ -852,7 +853,7 @@ static void thrashing_throttling_reset_page(uvm_va_block_t *va_block,
                                             block_thrashing_info_t *block_thrashing,
                                             page_thrashing_info_t *page_thrashing,
                                             uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t processor_id;
 
     for_each_id_in_mask(processor_id, &page_thrashing->throttled_processors) {
@@ -864,12 +865,12 @@ static void thrashing_throttling_reset_page(uvm_va_block_t *va_block,
     }
 
     UVM_ASSERT(uvm_processor_mask_empty(&page_thrashing->throttled_processors));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Find the pinned page descriptor for the given page index. Return NULL if the
 // page is not pinned.
 static pinned_page_t *find_pinned_page(block_thrashing_info_t *block_thrashing, uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     pinned_page_t *pinned_page;
 
     list_for_each_entry(pinned_page, &block_thrashing->pinned_pages.list, va_block_list_entry) {
@@ -878,7 +879,7 @@ static pinned_page_t *find_pinned_page(block_thrashing_info_t *block_thrashing, 
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Pin a page on the specified processor. All thrashing processors will be
 // mapped remotely on this location, when possible
@@ -893,7 +894,7 @@ static NV_STATUS thrashing_pin_page(va_space_thrashing_info_t *va_space_thrashin
                                     NvU64 time_stamp,
                                     uvm_processor_id_t residency,
                                     uvm_processor_id_t requester)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t current_residency;
 
     uvm_assert_mutex_locked(&va_block->lock);
@@ -949,7 +950,7 @@ static NV_STATUS thrashing_pin_page(va_space_thrashing_info_t *va_space_thrashin
     UVM_ASSERT(thrashing_state_checks(va_block, block_thrashing, page_thrashing, page_index));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unpin a page. This function just clears the pinning tracking state, and does
 // not remove remote mappings on the page. Callers will need to do it manually
@@ -961,7 +962,7 @@ static void thrashing_unpin_page(va_space_thrashing_info_t *va_space_thrashing,
                                  block_thrashing_info_t *block_thrashing,
                                  page_thrashing_info_t *page_thrashing,
                                  uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_mutex_locked(&va_block->lock);
     UVM_ASSERT(page_thrashing->pinned);
 
@@ -1003,14 +1004,14 @@ static void thrashing_unpin_page(va_space_thrashing_info_t *va_space_thrashing,
     uvm_page_mask_clear(&block_thrashing->pinned_pages.mask, page_index);
 
     UVM_ASSERT(thrashing_state_checks(va_block, block_thrashing, page_thrashing, page_index));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thrashing_detected(uvm_va_block_t *va_block,
                                block_thrashing_info_t *block_thrashing,
                                page_thrashing_info_t *page_thrashing,
                                uvm_page_index_t page_index,
                                uvm_processor_id_t processor_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     NvU64 address = uvm_va_block_cpu_page_address(va_block, page_index);
 
@@ -1026,7 +1027,7 @@ static void thrashing_detected(uvm_va_block_t *va_block,
     PROCESSOR_THRASHING_STATS_INC(va_space, processor_id, num_thrashing);
 
     UVM_ASSERT(thrashing_state_checks(va_block, block_thrashing, page_thrashing, page_index));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Clear the thrashing information for the given page. This function does not
 // unmap remote mappings on the page. Callers will need to do it BEFORE calling
@@ -1035,7 +1036,7 @@ static void thrashing_reset_page(va_space_thrashing_info_t *va_space_thrashing,
                                  uvm_va_block_t *va_block,
                                  block_thrashing_info_t *block_thrashing,
                                  uvm_page_index_t page_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     page_thrashing_info_t *page_thrashing = &block_thrashing->pages[page_index];
     uvm_assert_mutex_locked(&va_block->lock);
 
@@ -1059,12 +1060,12 @@ static void thrashing_reset_page(va_space_thrashing_info_t *va_space_thrashing,
         --block_thrashing->num_thrashing_pages;
 
     UVM_ASSERT(thrashing_state_checks(va_block, block_thrashing, page_thrashing, page_index));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Call thrashing_reset_page for all the thrashing pages in the region
 // described by address and bytes
 static void thrashing_reset_pages_in_region(uvm_va_block_t *va_block, NvU64 address, NvU64 bytes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get(va_space);
@@ -1078,7 +1079,7 @@ static void thrashing_reset_pages_in_region(uvm_va_block_t *va_block, NvU64 addr
     // Update all pages in the region
     for_each_va_block_page_in_region_mask(page_index, &block_thrashing->thrashing_pages, region)
         thrashing_reset_page(va_space_thrashing, va_block, block_thrashing, page_index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // Unmap remote mappings from the given processors on the pinned pages
@@ -1088,7 +1089,7 @@ static NV_STATUS unmap_remote_pinned_pages_from_processors(uvm_va_block_t *va_bl
                                                            block_thrashing_info_t *block_thrashing,
                                                            uvm_va_block_region_t region,
                                                            const uvm_processor_mask_t *unmap_processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
@@ -1131,14 +1132,14 @@ static NV_STATUS unmap_remote_pinned_pages_from_processors(uvm_va_block_t *va_bl
     uvm_tracker_deinit(&local_tracker);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmap remote mappings from all processors on the pinned pages
 // described by region and block_thrashing->pinned pages.
 static NV_STATUS unmap_remote_pinned_pages_from_all_processors(uvm_va_block_t *va_block,
                                                                uvm_va_block_context_t *va_block_context,
                                                                uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_thrashing_info_t *block_thrashing;
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_processor_mask_t unmap_processors;
@@ -1161,14 +1162,14 @@ static NV_STATUS unmap_remote_pinned_pages_from_all_processors(uvm_va_block_t *v
                                                      block_thrashing,
                                                      region,
                                                      &unmap_processors);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmap remote mappings from the given processor on the pinned pages described
 // by region and block_thrashing->pinned pages.
 static NV_STATUS unmap_remote_pinned_pages_from_processor(uvm_va_block_t *va_block,
                                                           uvm_processor_id_t processor_id,
                                                           uvm_va_block_region_t region)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_thrashing_info_t *block_thrashing;
     uvm_va_range_t *va_range = va_block->va_range;
     uvm_va_space_t *va_space = va_range->va_space;
@@ -1192,7 +1193,7 @@ static NV_STATUS unmap_remote_pinned_pages_from_processor(uvm_va_block_t *va_blo
                                                      block_thrashing,
                                                      region,
                                                      &unmap_processors);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check that we are not migrating pages away from its pinned location and
 // that we are not prefetching thrashing pages.
@@ -1201,7 +1202,7 @@ static bool migrating_wrong_pages(uvm_va_block_t *va_block,
                                   NvU64 bytes,
                                   uvm_processor_id_t proc_id,
                                   uvm_make_resident_cause_t cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
     block_thrashing_info_t *block_thrashing = NULL;
     uvm_va_block_region_t region = uvm_va_block_region_from_start_size(va_block, address, bytes);
@@ -1222,13 +1223,13 @@ static bool migrating_wrong_pages(uvm_va_block_t *va_block,
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool is_migration_pinned_pages_update(uvm_va_block_t *va_block,
                                              const uvm_perf_event_data_t *event_data,
                                              NvU64 address,
                                              NvU64 bytes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const block_thrashing_info_t *block_thrashing = NULL;
     uvm_va_block_region_t region = uvm_va_block_region_from_start_size(va_block, address, bytes);
     bool ret;
@@ -1253,12 +1254,12 @@ static bool is_migration_pinned_pages_update(uvm_va_block_t *va_block,
     }
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Function that processes migration/revocation events and determines if there
 // is the affected pages are thrashing or not.
 void thrashing_event_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing;
     block_thrashing_info_t *block_thrashing = NULL;
     uvm_va_block_t *va_block;
@@ -1405,23 +1406,23 @@ void thrashing_event_cb(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_
 done:
     block_thrashing->last_time_stamp = time_stamp;
     block_thrashing->last_processor  = processor_id;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool thrashing_processors_can_access(uvm_va_space_t *va_space,
                                             page_thrashing_info_t *page_thrashing,
                                             uvm_processor_id_t to)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_INVALID(to))
         return false;
 
     return uvm_processor_mask_subset(&page_thrashing->processors,
                                      &va_space->accessible_from[uvm_id_value(to)]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool thrashing_processors_have_fast_access_to(uvm_va_space_t *va_space,
                                                      page_thrashing_info_t *page_thrashing,
                                                      uvm_processor_id_t to)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_mask_t fast_to;
 
     if (UVM_ID_IS_INVALID(to))
@@ -1435,12 +1436,12 @@ static bool thrashing_processors_have_fast_access_to(uvm_va_space_t *va_space,
     uvm_processor_mask_set(&fast_to, to);
 
     return uvm_processor_mask_subset(&page_thrashing->processors, &fast_to);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thrashing_processors_common_locations(uvm_va_space_t *va_space,
                                                   page_thrashing_info_t *page_thrashing,
                                                   uvm_processor_mask_t *common_locations)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool is_first = true;
     uvm_processor_id_t id;
 
@@ -1457,23 +1458,23 @@ static void thrashing_processors_common_locations(uvm_va_space_t *va_space,
 
         is_first = false;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool preferred_location_is_thrashing(uvm_va_range_t *va_range,
                                             page_thrashing_info_t *page_thrashing)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (UVM_ID_IS_INVALID(va_range->preferred_location))
         return false;
 
     return uvm_processor_mask_test(&page_thrashing->processors, va_range->preferred_location);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_perf_thrashing_hint_t get_hint_for_migration_thrashing(va_space_thrashing_info_t *va_space_thrashing,
                                                                   uvm_va_block_t *va_block,
                                                                   uvm_page_index_t page_index,
                                                                   page_thrashing_info_t *page_thrashing,
                                                                   uvm_processor_id_t requester)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_thrashing_hint_t hint;
     uvm_processor_id_t closest_resident_id;
     uvm_va_range_t *va_range = va_block->va_range;
@@ -1587,7 +1588,7 @@ static uvm_perf_thrashing_hint_t get_hint_for_migration_thrashing(va_space_thras
         hint.pin.residency = UVM_ID_CPU;
 
     return hint;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Function called on fault that tells the fault handler if any operation
 // should be performed to minimize thrashing. The logic is as follows:
@@ -1610,7 +1611,7 @@ static uvm_perf_thrashing_hint_t get_hint_for_migration_thrashing(va_space_thras
 uvm_perf_thrashing_hint_t uvm_perf_thrashing_get_hint(uvm_va_block_t *va_block,
                                                       NvU64 address,
                                                       uvm_processor_id_t requester)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get(va_space);
     block_thrashing_info_t *block_thrashing = NULL;
@@ -1769,10 +1770,10 @@ done:
     }
 
     return hint;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_processor_mask_t *uvm_perf_thrashing_get_thrashing_processors(uvm_va_block_t *va_block, NvU64 address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get(va_space);
     block_thrashing_info_t *block_thrashing = NULL;
@@ -1790,10 +1791,10 @@ uvm_processor_mask_t *uvm_perf_thrashing_get_thrashing_processors(uvm_va_block_t
     page_thrashing = &block_thrashing->pages[page_index];
 
     return &page_thrashing->processors;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const uvm_page_mask_t *uvm_perf_thrashing_get_thrashing_pages(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get(va_space);
     block_thrashing_info_t *block_thrashing = NULL;
@@ -1809,10 +1810,10 @@ const uvm_page_mask_t *uvm_perf_thrashing_get_thrashing_pages(uvm_va_block_t *va
         return NULL;
 
     return &block_thrashing->thrashing_pages;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_perf_thrashing_is_block_thrashing(uvm_va_block_t *va_block)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get(va_space);
     block_thrashing_info_t *block_thrashing = NULL;
@@ -1825,11 +1826,11 @@ bool uvm_perf_thrashing_is_block_thrashing(uvm_va_block_t *va_block)
         return false;
 
     return block_thrashing->num_thrashing_pages > 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define TIMER_GRANULARITY_NS 20000ULL
 static void thrashing_unpin_pages(struct work_struct *work)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct delayed_work *dwork = to_delayed_work(work);
     va_space_thrashing_info_t *va_space_thrashing = container_of(dwork, va_space_thrashing_info_t, pinned_pages.dwork);
     uvm_va_space_t *va_space = va_space_thrashing->va_space;
@@ -1906,15 +1907,15 @@ static void thrashing_unpin_pages(struct work_struct *work)
 
 exit_no_list_lock:
     uvm_va_space_up_read(va_space);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void thrashing_unpin_pages_entry(struct work_struct *work)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(thrashing_unpin_pages(work));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_thrashing_load(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing;
     NV_STATUS status;
 
@@ -1931,10 +1932,10 @@ NV_STATUS uvm_perf_thrashing_load(uvm_va_space_t *va_space)
     INIT_DELAYED_WORK(&va_space_thrashing->pinned_pages.dwork, thrashing_unpin_pages_entry);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_thrashing_stop(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing;
 
     uvm_va_space_down_write(va_space);
@@ -1952,10 +1953,10 @@ void uvm_perf_thrashing_stop(uvm_va_space_t *va_space)
     // which is called later in the teardown path.
     if (va_space_thrashing)
         (void)cancel_delayed_work_sync(&va_space_thrashing->pinned_pages.dwork);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_thrashing_unload(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     va_space_thrashing_info_t *va_space_thrashing = va_space_thrashing_info_get_or_null(va_space);
 
     uvm_perf_module_unload(&g_module_thrashing, va_space);
@@ -1967,10 +1968,10 @@ void uvm_perf_thrashing_unload(uvm_va_space_t *va_space)
 
         va_space_thrashing_info_destroy(va_space);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_thrashing_register_gpu(uvm_va_space_t *va_space, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // If a simulated GPU is registered, re-initialize thrashing parameters in
     // case they need to be adjusted
     if (g_uvm_global.num_simulated_devices > 0) {
@@ -1981,10 +1982,10 @@ NV_STATUS uvm_perf_thrashing_register_gpu(uvm_va_space_t *va_space, uvm_gpu_t *g
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_thrashing_init()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     INIT_THRASHING_PARAMETER_TOGGLE(uvm_perf_thrashing_enable, UVM_PERF_THRASHING_ENABLE_DEFAULT);
@@ -2040,31 +2041,31 @@ error:
     uvm_perf_thrashing_exit();
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_thrashing_exit()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     cpu_thrashing_stats_exit();
 
     kmem_cache_destroy_safe(&g_va_block_thrashing_info_cache);
     kmem_cache_destroy_safe(&g_pinned_page_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_thrashing_add_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_procfs_is_debug_enabled())
         return NV_OK;
 
     return gpu_thrashing_stats_create(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_thrashing_remove_gpu(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     gpu_thrashing_stats_destroy(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_get_page_thrashing_policy(UVM_TEST_GET_PAGE_THRASHING_POLICY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     va_space_thrashing_info_t *va_space_thrashing;
 
@@ -2085,10 +2086,10 @@ NV_STATUS uvm8_test_get_page_thrashing_policy(UVM_TEST_GET_PAGE_THRASHING_POLICY
     uvm_va_space_up_read(va_space);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_set_page_thrashing_policy(UVM_TEST_SET_PAGE_THRASHING_POLICY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     va_space_thrashing_info_t *va_space_thrashing;
@@ -2160,4 +2161,4 @@ done_unlock_va_space:
     uvm_va_space_up_write(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

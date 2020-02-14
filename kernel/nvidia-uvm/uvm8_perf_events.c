@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -40,7 +41,7 @@ static struct kmem_cache *g_callback_desc_cache;
 // va_space_events lock
 static callback_desc_t *event_list_find_callback(uvm_perf_va_space_events_t *va_space_events,
                                                  struct list_head *callback_list, uvm_perf_event_callback_t callback)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     callback_desc_t *callback_desc;
 
     uvm_assert_rwsem_locked(&va_space_events->lock);
@@ -51,12 +52,12 @@ static callback_desc_t *event_list_find_callback(uvm_perf_va_space_events_t *va_
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_register_event_callback_locked(uvm_perf_va_space_events_t *va_space_events,
                                                   uvm_perf_event_t event_id,
                                                   uvm_perf_event_callback_t callback)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     callback_desc_t *callback_desc;
     struct list_head *callback_list;
 
@@ -77,11 +78,11 @@ NV_STATUS uvm_perf_register_event_callback_locked(uvm_perf_va_space_events_t *va
     list_add_tail(&callback_desc->callback_list_node, callback_list);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_register_event_callback(uvm_perf_va_space_events_t *va_space_events, uvm_perf_event_t event_id,
                                            uvm_perf_event_callback_t callback)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     uvm_down_write(&va_space_events->lock);
@@ -89,11 +90,11 @@ NV_STATUS uvm_perf_register_event_callback(uvm_perf_va_space_events_t *va_space_
     uvm_up_write(&va_space_events->lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_unregister_event_callback_locked(uvm_perf_va_space_events_t *va_space_events, uvm_perf_event_t event_id,
                                                uvm_perf_event_callback_t callback)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     callback_desc_t *callback_desc;
     struct list_head *callback_list;
 
@@ -111,19 +112,19 @@ void uvm_perf_unregister_event_callback_locked(uvm_perf_va_space_events_t *va_sp
     list_del(&callback_desc->callback_list_node);
 
     kmem_cache_free(g_callback_desc_cache, callback_desc);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_unregister_event_callback(uvm_perf_va_space_events_t *va_space_events, uvm_perf_event_t event_id,
                                         uvm_perf_event_callback_t callback)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_down_write(&va_space_events->lock);
     uvm_perf_unregister_event_callback_locked(va_space_events, event_id, callback);
     uvm_up_write(&va_space_events->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_event_notify(uvm_perf_va_space_events_t *va_space_events, uvm_perf_event_t event_id,
                            uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     callback_desc_t *callback_desc;
     struct list_head *callback_list;
 
@@ -140,12 +141,12 @@ void uvm_perf_event_notify(uvm_perf_va_space_events_t *va_space_events, uvm_perf
     }
 
     uvm_up_read(&va_space_events->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_perf_is_event_callback_registered(uvm_perf_va_space_events_t *va_space_events,
                                            uvm_perf_event_t event_id,
                                            uvm_perf_event_callback_t callback)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     callback_desc_t *callback_desc;
     struct list_head *callback_list;
 
@@ -155,10 +156,10 @@ bool uvm_perf_is_event_callback_registered(uvm_perf_va_space_events_t *va_space_
     callback_desc = event_list_find_callback(va_space_events, callback_list, callback);
 
     return callback_desc != NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_init_va_space_events(uvm_va_space_t *va_space, uvm_perf_va_space_events_t *va_space_events)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned event_id;
 
     uvm_init_rwsem(&va_space_events->lock, UVM_LOCK_ORDER_VA_SPACE_EVENTS);
@@ -170,10 +171,10 @@ NV_STATUS uvm_perf_init_va_space_events(uvm_va_space_t *va_space, uvm_perf_va_sp
     va_space_events->va_space = va_space;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_destroy_va_space_events(uvm_perf_va_space_events_t *va_space_events)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned event_id;
 
     // If the va_space member was not set, va_space creation failed before initializing its va_space_events member. We
@@ -195,18 +196,18 @@ void uvm_perf_destroy_va_space_events(uvm_perf_va_space_events_t *va_space_event
     }
 
     va_space_events->va_space = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_perf_events_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_callback_desc_cache = NV_KMEM_CACHE_CREATE("uvm_perf_callback_list", callback_desc_t);
     if (!g_callback_desc_cache)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_perf_events_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     kmem_cache_destroy_safe(&g_callback_desc_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

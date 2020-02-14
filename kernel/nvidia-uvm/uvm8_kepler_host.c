@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -30,23 +31,23 @@
 #include "cla16f.h"
 
 void uvm_hal_kepler_host_wait_for_idle_a06f(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_1U(A06F, SET_REFERENCE, 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_wait_for_idle_a16f(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_1U(A16F, WFI, 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_membar_sys(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_1U(A06F, MEM_OP_B,
        HWCONST(A06F, MEM_OP_B, OPERATION, SYSMEMBAR_FLUSH));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_tlb_invalidate_all(uvm_push_t *push, uvm_gpu_phys_address_t pdb, NvU32 depth, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 target;
 
     UVM_ASSERT_MSG(pdb.aperture == UVM_APERTURE_VID || pdb.aperture == UVM_APERTURE_SYS, "aperture: %u", pdb.aperture);
@@ -69,17 +70,17 @@ void uvm_hal_kepler_host_tlb_invalidate_all(uvm_push_t *push, uvm_gpu_phys_addre
                      MEM_OP_B, HWCONST(A06F, MEM_OP_B, OPERATION, MMU_TLB_INVALIDATE) |
                                HWCONST(A06F, MEM_OP_B, MMU_TLB_INVALIDATE_PDB, ONE) |
                                HWCONST(A06F, MEM_OP_B, MMU_TLB_INVALIDATE_GPC, ENABLE));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_tlb_invalidate_va(uvm_push_t *push, uvm_gpu_phys_address_t pdb, NvU32 depth, NvU64 base, NvU64 size, NvU32 page_size, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // No per VA invalidate on Kepler, redirect to invalidate all.
     uvm_push_get_gpu(push)->host_hal->tlb_invalidate_all(push, pdb, depth, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_tlb_invalidate_test(uvm_push_t *push, uvm_gpu_phys_address_t pdb,
                                              UVM_TEST_INVALIDATE_TLB_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 target_pdb = 0;
     NvU32 pdb_mode_value;
     NvU32 invalidate_gpc_value;
@@ -112,10 +113,10 @@ void uvm_hal_kepler_host_tlb_invalidate_test(uvm_push_t *push, uvm_gpu_phys_addr
                      MEM_OP_B, HWCONST(A06F, MEM_OP_B, OPERATION, MMU_TLB_INVALIDATE) |
                                pdb_mode_value |
                                invalidate_gpc_value);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_noop(uvm_push_t *push, NvU32 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(size % 4 == 0, "size %u\n", size);
 
     if (size == 0)
@@ -134,15 +135,15 @@ void uvm_hal_kepler_host_noop(uvm_push_t *push, NvU32 size)
 
         size -= noop_this_time;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_interrupt(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_1U(A06F, NON_STALL_INTERRUPT, 0);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_semaphore_release(uvm_push_t *push, uvm_gpu_semaphore_t *semaphore, NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     NvU64 semaphore_va = uvm_gpu_semaphore_get_gpu_va(semaphore, gpu);
     NV_PUSH_4U(A06F, SEMAPHOREA, HWVALUE(A06F, SEMAPHOREA, OFFSET_UPPER, NvOffset_HI32(semaphore_va)),
@@ -151,10 +152,10 @@ void uvm_hal_kepler_host_semaphore_release(uvm_push_t *push, uvm_gpu_semaphore_t
                      SEMAPHORED, HWCONST(A06F, SEMAPHORED, OPERATION, RELEASE) |
                                  HWCONST(A06F, SEMAPHORED, RELEASE_SIZE, 4BYTE)|
                                  HWCONST(A06F, SEMAPHORED, RELEASE_WFI, DIS));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_semaphore_acquire(uvm_push_t *push, uvm_gpu_semaphore_t *semaphore, NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     NvU64 semaphore_va = uvm_gpu_semaphore_get_gpu_va(semaphore, gpu);
     NV_PUSH_4U(A06F, SEMAPHOREA, HWVALUE(A06F, SEMAPHOREA, OFFSET_UPPER, NvOffset_HI32(semaphore_va)),
@@ -163,10 +164,10 @@ void uvm_hal_kepler_host_semaphore_acquire(uvm_push_t *push, uvm_gpu_semaphore_t
                      SEMAPHORED, HWCONST(A06F, SEMAPHORED, ACQUIRE_SWITCH, ENABLED) |
                                  HWCONST(A06F, SEMAPHORED, OPERATION, ACQ_GEQ));
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_set_gpfifo_entry(NvU64 *fifo_entry, NvU64 pushbuffer_va, NvU32 pushbuffer_length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 fifo_entry_value;
 
     UVM_ASSERT(!uvm_global_is_suspended());
@@ -179,42 +180,42 @@ void uvm_hal_kepler_host_set_gpfifo_entry(NvU64 *fifo_entry, NvU64 pushbuffer_va
                                 HWCONST(A06F, GP_ENTRY1, PRIV,   KERNEL)) << 32;
 
     *fifo_entry = fifo_entry_value;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_write_gpu_put(uvm_channel_t *channel, NvU32 gpu_put)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_GPU_WRITE_ONCE(*channel->channel_info.gpPut, gpu_put);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_init_noop(uvm_push_t *push)
-{
-}
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_replay_faults_unsupported(uvm_push_t *push, uvm_fault_replay_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host replay_faults called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_cancel_faults_targeted_unsupported(uvm_push_t *push, uvm_gpu_phys_address_t instance_ptr,
                                                        NvU32 gpc_id, NvU32 client_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host cancel_faults_targeted called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_cancel_faults_va_unsupported(uvm_push_t *push,
                                                  uvm_gpu_phys_address_t pdb,
                                                  const uvm_fault_buffer_entry_t *fault_entry,
                                                  uvm_fault_cancel_va_mode_t cancel_va_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host cancel_faults_va called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_host_clear_faulted_channel_method_unsupported(uvm_push_t *push,
                                                                   uvm_user_channel_t *user_channel,
                                                                   const uvm_fault_buffer_entry_t *buffer_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host clear_faulted_channel_method called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 
@@ -225,23 +226,23 @@ void uvm_hal_kepler_host_clear_faulted_channel_method_unsupported(uvm_push_t *pu
 
 
 void uvm_hal_kepler_access_counter_clear_all_unsupported(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host access_counter_clear_all called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_access_counter_clear_type_unsupported(uvm_push_t *push, uvm_access_counter_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host access_counter_clear_type called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_access_counter_clear_targeted_unsupported(uvm_push_t *push,
                                                               const uvm_access_counter_buffer_entry_t *buffer_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "host access_counter_clear_targeted called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_hal_kepler_get_time(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 time0;
     NvU32 time1_first, time1_second;
 
@@ -259,4 +260,4 @@ NvU64 uvm_hal_kepler_get_time(uvm_gpu_t *gpu)
     } while (time1_second != time1_first);
 
     return (((NvU64)time1_first) << 32) + time0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

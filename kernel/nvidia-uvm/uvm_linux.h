@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2013-2019 NVIDIA Corporation
 
@@ -101,13 +102,13 @@
 // prior to calling this function of be prepared to deal with a NULL CPU
 // mask.
 static inline const struct cpumask *uvm_cpumask_of_node(int node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
 #ifdef NV_CPUMASK_OF_NODE_PRESENT
     return cpumask_of_node(node);
 #else
     return NULL;
 #endif
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // TODO: Bug 1772628: remove the "defined(NV_BUILD_SUPPORTS_HMM)" part,
 // once the HMM (Heterogeneous Memory Management Linux kernel feature) patch
@@ -265,69 +266,69 @@ static inline const struct cpumask *uvm_cpumask_of_node(int node)
 
 #if !defined(NV_KBASENAME_PRESENT)
 static inline const char *kbasename(const char *str)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const char *p = strrchr(str, '/');
     if (!p)
         return str;
     return p + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 #if defined(NVCPU_X86)
 /* Some old IA32 kernels don't have 64/64 division routines,
  * they only support 64/32 division with do_div(). */
 static inline uint64_t NV_DIV64(uint64_t dividend, uint64_t divisor, uint64_t *remainder)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     /* do_div() only accepts a 32-bit divisor */
     *remainder = do_div(dividend, (uint32_t)divisor);
 
     /* do_div() modifies the dividend in-place */
     return dividend;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #else
 /* All other 32/64-bit kernels we support (including non-x86 kernels) support
  * 64/64 division. */
 static inline uint64_t NV_DIV64(uint64_t dividend, uint64_t divisor, uint64_t *remainder)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     *remainder = dividend % divisor;
 
     return dividend / divisor;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 #if defined(CLOCK_MONOTONIC_RAW)
 /* Return a nanosecond-precise value */
 static inline NvU64 NV_GETTIME(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct timespec ts = {0};
 
     getrawmonotonic(&ts);
 
     /* Wraps around every 583 years */
     return (ts.tv_sec * 1000000000ULL + ts.tv_nsec);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #else
 /* We can only return a microsecond-precise value with the
  * available non-GPL symbols. */
 static inline NvU64 NV_GETTIME(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct timeval tv = {0};
 
     nv_gettimeofday(&tv);
 
     return (tv.tv_sec * 1000000000ULL + tv.tv_usec * 1000ULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 #if !defined(ilog2)
     static inline int NV_ILOG2_U32(u32 n)
-    {
+    {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
         return fls(n) - 1;
-    }
+    pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
     static inline int NV_ILOG2_U64(u64 n)
-    {
+    {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
         return fls64(n) - 1;
-    }
+    pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
     #define ilog2(n) (sizeof(n) <= 4 ? NV_ILOG2_U32(n) : NV_ILOG2_U64(n))
 #endif
 
@@ -365,18 +366,18 @@ static inline NvU64 NV_GETTIME(void)
 // bitmap_clear was added in 2.6.33 via commit c1a2a962a2ad103846e7950b4591471fabecece7
 #if !defined(NV_BITMAP_CLEAR_PRESENT)
     static inline void bitmap_clear(unsigned long *map, unsigned int start, int len)
-    {
+    {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
         unsigned int index = start;
         for_each_set_bit_from(index, map, start + len)
             __clear_bit(index, map);
-    }
+    pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
     static inline void bitmap_set(unsigned long *map, unsigned int start, int len)
-    {
+    {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
         unsigned int index = start;
         for_each_clear_bit_from(index, map, start + len)
             __set_bit(index, map);
-    }
+    pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 // Added in 2.6.24
@@ -452,12 +453,12 @@ static inline NvU64 NV_GETTIME(void)
 // Added in 2.6.37 via commit e1ca7788dec6773b1a2bce51b7141948f2b8bccf
 #if !defined(NV_VZALLOC_PRESENT)
     static inline void *vzalloc(unsigned long size)
-    {
+    {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
         void *p = vmalloc(size);
         if (p)
             memset(p, 0, size);
         return p;
-    }
+    pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 // Changed in 3.17 via commit 743162013d40ca612b4cb53d3a200dff2d9ab26e
@@ -466,12 +467,12 @@ static inline NvU64 NV_GETTIME(void)
         wait_on_bit_lock(word, bit, mode)
 #elif (NV_WAIT_ON_BIT_LOCK_ARGUMENT_COUNT == 4)
     static __sched int uvm_bit_wait(void *word)
-    {
+    {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
         if (signal_pending_state(current->state, current))
             return 1;
         schedule();
         return 0;
-    }
+    pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
     #define UVM_WAIT_ON_BIT_LOCK(word, bit, mode) \
         wait_on_bit_lock(word, bit, uvm_bit_wait, mode)
 #else
@@ -479,20 +480,20 @@ static inline NvU64 NV_GETTIME(void)
 #endif
 
 static void uvm_init_radix_tree_preloadable(struct radix_tree_root *tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // GFP_NOWAIT, or some combination of flags that avoids setting
     // __GFP_DIRECT_RECLAIM (__GFP_WAIT prior to commit
     // d0164adc89f6bb374d304ffcc375c6d2652fe67d from Nov 2015), is required for
     // using radix_tree_preload() for the tree.
     INIT_RADIX_TREE(tree, GFP_NOWAIT);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #if !defined(NV_RADIX_TREE_EMPTY_PRESENT)
 static bool radix_tree_empty(struct radix_tree_root *tree)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     void *dummy;
     return radix_tree_gang_lookup(tree, &dummy, 0, 1) == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 // The radix tree root parameter was added to radix_tree_replace_slot in 4.10.
@@ -517,7 +518,7 @@ static bool radix_tree_empty(struct radix_tree_root *tree)
 
 #if !defined(NV_USLEEP_RANGE_PRESENT)
 static void __sched usleep_range(unsigned long min, unsigned long max)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned min_msec = min / 1000;
     unsigned max_msec = max / 1000;
 
@@ -527,7 +528,7 @@ static void __sched usleep_range(unsigned long min, unsigned long max)
         msleep(max_msec);
     else
         msleep(1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 
 #endif // _UVM_LINUX_H

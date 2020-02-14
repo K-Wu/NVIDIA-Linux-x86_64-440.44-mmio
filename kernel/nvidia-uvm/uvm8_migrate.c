@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -59,21 +60,21 @@ static bool g_uvm_perf_migrate_cpu_preunmap_enable __read_mostly;
 static NvU64 g_uvm_perf_migrate_cpu_preunmap_size __read_mostly;
 
 static bool is_migration_single_block(uvm_va_range_t *first_va_range, NvU64 base, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 end = base + length - 1;
 
     if (end > first_va_range->node.end)
         return false;
 
     return uvm_va_range_block_index(first_va_range, base) == uvm_va_range_block_index(first_va_range, end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_migrate_map_mapped_pages(uvm_va_block_t *va_block,
                                                 uvm_va_block_retry_t *va_block_retry,
                                                 uvm_va_block_context_t *va_block_context,
                                                 uvm_va_block_region_t region,
                                                 uvm_processor_id_t dest_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_prot_t prot;
     uvm_page_index_t page_index;
     NV_STATUS status = NV_OK;
@@ -115,7 +116,7 @@ static NV_STATUS block_migrate_map_mapped_pages(uvm_va_block_t *va_block,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS block_migrate_map_unmapped_pages(uvm_va_block_t *va_block,
                                                   uvm_va_block_retry_t *va_block_retry,
@@ -123,7 +124,7 @@ static NV_STATUS block_migrate_map_unmapped_pages(uvm_va_block_t *va_block,
                                                   uvm_va_block_region_t region,
                                                   uvm_processor_id_t dest_id)
 
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_t local_tracker = UVM_TRACKER_INIT();
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status;
@@ -164,7 +165,7 @@ out:
     tracker_status = uvm_tracker_add_tracker_safe(&va_block->tracker, &local_tracker);
     uvm_tracker_deinit(&local_tracker);
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Pages that are not mapped anywhere can be safely mapped with RWA permission.
 // The rest of pages need to individually compute the maximum permission that
@@ -175,7 +176,7 @@ static NV_STATUS block_migrate_add_mappings(uvm_va_block_t *va_block,
                                             uvm_va_block_region_t region,
                                             uvm_processor_id_t dest_id)
 
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = block_migrate_map_unmapped_pages(va_block,
@@ -191,7 +192,7 @@ static NV_STATUS block_migrate_add_mappings(uvm_va_block_t *va_block,
                                           va_block_context,
                                           region,
                                           dest_id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_va_block_migrate_locked(uvm_va_block_t *va_block,
                                       uvm_va_block_retry_t *va_block_retry,
@@ -200,7 +201,7 @@ NV_STATUS uvm_va_block_migrate_locked(uvm_va_block_t *va_block,
                                       uvm_processor_id_t dest_id,
                                       uvm_migrate_mode_t mode,
                                       uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status, tracker_status = NV_OK;
     uvm_va_range_t *va_range = va_block->va_range;
 
@@ -237,7 +238,7 @@ NV_STATUS uvm_va_block_migrate_locked(uvm_va_block_t *va_block,
         tracker_status = uvm_tracker_add_tracker_safe(out_tracker, &va_block->tracker);
 
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Unmapping CPU pages on P9 systems is very costly, to the point that it
 // becomes the bottleneck of UvmMigrate. We have measured up to 3x lower BW for
@@ -295,7 +296,7 @@ static bool migration_should_do_cpu_preunmap(uvm_va_space_t *va_space,
                                              uvm_migrate_pass_t pass,
                                              bool is_single_block)
 
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!g_uvm_perf_migrate_cpu_preunmap_enable)
         return false;
 
@@ -306,7 +307,7 @@ static bool migration_should_do_cpu_preunmap(uvm_va_space_t *va_space,
         return false;
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function determines if the VA range properties avoid the need to remove
 // CPU mappings on UvmMigrate. Currently, it only checks whether
@@ -314,9 +315,9 @@ static bool migration_should_do_cpu_preunmap(uvm_va_space_t *va_space,
 // read-duplicated VA blocks, the source processor doesn't need to be unmapped
 // (though it may need write access revoked).
 static bool va_range_should_do_cpu_preunmap(uvm_va_range_t *va_range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return !uvm_va_range_is_read_duplicate(va_range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Function that determines if the VA block to be migrated contains pages with
 // CPU mappings that don't need to be removed (see the comment above). In that
@@ -329,7 +330,7 @@ static bool va_block_should_do_cpu_preunmap(uvm_va_block_t *va_block,
                                             NvU64 end,
                                             uvm_processor_id_t dest_id,
                                             NvU32 *num_unmap_pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const uvm_page_mask_t *mapped_pages_cpu;
     NvU32 num_cpu_unchanged_pages = 0;
     uvm_va_block_region_t region;
@@ -367,14 +368,14 @@ static bool va_block_should_do_cpu_preunmap(uvm_va_block_t *va_block,
     uvm_mutex_unlock(&va_block->lock);
 
     return num_cpu_unchanged_pages == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void preunmap_multi_block(uvm_va_range_t *va_range,
                                  uvm_va_block_context_t *va_block_context,
                                  NvU64 start,
                                  NvU64 end,
                                  uvm_processor_id_t dest_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
     const size_t first_block_index = uvm_va_range_block_index(va_range, start);
     const size_t last_block_index = uvm_va_range_block_index(va_range, end);
@@ -404,7 +405,7 @@ static void preunmap_multi_block(uvm_va_range_t *va_range,
 
     if (num_unmap_pages > 0)
         unmap_mapping_range(&va_range->va_space->mapping, start, end - start + 1, 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_va_range_migrate_multi_block(uvm_va_range_t *va_range,
                                                   uvm_va_block_context_t *va_block_context,
@@ -413,7 +414,7 @@ static NV_STATUS uvm_va_range_migrate_multi_block(uvm_va_range_t *va_range,
                                                   uvm_processor_id_t dest_id,
                                                   uvm_migrate_mode_t mode,
                                                   uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
     const size_t first_block_index = uvm_va_range_block_index(va_range, start);
     const size_t last_block_index = uvm_va_range_block_index(va_range, end);
@@ -452,7 +453,7 @@ static NV_STATUS uvm_va_range_migrate_multi_block(uvm_va_range_t *va_range,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_va_range_migrate(uvm_va_range_t *va_range,
                                       uvm_va_block_context_t *va_block_context,
@@ -462,7 +463,7 @@ static NV_STATUS uvm_va_range_migrate(uvm_va_range_t *va_range,
                                       uvm_migrate_mode_t mode,
                                       bool should_do_cpu_preunmap,
                                       uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 preunmap_range_start = start;
 
     should_do_cpu_preunmap = should_do_cpu_preunmap && va_range_should_do_cpu_preunmap(va_range);
@@ -501,7 +502,7 @@ static NV_STATUS uvm_va_range_migrate(uvm_va_range_t *va_range,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_migrate_ranges(uvm_va_space_t *va_space,
                                     uvm_va_block_context_t *va_block_context,
@@ -512,7 +513,7 @@ static NV_STATUS uvm_migrate_ranges(uvm_va_space_t *va_space,
                                     uvm_migrate_mode_t mode,
                                     bool should_do_cpu_preunmap,
                                     uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_range_t *va_range, *va_range_last;
     NvU64 end = base + length - 1;
     NV_STATUS status = NV_OK;
@@ -579,7 +580,7 @@ static NV_STATUS uvm_migrate_ranges(uvm_va_space_t *va_space,
         return NV_WARN_MORE_PROCESSING_REQUIRED;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_migrate(uvm_va_space_t *va_space,
                              NvU64 base,
@@ -587,7 +588,7 @@ static NV_STATUS uvm_migrate(uvm_va_space_t *va_space,
                              uvm_processor_id_t dest_id,
                              NvU32 migrate_flags,
                              uvm_tracker_t *out_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_range_t *first_va_range = uvm_va_space_iter_first(va_space, base, base);
     uvm_va_block_context_t *va_block_context;
@@ -668,14 +669,14 @@ static NV_STATUS uvm_migrate(uvm_va_space_t *va_space,
     uvm_va_block_context_free(va_block_context);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_push_async_user_sem_release(uvm_gpu_t *release_from_gpu,
                                                  uvm_va_range_semaphore_pool_t *sema_va_range,
                                                  NvU64 sema_user_addr,
                                                  NvU32 payload,
                                                  uvm_tracker_t *release_after_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     NV_STATUS status;
     uvm_gpu_address_t sema_phys_addr;
@@ -714,10 +715,10 @@ static NV_STATUS uvm_push_async_user_sem_release(uvm_gpu_t *release_from_gpu,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_release_user_sem_from_cpu(uvm_mem_t *sema_mem, NvU64 user_addr, NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 sema_offset = user_addr - (NvU64)(uintptr_t)sema_mem->user.addr;
     NvU64 sema_page = uvm_div_pow2_64(sema_offset, sema_mem->chunk_size);
     NvU64 sema_page_offset = sema_offset & (sema_mem->chunk_size - 1);
@@ -737,7 +738,7 @@ static void uvm_release_user_sem_from_cpu(uvm_mem_t *sema_mem, NvU64 user_addr, 
     cpu_addr = (char *)cpu_page_virt + sema_page_offset;
     UVM_WRITE_ONCE(*(NvU32 *)cpu_addr, payload);
     kunmap(sema_mem->sysmem.pages[sema_page]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm_migrate_release_user_sem(const UVM_MIGRATE_PARAMS *params,
                                               uvm_va_space_t *va_space,
@@ -745,7 +746,7 @@ static NV_STATUS uvm_migrate_release_user_sem(const UVM_MIGRATE_PARAMS *params,
                                               uvm_gpu_t *dest_gpu,
                                               uvm_tracker_t *tracker_ptr,
                                               bool *wait_for_tracker_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_mem_t *sema_mem = sema_va_range->semaphore_pool.mem;
     uvm_gpu_t *release_from = NULL;
@@ -790,10 +791,10 @@ static NV_STATUS uvm_migrate_release_user_sem(const UVM_MIGRATE_PARAMS *params,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_migrate_init()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_migrate_pageable_init();
     if (status != NV_OK)
         return status;
@@ -816,15 +817,15 @@ NV_STATUS uvm_migrate_init()
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_migrate_exit()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_migrate_pageable_exit();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_migrate(UVM_MIGRATE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_tracker_t tracker = UVM_TRACKER_INIT();
     uvm_tracker_t *tracker_ptr = NULL;
@@ -968,10 +969,10 @@ done:
 
     // Only clobber status if we didn't hit an earlier error
     return status == NV_OK ? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_migrate_range_group(UVM_MIGRATE_RANGE_GROUP_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NV_STATUS tracker_status = NV_OK;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
@@ -1037,4 +1038,4 @@ done:
     uvm_tools_flush_events();
 
     return status == NV_OK? tracker_status : status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

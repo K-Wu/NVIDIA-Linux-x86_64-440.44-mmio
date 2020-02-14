@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -31,9 +32,9 @@
 #include "uvm8_va_space.h"
 
 static NvU32 first_page_size(NvU32 page_sizes)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return page_sizes & ~(page_sizes - 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define for_each_page_size(page_size, page_sizes)                                   \
     for (page_size = first_page_size(page_sizes);                                   \
@@ -41,7 +42,7 @@ static NvU32 first_page_size(NvU32 page_sizes)
          page_size = first_page_size((page_sizes) & ~(page_size | (page_size - 1))))
 
 static NV_STATUS check_accessible_from_gpu(uvm_gpu_t *gpu, uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_mem_t *sys_mem = NULL;
     uvm_push_t push;
@@ -139,10 +140,10 @@ done:
         uvm_mem_free(sys_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_map_gpu(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU64 gpu_va;
 
@@ -170,10 +171,10 @@ static NV_STATUS test_map_gpu(uvm_mem_t *mem, uvm_gpu_t *gpu)
     TEST_CHECK_RET(gpu_va == uvm_mem_get_gpu_va_kernel(mem, gpu));
 
     return check_accessible_from_gpu(gpu, mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_map_cpu(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     char *cpu_addr;
 
@@ -204,10 +205,10 @@ static NV_STATUS test_map_cpu(uvm_mem_t *mem)
     memset(cpu_addr, 3, mem->size);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_alloc_sysmem(uvm_va_space_t *va_space, NvU32 page_size, size_t size, uvm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_mem_t *mem;
     uvm_gpu_t *gpu;
@@ -231,10 +232,10 @@ static NV_STATUS test_alloc_sysmem(uvm_va_space_t *va_space, NvU32 page_size, si
 error:
     uvm_mem_free(mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_alloc_vidmem(uvm_gpu_t *gpu, NvU32 page_size, size_t size, uvm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_mem_t *mem;
     uvm_mem_alloc_params_t params = { 0 };
@@ -265,18 +266,18 @@ static NV_STATUS test_alloc_vidmem(uvm_gpu_t *gpu, NvU32 page_size, size_t size,
 error:
     uvm_mem_free(mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool should_test_page_size(size_t alloc_size, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (g_uvm_global.num_simulated_devices == 0)
         return true;
 
     return alloc_size <= UVM_PAGE_SIZE_2M || page_size == UVM_PAGE_SIZE_2M;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_all(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     NvU32 gpu_count;
@@ -362,10 +363,10 @@ cleanup:
     uvm_kvfree(all_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_basic_vidmem(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     NvU32 page_size;
     NvU32 page_sizes = gpu->address_space_tree.hal->page_sizes();
@@ -397,10 +398,10 @@ static NV_STATUS test_basic_vidmem(uvm_gpu_t *gpu)
 done:
     uvm_mem_free(mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_basic_sysmem(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_mem_t *mem = NULL;
     int i;
@@ -417,10 +418,10 @@ static NV_STATUS test_basic_sysmem(void)
 done:
     uvm_mem_free(mem);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_basic(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     TEST_CHECK_RET(test_basic_sysmem() == NV_OK);
@@ -429,18 +430,18 @@ static NV_STATUS test_basic(uvm_va_space_t *va_space)
         TEST_CHECK_RET(test_basic_vidmem(gpu) == NV_OK);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS tests(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     TEST_CHECK_RET(test_basic(va_space) == NV_OK);
     TEST_CHECK_RET(test_all(va_space) == NV_OK);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_mem_sanity(UVM_TEST_MEM_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -451,4 +452,4 @@ NV_STATUS uvm8_test_mem_sanity(UVM_TEST_MEM_SANITY_PARAMS *params, struct file *
     uvm_va_space_up_read(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

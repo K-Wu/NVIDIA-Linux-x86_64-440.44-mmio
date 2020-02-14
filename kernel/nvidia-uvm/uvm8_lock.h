@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -526,9 +527,9 @@ bool __uvm_locking_initialized(void);
   #define uvm_record_downgrade                          UVM_IGNORE_EXPR
 
   static bool uvm_check_locked(void *lock, uvm_lock_flags_t flags)
-  {
+  {pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
       return false;
-  }
+  pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
   #define uvm_record_lock_mmap_sem_read                 UVM_IGNORE_EXPR
   #define uvm_record_unlock_mmap_sem_read               UVM_IGNORE_EXPR
@@ -644,14 +645,14 @@ typedef struct
 #define uvm_assert_rwsem_unlocked(uvm_sem) UVM_ASSERT(!rwsem_is_locked(&(uvm_sem)->sem))
 
 static void uvm_init_rwsem(uvm_rw_semaphore_t *uvm_sem, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     init_rwsem(&uvm_sem->sem);
 #if UVM_IS_DEBUG()
     uvm_locking_assert_initialized();
     uvm_sem->lock_order = lock_order;
 #endif
     uvm_assert_rwsem_unlocked(uvm_sem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define uvm_down_read(uvm_sem) ({                          \
         typeof(uvm_sem) _sem = (uvm_sem);                  \
@@ -766,14 +767,14 @@ typedef struct
 #define uvm_assert_mutex_unlocked(uvm_mutex) UVM_ASSERT(!mutex_is_locked(&(uvm_mutex)->m))
 
 static void uvm_mutex_init(uvm_mutex_t *mutex, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     mutex_init(&mutex->m);
 #if UVM_IS_DEBUG()
     uvm_locking_assert_initialized();
     mutex->lock_order = lock_order;
 #endif
     uvm_assert_mutex_unlocked(mutex);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define uvm_mutex_lock(mutex) ({                                \
         typeof(mutex) _mutex = (mutex);                         \
@@ -812,13 +813,13 @@ typedef struct
 } uvm_semaphore_t;
 
 static void uvm_sema_init(uvm_semaphore_t *semaphore, int val, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     sema_init(&semaphore->sem, val);
 #if UVM_IS_DEBUG()
     uvm_locking_assert_initialized();
     semaphore->lock_order = lock_order;
 #endif
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define uvm_down(uvm_sem) ({                               \
         typeof(uvm_sem) _sem = (uvm_sem);                  \
@@ -877,14 +878,14 @@ typedef struct
 #define uvm_assert_spinlock_unlocked(spinlock) UVM_ASSERT(!spin_is_locked(&(spinlock)->lock))
 
 static void uvm_spin_lock_init(uvm_spinlock_t *spinlock, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     spin_lock_init(&spinlock->lock);
 #if UVM_IS_DEBUG()
     uvm_locking_assert_initialized();
     spinlock->lock_order = lock_order;
 #endif
     uvm_assert_spinlock_unlocked(spinlock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define uvm_spin_lock(uvm_lock) ({                             \
         typeof(uvm_lock) _lock = (uvm_lock);                   \
@@ -901,14 +902,14 @@ static void uvm_spin_lock_init(uvm_spinlock_t *spinlock, uvm_lock_order_t lock_o
     })
 
 static void uvm_spin_lock_irqsave_init(uvm_spinlock_irqsave_t *spinlock, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     spin_lock_init(&spinlock->lock);
 #if UVM_IS_DEBUG()
     uvm_locking_assert_initialized();
     spinlock->lock_order = lock_order;
 #endif
     uvm_assert_spinlock_unlocked(spinlock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Use a temp to not rely on flags being written after acquiring the lock.
 #define uvm_spin_lock_irqsave(uvm_lock) ({                     \
@@ -962,13 +963,13 @@ void uvm_bit_locks_deinit(uvm_bit_locks_t *bit_locks);
 })
 
 static void __uvm_bit_lock(uvm_bit_locks_t *bit_locks, unsigned long bit)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int res;
 
     res = UVM_WAIT_ON_BIT_LOCK(bit_locks->bits, bit, TASK_UNINTERRUPTIBLE);
     UVM_ASSERT_MSG(res == 0, "Uninterruptible task interrupted: %d\n", res);
     uvm_assert_bit_locked(bit_locks, bit);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #define uvm_bit_lock(bit_locks, bit) ({                         \
     typeof(bit_locks) _bit_locks = (bit_locks);                 \
     typeof(bit) _bit = (bit);                                   \
@@ -977,7 +978,7 @@ static void __uvm_bit_lock(uvm_bit_locks_t *bit_locks, unsigned long bit)
 })
 
 static void __uvm_bit_unlock(uvm_bit_locks_t *bit_locks, unsigned long bit)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_bit_locked(bit_locks, bit);
 
     clear_bit_unlock(bit, bit_locks->bits);
@@ -986,7 +987,7 @@ static void __uvm_bit_unlock(uvm_bit_locks_t *bit_locks, unsigned long bit)
     // in reversed order). clear_bit_unlock has only release semantics.
     smp_mb__after_atomic();
     wake_up_bit(bit_locks->bits, bit);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #define uvm_bit_unlock(bit_locks, bit) ({                         \
     typeof(bit_locks) _bit_locks = (bit_locks);                   \
     typeof(bit) _bit = (bit);                                     \

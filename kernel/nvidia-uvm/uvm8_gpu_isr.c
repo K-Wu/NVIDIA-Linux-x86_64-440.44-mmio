@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -84,7 +85,7 @@ static void uvm_gpu_replayable_faults_intr_disable(uvm_gpu_t *gpu);
 static void uvm_gpu_replayable_faults_intr_enable(uvm_gpu_t *gpu);
 
 static unsigned schedule_replayable_faults_handler(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // handling gets set to false for all handlers during removal, so quit if
     // the GPU is in the process of being removed.
     if (gpu->isr.replayable_faults.handling) {
@@ -112,10 +113,10 @@ static unsigned schedule_replayable_faults_handler(uvm_gpu_t *gpu)
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static unsigned schedule_non_replayable_faults_handler(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // handling gets set to false for all handlers during removal, so quit if
     // the GPU is in the process of being removed.
     if (gpu->isr.non_replayable_faults.handling) {
@@ -144,10 +145,10 @@ static unsigned schedule_non_replayable_faults_handler(uvm_gpu_t *gpu)
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static unsigned schedule_access_counters_handler(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&gpu->isr.interrupts_lock);
 
     if (!gpu->isr.access_counters.handling_ref_count)
@@ -169,7 +170,7 @@ static unsigned schedule_access_counters_handler(uvm_gpu_t *gpu)
     nv_kthread_q_schedule_q_item(&gpu->isr.bottom_half_q, &gpu->isr.access_counters.bottom_half_q_item);
 
     return 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This is called from RM's top-half ISR (see: the nvidia_isr() function), and UVM is given a
 // chance to handle the interrupt, before most of the RM processing. UVM communicates what it
@@ -194,7 +195,7 @@ static unsigned schedule_access_counters_handler(uvm_gpu_t *gpu)
 //         new interrupts get created.
 
 static NV_STATUS uvm8_isr_top_half(const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     unsigned num_handlers_scheduled = 0;
     NV_STATUS status;
@@ -257,15 +258,15 @@ static NV_STATUS uvm8_isr_top_half(const NvProcessorUuid *gpu_uuid)
     uvm_gpu_kref_put(gpu);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_isr_top_half_entry(const NvProcessorUuid *gpu_uuid)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm8_isr_top_half(gpu_uuid));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS init_queue_on_node(nv_kthread_q_t *queue, const char *name, int node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     if (UVM_THREAD_AFFINITY_SUPPORTED() && node != -1 && !cpumask_empty(uvm_cpumask_of_node(node))) {
@@ -280,10 +281,10 @@ static NV_STATUS init_queue_on_node(nv_kthread_q_t *queue, const char *name, int
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_init_isr(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     char kthread_name[TASK_COMM_LEN + 1];
 
@@ -360,10 +361,10 @@ NV_STATUS uvm_gpu_init_isr(uvm_gpu_t *gpu)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_disable_isr(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(g_uvm_global.gpus[uvm_id_gpu_index(gpu->id)] != gpu);
     UVM_ASSERT(gpu->isr.access_counters.handling_ref_count == 0);
 
@@ -390,10 +391,10 @@ void uvm_gpu_disable_isr(uvm_gpu_t *gpu)
     // nv_kthread_q_init() failed in uvm_gpu_init_isr().
     nv_kthread_q_stop(&gpu->isr.bottom_half_q);
     nv_kthread_q_stop(&gpu->isr.kill_channel_q);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_deinit_isr(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Return ownership to RM:
     if (gpu->isr.replayable_faults.was_handling) {
         // No user threads could have anything left on
@@ -427,10 +428,10 @@ void uvm_gpu_deinit_isr(uvm_gpu_t *gpu)
     uvm_kvfree(gpu->isr.replayable_faults.stats.cpu_exec_count);
     uvm_kvfree(gpu->isr.non_replayable_faults.stats.cpu_exec_count);
     uvm_kvfree(gpu->isr.access_counters.stats.cpu_exec_count);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void replayable_faults_isr_bottom_half(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = (uvm_gpu_t *)args;
     unsigned int cpu;
 
@@ -449,15 +450,15 @@ static void replayable_faults_isr_bottom_half(void *args)
 
     uvm_gpu_replayable_faults_isr_unlock(gpu);
     uvm_gpu_kref_put(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void replayable_faults_isr_bottom_half_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(replayable_faults_isr_bottom_half(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void non_replayable_faults_isr_bottom_half(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = (uvm_gpu_t *)args;
     unsigned int cpu;
 
@@ -478,15 +479,15 @@ static void non_replayable_faults_isr_bottom_half(void *args)
 
     uvm_gpu_non_replayable_faults_isr_unlock(gpu);
     uvm_gpu_kref_put(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void non_replayable_faults_isr_bottom_half_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(non_replayable_faults_isr_bottom_half(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void access_counters_isr_bottom_half(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = (uvm_gpu_t *)args;
     unsigned int cpu;
 
@@ -505,15 +506,15 @@ static void access_counters_isr_bottom_half(void *args)
 
     uvm_gpu_access_counters_isr_unlock(gpu);
     uvm_gpu_kref_put(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void access_counters_isr_bottom_half_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
    UVM_ENTRY_VOID(access_counters_isr_bottom_half(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_replayable_faults_isr_lock(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(uvm_gpu_retained_count(gpu) > 0);
 
     uvm_spin_lock_irqsave(&gpu->isr.interrupts_lock);
@@ -532,10 +533,10 @@ void uvm_gpu_replayable_faults_isr_lock(uvm_gpu_t *gpu)
     // used by the bottom half, which pairs its unlock with the raw call in the
     // top half.
     mutex_lock(&gpu->isr.replayable_faults.service_lock.m);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_replayable_faults_isr_unlock(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(nv_kref_read(&gpu->gpu_kref) > 0);
 
     uvm_spin_lock_irqsave(&gpu->isr.interrupts_lock);
@@ -594,10 +595,10 @@ void uvm_gpu_replayable_faults_isr_unlock(uvm_gpu_t *gpu)
     mutex_unlock(&gpu->isr.replayable_faults.service_lock.m);
 
     uvm_spin_unlock_irqrestore(&gpu->isr.interrupts_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_non_replayable_faults_isr_lock(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // TODO: Bug 1766600: This function is called from the bottom half, and
     // the following assert cannot be enabled. For the moment, we check gpu_kref
     // instead.
@@ -608,17 +609,17 @@ void uvm_gpu_non_replayable_faults_isr_lock(uvm_gpu_t *gpu)
     // gpu->isr.non_replayable_faults.service_lock is acquired/released from the
     // same execution thread.
     uvm_mutex_lock(&gpu->isr.non_replayable_faults.service_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_non_replayable_faults_isr_unlock(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(nv_kref_read(&gpu->gpu_kref) > 0);
 
     uvm_mutex_unlock(&gpu->isr.non_replayable_faults.service_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counters_isr_lock(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // See comments in uvm_gpu_replayable_faults_isr_lock
 
     uvm_spin_lock_irqsave(&gpu->isr.interrupts_lock);
@@ -628,10 +629,10 @@ void uvm_gpu_access_counters_isr_lock(uvm_gpu_t *gpu)
     uvm_spin_unlock_irqrestore(&gpu->isr.interrupts_lock);
 
     mutex_lock(&gpu->isr.access_counters.service_lock.m);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counters_isr_unlock(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(nv_kref_read(&gpu->gpu_kref) > 0);
 
     // See comments in uvm_gpu_replayable_faults_isr_unlock
@@ -648,30 +649,30 @@ void uvm_gpu_access_counters_isr_unlock(uvm_gpu_t *gpu)
     mutex_unlock(&gpu->isr.access_counters.service_lock.m);
 
     uvm_spin_unlock_irqrestore(&gpu->isr.interrupts_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_gpu_replayable_faults_intr_disable(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&gpu->isr.interrupts_lock);
 
     if (gpu->isr.replayable_faults.handling && gpu->isr.replayable_faults.disable_intr_ref_count == 0)
         gpu->fault_buffer_hal->disable_replayable_faults(gpu);
 
     ++gpu->isr.replayable_faults.disable_intr_ref_count;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_gpu_replayable_faults_intr_enable(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&gpu->isr.interrupts_lock);
     UVM_ASSERT(gpu->isr.replayable_faults.disable_intr_ref_count > 0);
 
     --gpu->isr.replayable_faults.disable_intr_ref_count;
     if (gpu->isr.replayable_faults.handling && gpu->isr.replayable_faults.disable_intr_ref_count == 0)
         gpu->fault_buffer_hal->enable_replayable_faults(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counters_intr_disable(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&gpu->isr.interrupts_lock);
 
     // The read of handling_ref_count could race with a write from
@@ -683,10 +684,10 @@ void uvm_gpu_access_counters_intr_disable(uvm_gpu_t *gpu)
         gpu->access_counter_buffer_hal->disable_access_counter_notifications(gpu);
 
     ++gpu->isr.access_counters.disable_intr_ref_count;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_access_counters_intr_enable(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&gpu->isr.interrupts_lock);
     UVM_ASSERT(mutex_is_locked(&gpu->isr.access_counters.service_lock.m));
     UVM_ASSERT(gpu->isr.access_counters.disable_intr_ref_count > 0);
@@ -695,4 +696,4 @@ void uvm_gpu_access_counters_intr_enable(uvm_gpu_t *gpu)
 
     if (gpu->isr.access_counters.handling_ref_count > 0 && gpu->isr.access_counters.disable_intr_ref_count == 0)
         gpu->access_counter_buffer_hal->enable_access_counter_notifications(gpu);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

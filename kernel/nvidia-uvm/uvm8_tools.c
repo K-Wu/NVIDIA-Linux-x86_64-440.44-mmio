@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -189,54 +190,54 @@ static nv_kthread_q_t g_tools_queue;
 static NV_STATUS tools_update_status(uvm_va_space_t *va_space);
 
 static uvm_tools_event_tracker_t *tools_event_tracker(struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     long event_tracker = atomic_long_read((atomic_long_t *)&filp->private_data);
 
     smp_read_barrier_depends();
     return (uvm_tools_event_tracker_t *)event_tracker;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tracker_is_queue(uvm_tools_event_tracker_t *event_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return event_tracker != NULL && event_tracker->is_queue;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tracker_is_counter(uvm_tools_event_tracker_t *event_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return event_tracker != NULL && !event_tracker->is_queue;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_va_space_t *tools_event_tracker_va_space(uvm_tools_event_tracker_t *event_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     UVM_ASSERT(event_tracker->uvm_file);
     va_space = uvm_va_space_get(event_tracker->uvm_file);
     UVM_ASSERT(uvm_va_space_initialized(va_space) == NV_OK);
     return va_space;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_put_user_pages_dirty(struct page **pages, NvU64 page_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 i;
 
     for (i = 0; i < page_count; i++) {
         set_page_dirty(pages[i]);
         put_page(pages[i]);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void unmap_user_pages(struct page **pages, void *addr, NvU64 size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size = DIV_ROUND_UP(size, PAGE_SIZE);
     vunmap((NvU8 *)addr);
     uvm_put_user_pages_dirty(pages, size);
     uvm_kvfree(pages);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Map virtual memory of data from [user_va, user_va + size) of current process into kernel.
 // Sets *addr to kernel mapping and *pages to the array of struct pages that contain the memory.
 static NV_STATUS map_user_pages(NvU64 user_va, NvU64 size, void **addr, struct page ***pages)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     long ret = 0;
     long num_pages;
@@ -300,7 +301,7 @@ fail:
     uvm_kvfree(*pages);
     *pages = NULL;
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void insert_event_tracker(uvm_va_space_t *va_space,
                                  struct list_head *node,
@@ -309,7 +310,7 @@ static void insert_event_tracker(uvm_va_space_t *va_space,
                                  NvU64 *subscribed_mask,
                                  struct list_head *lists,
                                  NvU64 *inserted_lists)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU64 insertable_lists = list_mask & ~*subscribed_mask;
 
@@ -325,14 +326,14 @@ static void insert_event_tracker(uvm_va_space_t *va_space,
 
     *subscribed_mask |= list_mask;
     *inserted_lists = insertable_lists;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void remove_event_tracker(uvm_va_space_t *va_space,
                                  struct list_head *node,
                                  NvU32 list_count,
                                  NvU64 list_mask,
                                  NvU64 *subscribed_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU64 removable_lists = list_mask & *subscribed_mask;
 
@@ -348,18 +349,18 @@ static void remove_event_tracker(uvm_va_space_t *va_space,
     }
 
     *subscribed_mask &= ~list_mask;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool queue_needs_wakeup(uvm_tools_queue_t *queue, uvm_tools_queue_snapshot_t *sn)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 queue_mask = queue->queue_buffer_count - 1;
 
     uvm_assert_spinlock_locked(&queue->lock);
     return ((queue->queue_buffer_count + sn->put_behind - sn->get_ahead) & queue_mask) >= queue->notification_threshold;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void destroy_event_tracker(uvm_tools_event_tracker_t *event_tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (event_tracker->uvm_file != NULL) {
         NV_STATUS status;
         uvm_va_space_t *va_space = tools_event_tracker_va_space(event_tracker);
@@ -416,10 +417,10 @@ static void destroy_event_tracker(uvm_tools_event_tracker_t *event_tracker)
         fput(event_tracker->uvm_file);
     }
     kmem_cache_free(g_tools_event_tracker_cache, event_tracker);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void enqueue_event(const UvmEventEntry *entry, uvm_tools_queue_t *queue)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmToolsEventControlData *ctrl = queue->control;
     uvm_tools_queue_snapshot_t sn;
     NvU32 queue_size = queue->queue_buffer_count;
@@ -465,10 +466,10 @@ static void enqueue_event(const UvmEventEntry *entry, uvm_tools_queue_t *queue)
 
 unlock:
     uvm_spin_unlock(&queue->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_tools_record_event(uvm_va_space_t *va_space, const UvmEventEntry *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU8 eventType = entry->eventData.eventType;
     uvm_tools_queue_t *queue;
 
@@ -478,10 +479,10 @@ static void uvm_tools_record_event(uvm_va_space_t *va_space, const UvmEventEntry
 
     list_for_each_entry(queue, va_space->tools.queues + eventType, queue_nodes[eventType])
         enqueue_event(entry, queue);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_tools_broadcast_event(const UvmEventEntry *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
 
     uvm_down_read(&g_tools_va_space_list_lock);
@@ -491,23 +492,23 @@ static void uvm_tools_broadcast_event(const UvmEventEntry *entry)
         uvm_up_read(&va_space->tools.lock);
     }
     uvm_up_read(&g_tools_va_space_list_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool counter_matches_processor(UvmCounterName counter, const NvProcessorUuid *processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // For compatibility with older counters, CPU faults for memory with a preferred location are reported
     // for their preferred location as well as for the CPU device itself.
     // This check prevents double counting in the aggregate count.
     if (counter == UvmCounterNameCpuPageFaultCount)
         return uvm_processor_uuid_eq(processor, &NV_PROCESSOR_UUID_CPU_DEFAULT);
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_tools_inc_counter(uvm_va_space_t *va_space,
                                   UvmCounterName counter,
                                   NvU64 amount,
                                   const NvProcessorUuid *processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT((NvU32)counter < UVM_TOTAL_COUNTERS);
     uvm_assert_rwsem_locked(&va_space->tools.lock);
 
@@ -529,26 +530,26 @@ static void uvm_tools_inc_counter(uvm_va_space_t *va_space,
             }
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tools_is_counter_enabled(uvm_va_space_t *va_space, UvmCounterName counter)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->tools.lock);
 
     UVM_ASSERT(counter < UVM_TOTAL_COUNTERS);
     return !list_empty(va_space->tools.counters + counter);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tools_is_event_enabled(uvm_va_space_t *va_space, UvmEventType event)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->tools.lock);
 
     UVM_ASSERT(event < UvmEventNumTypesAll);
     return !list_empty(va_space->tools.queues + event);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tools_is_event_enabled_in_any_va_space(UvmEventType event)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool ret = false;
 
     uvm_down_read(&g_tools_va_space_list_lock);
@@ -556,10 +557,10 @@ static bool tools_is_event_enabled_in_any_va_space(UvmEventType event)
     uvm_up_read(&g_tools_va_space_list_lock);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tools_are_enabled(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     uvm_assert_rwsem_locked(&va_space->tools.lock);
@@ -573,52 +574,52 @@ static bool tools_are_enabled(uvm_va_space_t *va_space)
             return true;
     }
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tools_is_fault_callback_needed(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tools_is_event_enabled(va_space, UvmEventTypeCpuFault) ||
            tools_is_event_enabled(va_space, UvmEventTypeGpuFault) ||
            tools_is_counter_enabled(va_space, UvmCounterNameCpuPageFaultCount) ||
            tools_is_counter_enabled(va_space, UvmCounterNameGpuPageFaultCount);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool tools_is_migration_callback_needed(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tools_is_event_enabled(va_space, UvmEventTypeMigration) ||
            tools_is_event_enabled(va_space, UvmEventTypeReadDuplicate) ||
            tools_is_counter_enabled(va_space, UvmCounterNameBytesXferDtH) ||
            tools_is_counter_enabled(va_space, UvmCounterNameBytesXferHtD);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_tools_open(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     filp->private_data = NULL;
     return -nv_status_to_errno(uvm_global_get_status());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_tools_open_entry(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_tools_open(inode, filp));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_tools_release(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tools_event_tracker_t *event_tracker = tools_event_tracker(filp);
     if (event_tracker != NULL) {
         destroy_event_tracker(event_tracker);
         filp->private_data = NULL;
     }
     return -nv_status_to_errno(uvm_global_get_status());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int uvm_tools_release_entry(struct inode *inode, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_tools_release(inode, filp));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static long uvm_tools_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (cmd) {
         UVM_ROUTE_CMD_STACK_NO_INIT_CHECK(UVM_TOOLS_INIT_EVENT_TRACKER,         uvm_api_tools_init_event_tracker);
         UVM_ROUTE_CMD_STACK_NO_INIT_CHECK(UVM_TOOLS_SET_NOTIFICATION_THRESHOLD, uvm_api_tools_set_notification_threshold);
@@ -631,15 +632,15 @@ static long uvm_tools_unlocked_ioctl(struct file *filp, unsigned int cmd, unsign
     uvm_thread_assert_all_unlocked();
 
     return -EINVAL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static long uvm_tools_unlocked_ioctl_entry(struct file *filp, unsigned int cmd, unsigned long arg)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_tools_unlocked_ioctl(filp, cmd, arg));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static unsigned uvm_tools_poll(struct file *filp, poll_table *wait)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int flags = 0;
     uvm_tools_queue_snapshot_t sn;
     uvm_tools_event_tracker_t *event_tracker;
@@ -666,12 +667,12 @@ static unsigned uvm_tools_poll(struct file *filp, poll_table *wait)
 
     poll_wait(filp, &event_tracker->queue.wait_queue, wait);
     return flags;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static unsigned uvm_tools_poll_entry(struct file *filp, poll_table *wait)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(uvm_tools_poll(filp, wait));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static UvmEventFaultType g_hal_to_tools_fault_type_table[UVM_FAULT_TYPE_COUNT] = {
     [UVM_FAULT_TYPE_INVALID_PDE]          = UvmFaultTypeInvalidPde,
@@ -723,7 +724,7 @@ static void record_gpu_fault_instance(uvm_gpu_t *gpu,
                                       const uvm_fault_buffer_entry_t *fault_entry,
                                       NvU64 batch_id,
                                       NvU64 timestamp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmEventEntry entry;
     UvmEventGpuFaultInfo *info = &entry.eventData.gpuFault;
     memset(&entry, 0, sizeof(entry));
@@ -744,10 +745,10 @@ static void record_gpu_fault_instance(uvm_gpu_t *gpu,
     info->batchId       = batch_id;
 
     uvm_tools_record_event(va_space, &entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_tools_record_fault(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = event_data->fault.space;
 
     UVM_ASSERT(event_id == UVM_PERF_EVENT_FAULT);
@@ -818,27 +819,27 @@ static void uvm_tools_record_fault(uvm_perf_event_t event_id, uvm_perf_event_dat
             uvm_tools_inc_counter(va_space, UvmCounterNameGpuPageFaultCount, 1, &gpu->uuid);
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void add_pending_event_for_channel(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&g_tools_channel_list_lock);
 
     if (channel->tools.pending_event_count++ == 0)
         list_add_tail(&channel->tools.channel_list_node, &g_tools_channel_list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void remove_pending_event_for_channel(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_spinlock_locked(&g_tools_channel_list_lock);
     UVM_ASSERT(channel->tools.pending_event_count > 0);
     if (--channel->tools.pending_event_count == 0)
         list_del_init(&channel->tools.channel_list_node);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 static void record_migration_events(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_migration_data_t *block_mig = (block_migration_data_t *)args;
     migration_data_t *mig;
     migration_data_t *next;
@@ -876,15 +877,15 @@ static void record_migration_events(void *args)
 
     UVM_ASSERT(list_empty(&block_mig->events));
     kmem_cache_free(g_tools_block_migration_data_cache, block_mig);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_migration_events_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(record_migration_events(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void on_block_migration_complete(void *ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     migration_data_t *mig;
     block_migration_data_t *block_mig = (block_migration_data_t *)ptr;
 
@@ -904,14 +905,14 @@ static void on_block_migration_complete(void *ptr)
     remove_pending_event_for_channel(block_mig->channel);
     nv_kthread_q_schedule_q_item(&g_tools_queue, &block_mig->queue_item);
     uvm_spin_unlock(&g_tools_channel_list_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_replay_event_helper(uvm_gpu_id_t gpu_id,
                                        NvU32 batch_id,
                                        uvm_fault_client_type_t client_type,
                                        NvU64 timestamp,
                                        NvU64 timestamp_gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmEventEntry entry;
 
     memset(&entry, 0, sizeof(entry));
@@ -923,10 +924,10 @@ static void record_replay_event_helper(uvm_gpu_id_t gpu_id,
     entry.eventData.gpuFaultReplay.timeStampGpu = timestamp_gpu;
 
     uvm_tools_broadcast_event(&entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_replay_events(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     replay_data_t *replay = (replay_data_t *)args;
 
     record_replay_event_helper(replay->gpu_id,
@@ -936,15 +937,15 @@ static void record_replay_events(void *args)
                                replay->timestamp_gpu);
 
     kmem_cache_free(g_tools_replay_data_cache, replay);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_replay_events_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(record_replay_events(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void on_replay_complete(void *ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     replay_data_t *replay = (replay_data_t *)ptr;
     replay->timestamp_gpu = *replay->timestamp_gpu_addr;
 
@@ -955,7 +956,7 @@ static void on_replay_complete(void *ptr)
     nv_kthread_q_schedule_q_item(&g_tools_queue, &replay->queue_item);
     uvm_spin_unlock(&g_tools_channel_list_lock);
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static UvmEventMigrationCause g_make_resident_to_tools_migration_cause[UVM_MAKE_RESIDENT_CAUSE_MAX] = {
     [UVM_MAKE_RESIDENT_CAUSE_REPLAYABLE_FAULT]     = UvmEventMigrationCauseCoherence,
@@ -973,7 +974,7 @@ static UvmEventMigrationCause g_make_resident_to_tools_migration_cause[UVM_MAKE_
 // same uvm_push_t object in a call to block_copy_resident_pages_between have
 // finished
 static void uvm_tools_record_migration(uvm_perf_event_t event_id, uvm_perf_event_data_t *event_data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block = event_data->migration.block;
     uvm_va_space_t *va_space = va_block->va_range->va_space;
 
@@ -1019,7 +1020,7 @@ static void uvm_tools_record_migration(uvm_perf_event_t event_id, uvm_perf_event
 
 done_unlock:
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This event is notified asynchronously when it is marked as completed in the
 // pushbuffer the replay method belongs to.
@@ -1027,7 +1028,7 @@ void uvm_tools_broadcast_replay(uvm_gpu_t *gpu,
                                 uvm_push_t *push,
                                 NvU32 batch_id,
                                 uvm_fault_client_type_t client_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_info_t *push_info = uvm_push_info_from_push(push);
     replay_data_t *replay;
 
@@ -1055,7 +1056,7 @@ void uvm_tools_broadcast_replay(uvm_gpu_t *gpu,
     uvm_spin_lock(&g_tools_channel_list_lock);
     add_pending_event_for_channel(replay->channel);
     uvm_spin_unlock(&g_tools_channel_list_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 
@@ -1079,7 +1080,7 @@ void uvm_tools_broadcast_replay(uvm_gpu_t *gpu,
 void uvm_tools_broadcast_access_counter(uvm_gpu_t *gpu,
                                         const uvm_access_counter_buffer_entry_t *buffer_entry,
                                         bool on_managed)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmEventEntry entry;
     UvmEventTestAccessCounterInfo *info = &entry.testEventData.accessCounter;
 
@@ -1113,7 +1114,7 @@ void uvm_tools_broadcast_access_counter(uvm_gpu_t *gpu,
     info->tag                 = buffer_entry->tag;
 
     uvm_tools_broadcast_event(&entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function is used as a begin marker to group all migrations within a VA
 // block that are performed in the same call to
@@ -1125,7 +1126,7 @@ void uvm_tools_record_block_migration_begin(uvm_va_block_t *va_block,
                                             uvm_processor_id_t src_id,
                                             NvU64 start,
                                             uvm_make_resident_cause_t cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_range_group_range_t *range;
 
@@ -1182,13 +1183,13 @@ void uvm_tools_record_block_migration_begin(uvm_va_block_t *va_block,
 
 done_unlock:
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_read_duplicate(uvm_va_block_t *va_block,
                                      uvm_processor_id_t dst,
                                      uvm_va_block_region_t region,
                                      const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
 
     if (!va_space->tools.enabled)
@@ -1221,13 +1222,13 @@ void uvm_tools_record_read_duplicate(uvm_va_block_t *va_block,
         }
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_read_duplicate_invalidate(uvm_va_block_t *va_block,
                                                 uvm_processor_id_t dst,
                                                 uvm_va_block_region_t region,
                                                 const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
 
     if (!va_space->tools.enabled)
@@ -1253,10 +1254,10 @@ void uvm_tools_record_read_duplicate_invalidate(uvm_va_block_t *va_block,
         }
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void tools_schedule_completed_events(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel;
     uvm_channel_t *next_channel;
     NvU64 channel_count = 0;
@@ -1292,13 +1293,13 @@ static void tools_schedule_completed_events(void)
         remove_pending_event_for_channel(channel);
     }
     uvm_spin_unlock(&g_tools_channel_list_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_cpu_fatal_fault(uvm_va_space_t *va_space,
                                       NvU64 address,
                                       bool is_write,
                                       UvmEventFatalReason reason)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->lock);
 
     if (!va_space->tools.enabled)
@@ -1321,13 +1322,13 @@ void uvm_tools_record_cpu_fatal_fault(uvm_va_space_t *va_space,
         uvm_tools_record_event(va_space, &entry);
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_gpu_fatal_fault(uvm_gpu_id_t gpu_id,
                                       uvm_va_space_t *va_space,
                                       const uvm_fault_buffer_entry_t *buffer_entry,
                                       UvmEventFatalReason reason)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_assert_rwsem_locked(&va_space->lock);
 
     if (!va_space->tools.enabled)
@@ -1350,13 +1351,13 @@ void uvm_tools_record_gpu_fatal_fault(uvm_gpu_id_t gpu_id,
         uvm_tools_record_event(va_space, &entry);
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_thrashing(uvm_va_space_t *va_space,
                                 NvU64 address,
                                 size_t region_size,
                                 const uvm_processor_mask_t *processors)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(address);
     UVM_ASSERT(PAGE_ALIGNED(address));
     UVM_ASSERT(region_size > 0);
@@ -1381,10 +1382,10 @@ void uvm_tools_record_thrashing(uvm_va_space_t *va_space,
         uvm_tools_record_event(va_space, &entry);
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_throttling_start(uvm_va_space_t *va_space, NvU64 address, uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(address);
     UVM_ASSERT(PAGE_ALIGNED(address));
     UVM_ASSERT(UVM_ID_IS_VALID(processor));
@@ -1408,10 +1409,10 @@ void uvm_tools_record_throttling_start(uvm_va_space_t *va_space, NvU64 address, 
         uvm_tools_record_event(va_space, &entry);
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_throttling_end(uvm_va_space_t *va_space, NvU64 address, uvm_processor_id_t processor)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(address);
     UVM_ASSERT(PAGE_ALIGNED(address));
     UVM_ASSERT(UVM_ID_IS_VALID(processor));
@@ -1435,10 +1436,10 @@ void uvm_tools_record_throttling_end(uvm_va_space_t *va_space, NvU64 address, uv
         uvm_tools_record_event(va_space, &entry);
     }
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_map_remote_events(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_map_remote_data_t *block_map_remote = (block_map_remote_data_t *)args;
     map_remote_data_t *map_remote, *next;
     UvmEventEntry entry;
@@ -1467,15 +1468,15 @@ static void record_map_remote_events(void *args)
 
     UVM_ASSERT(list_empty(&block_map_remote->events));
     kmem_cache_free(g_tools_block_map_remote_data_cache, block_map_remote);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void record_map_remote_events_entry(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_VOID(record_map_remote_events(args));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void on_map_remote_complete(void *ptr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     block_map_remote_data_t *block_map_remote = (block_map_remote_data_t *)ptr;
     map_remote_data_t *map_remote;
 
@@ -1490,7 +1491,7 @@ static void on_map_remote_complete(void *ptr)
     remove_pending_event_for_channel(block_map_remote->channel);
     nv_kthread_q_schedule_q_item(&g_tools_queue, &block_map_remote->queue_item);
     uvm_spin_unlock(&g_tools_channel_list_lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_record_map_remote(uvm_va_block_t *va_block,
                                  uvm_push_t *push,
@@ -1499,7 +1500,7 @@ void uvm_tools_record_map_remote(uvm_va_block_t *va_block,
                                  NvU64 address,
                                  size_t region_size,
                                  UvmEventMapRemoteCause cause)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = va_block->va_range->va_space;
 
     UVM_ASSERT(UVM_ID_IS_VALID(processor));
@@ -1578,10 +1579,10 @@ void uvm_tools_record_map_remote(uvm_va_block_t *va_block,
 
 done:
     uvm_up_read(&va_space->tools.lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_init_event_tracker(UVM_TOOLS_INIT_EVENT_TRACKER_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_tools_event_tracker_t *event_tracker;
 
@@ -1666,10 +1667,10 @@ NV_STATUS uvm_api_tools_init_event_tracker(UVM_TOOLS_INIT_EVENT_TRACKER_PARAMS *
 fail:
     destroy_event_tracker(event_tracker);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_set_notification_threshold(UVM_TOOLS_SET_NOTIFICATION_THRESHOLD_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UvmToolsEventControlData *ctrl;
     uvm_tools_queue_snapshot_t sn;
     uvm_tools_event_tracker_t *event_tracker = tools_event_tracker(filp);
@@ -1691,10 +1692,10 @@ NV_STATUS uvm_api_tools_set_notification_threshold(UVM_TOOLS_SET_NOTIFICATION_TH
     uvm_spin_unlock(&event_tracker->queue.lock);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS tools_update_perf_events_callbacks(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     uvm_assert_rwsem_locked_write(&va_space->perf_events.lock);
@@ -1737,10 +1738,10 @@ static NV_STATUS tools_update_perf_events_callbacks(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS tools_update_status(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     bool should_be_enabled;
     uvm_assert_rwsem_locked_write(&g_tools_va_space_list_lock);
@@ -1763,12 +1764,12 @@ static NV_STATUS tools_update_status(uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define EVENT_FLAGS_BITS (sizeof(NvU64) * 8)
 
 static bool mask_contains_invalid_events(NvU64 event_flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const unsigned long *event_mask = (const unsigned long *)&event_flags;
     DECLARE_BITMAP(helper_mask, EVENT_FLAGS_BITS);
     DECLARE_BITMAP(valid_events_mask, EVENT_FLAGS_BITS);
@@ -1802,10 +1803,10 @@ static bool mask_contains_invalid_events(NvU64 event_flags)
         UVM_INFO_PRINT("Event index not found. Did you mean to insmod with uvm_enable_builtin_tests=1?\n");
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_event_queue_enable_events(UVM_TOOLS_EVENT_QUEUE_ENABLE_EVENTS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_tools_event_tracker_t *event_tracker = tools_event_tracker(filp);
     NV_STATUS status = NV_OK;
@@ -1847,10 +1848,10 @@ NV_STATUS uvm_api_tools_event_queue_enable_events(UVM_TOOLS_EVENT_QUEUE_ENABLE_E
     uvm_up_write(&g_tools_va_space_list_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_event_queue_disable_events(UVM_TOOLS_EVENT_QUEUE_DISABLE_EVENTS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space;
     uvm_tools_event_tracker_t *event_tracker = tools_event_tracker(filp);
@@ -1877,10 +1878,10 @@ NV_STATUS uvm_api_tools_event_queue_disable_events(UVM_TOOLS_EVENT_QUEUE_DISABLE
     uvm_up_write(&va_space->perf_events.lock);
     uvm_up_write(&g_tools_va_space_list_lock);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_enable_counters(UVM_TOOLS_ENABLE_COUNTERS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space;
     uvm_tools_event_tracker_t *event_tracker = tools_event_tracker(filp);
     NV_STATUS status = NV_OK;
@@ -1918,10 +1919,10 @@ NV_STATUS uvm_api_tools_enable_counters(UVM_TOOLS_ENABLE_COUNTERS_PARAMS *params
     uvm_up_write(&g_tools_va_space_list_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_disable_counters(UVM_TOOLS_DISABLE_COUNTERS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space;
     uvm_tools_event_tracker_t *event_tracker = tools_event_tracker(filp);
@@ -1949,14 +1950,14 @@ NV_STATUS uvm_api_tools_disable_counters(UVM_TOOLS_DISABLE_COUNTERS_PARAMS *para
     uvm_up_write(&g_tools_va_space_list_lock);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS tools_access_va_block(uvm_va_block_t *va_block,
                                        NvU64 target_va,
                                        NvU64 size,
                                        bool is_write,
                                        void *stage)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     if (is_write)
@@ -1967,7 +1968,7 @@ static NV_STATUS tools_access_va_block(uvm_va_block_t *va_block,
                      uvm_va_block_read_to_cpu(va_block, stage, target_va, size));
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS tools_access_process_memory(uvm_va_space_t *va_space,
                                              NvU64 target_va,
@@ -1975,7 +1976,7 @@ static NV_STATUS tools_access_process_memory(uvm_va_space_t *va_space,
                                              NvU64 user_va,
                                              NvU64 *bytes,
                                              bool is_write)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_block_t *block;
     uvm_mem_t *stage_mem;
@@ -2056,30 +2057,30 @@ static NV_STATUS tools_access_process_memory(uvm_va_space_t *va_space,
     uvm_mem_free(stage_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_read_process_memory(UVM_TOOLS_READ_PROCESS_MEMORY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tools_access_process_memory(uvm_va_space_get(filp),
                                        params->targetVa,
                                        params->size,
                                        params->buffer,
                                        &params->bytesRead,
                                        false);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_write_process_memory(UVM_TOOLS_WRITE_PROCESS_MEMORY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tools_access_process_memory(uvm_va_space_get(filp),
                                        params->targetVa,
                                        params->size,
                                        params->buffer,
                                        &params->bytesWritten,
                                        true);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_inject_tools_event(UVM_TEST_INJECT_TOOLS_EVENT_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -2091,10 +2092,10 @@ NV_STATUS uvm8_test_inject_tools_event(UVM_TEST_INJECT_TOOLS_EVENT_PARAMS *param
         uvm_tools_record_event(va_space, &params->entry);
     uvm_up_read(&va_space->tools.lock);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_increment_tools_counter(UVM_TEST_INCREMENT_TOOLS_COUNTER_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -2107,10 +2108,10 @@ NV_STATUS uvm8_test_increment_tools_counter(UVM_TEST_INCREMENT_TOOLS_COUNTER_PAR
     uvm_up_read(&va_space->tools.lock);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_get_processor_uuid_table(UVM_TOOLS_GET_PROCESSOR_UUID_TABLE_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvProcessorUuid *uuids;
     NvU64 remaining;
     uvm_gpu_t *gpu;
@@ -2138,20 +2139,20 @@ NV_STATUS uvm_api_tools_get_processor_uuid_table(UVM_TOOLS_GET_PROCESSOR_UUID_TA
         return NV_ERR_INVALID_ADDRESS;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_flush_events()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     tools_schedule_completed_events();
 
     nv_kthread_q_flush(&g_tools_queue);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_api_tools_flush_events(UVM_TOOLS_FLUSH_EVENTS_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tools_flush_events();
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const struct file_operations uvm_tools_fops =
 {
@@ -2167,7 +2168,7 @@ static const struct file_operations uvm_tools_fops =
 
 // on failure, the caller should call uvm_tools_exit()
 int uvm_tools_init(dev_t uvm_base_dev)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     dev_t uvm_tools_dev = MKDEV(MAJOR(uvm_base_dev), NVIDIA_UVM_TOOLS_MINOR_NUMBER);
     int ret;
 
@@ -2216,10 +2217,10 @@ int uvm_tools_init(dev_t uvm_base_dev)
                       MINOR(uvm_tools_dev), ret);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tools_exit(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned i;
     cdev_del(&g_uvm_tools_cdev);
 
@@ -2236,4 +2237,4 @@ void uvm_tools_exit(void)
     kmem_cache_destroy_safe(&g_tools_replay_data_cache);
     kmem_cache_destroy_safe(&g_tools_block_map_remote_data_cache);
     kmem_cache_destroy_safe(&g_tools_map_remote_data_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

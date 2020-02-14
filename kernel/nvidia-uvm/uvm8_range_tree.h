@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -62,10 +63,10 @@ void uvm_range_tree_init(uvm_range_tree_t *tree);
 NV_STATUS uvm_range_tree_add(uvm_range_tree_t *tree, uvm_range_tree_node_t *node);
 
 static void uvm_range_tree_remove(uvm_range_tree_t *tree, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rb_erase(&node->rb_node, &tree->rb_root);
     list_del(&node->list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Shrink an existing node to [new_start, new_end].
 // The new range needs to be a subrange of the range being updated, that is
@@ -97,18 +98,18 @@ uvm_range_tree_node_t *uvm_range_tree_find(uvm_range_tree_t *tree, NvU64 addr);
 
 // Returns the prev/next node in address order, or NULL if none exists
 static uvm_range_tree_node_t *uvm_range_tree_prev(uvm_range_tree_t *tree, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (list_is_first(&node->list, &tree->head))
         return NULL;
     return list_prev_entry(node, list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_range_tree_node_t *uvm_range_tree_next(uvm_range_tree_t *tree, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (list_is_last(&node->list, &tree->head))
         return NULL;
     return list_next_entry(node, list);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns the first node in the range [start, end], if any
 uvm_range_tree_node_t *uvm_range_tree_iter_first(uvm_range_tree_t *tree, NvU64 start, NvU64 end);
@@ -116,12 +117,12 @@ uvm_range_tree_node_t *uvm_range_tree_iter_first(uvm_range_tree_t *tree, NvU64 s
 // Returns the node following the provided node in address order, if that node's
 // start <= the provided end.
 static uvm_range_tree_node_t *uvm_range_tree_iter_next(uvm_range_tree_t *tree, uvm_range_tree_node_t *node, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *next = uvm_range_tree_next(tree, node);
     if (next && next->start <= end)
         return next;
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #define uvm_range_tree_for_each(node, tree) list_for_each_entry((node), &(tree)->head, list)
 

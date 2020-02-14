@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -1010,14 +1011,14 @@ NV_STATUS uvm_gpu_init_va_space(uvm_va_space_t *va_space);
 void uvm_gpu_exit_va_space(uvm_va_space_t *va_space);
 
 static uvm_numa_info_t *uvm_gpu_numa_info(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->numa_info.enabled);
 
     return &gpu->numa_info;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_phys_address_t uvm_gpu_page_to_phys_address(uvm_gpu_t *gpu, struct page *page)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long sys_addr = page_to_pfn(page) << PAGE_SHIFT;
     unsigned long gpu_offset = sys_addr - uvm_gpu_numa_info(gpu)->system_memory_window_start;
 
@@ -1026,7 +1027,7 @@ static uvm_gpu_phys_address_t uvm_gpu_page_to_phys_address(uvm_gpu_t *gpu, struc
     UVM_ASSERT(sys_addr + PAGE_SIZE - 1 <= gpu->numa_info.system_memory_window_end);
 
     return uvm_gpu_phys_address(UVM_APERTURE_VID, gpu_offset);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Note that there is a uvm_gpu_get() function defined in uvm_global.h to break
 // a circular dep between global and gpu modules.
@@ -1063,9 +1064,9 @@ void uvm_gpu_release_locked(uvm_gpu_t *gpu);
 void uvm_gpu_release(uvm_gpu_t *gpu);
 
 static NvU64 uvm_gpu_retained_count(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return atomic64_read(&gpu->retained_count);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Decrease the refcount on the GPU object, and actually delete the object if the refcount hits
 // zero.
@@ -1095,22 +1096,22 @@ uvm_gpu_peer_t *uvm_gpu_index_peer_caps(uvm_gpu_id_t gpu_id1, uvm_gpu_id_t gpu_i
 
 // Get the P2P capabilities between the given gpus
 static uvm_gpu_peer_t *uvm_gpu_peer_caps(const uvm_gpu_t *gpu0, const uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_index_peer_caps(gpu0->id, gpu1->id);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_gpus_are_nvswitch_connected(uvm_gpu_t *gpu1, uvm_gpu_t *gpu2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (gpu1->nvswitch_info.is_nvswitch_connected && gpu2->nvswitch_info.is_nvswitch_connected) {
         UVM_ASSERT(uvm_gpu_peer_caps(gpu1, gpu2)->link_type >= UVM_GPU_LINK_NVLINK_2);
         return true;
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_gpus_are_indirect_peers(uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_peer_t *peer_caps = uvm_gpu_peer_caps(gpu0, gpu1);
 
     if (peer_caps->link_type != UVM_GPU_LINK_INVALID && peer_caps->is_indirect_peer) {
@@ -1122,12 +1123,12 @@ static bool uvm_gpus_are_indirect_peers(uvm_gpu_t *gpu0, uvm_gpu_t *gpu1)
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_identity_mapping_t *uvm_gpu_get_peer_mapping(uvm_gpu_t *gpu, uvm_gpu_id_t peer_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return &gpu->peer_mappings[uvm_id_gpu_index(peer_id)];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check for ECC errors
 //
@@ -1153,19 +1154,19 @@ NV_STATUS uvm_gpu_map_cpu_pages(uvm_gpu_t *gpu, struct page *page, size_t size, 
 void uvm_gpu_unmap_cpu_pages(uvm_gpu_t *gpu, NvU64 dma_address, size_t size);
 
 static NV_STATUS uvm_gpu_map_cpu_page(uvm_gpu_t *gpu, struct page *page, NvU64 *dma_address_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_map_cpu_pages(gpu, page, PAGE_SIZE, dma_address_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_gpu_unmap_cpu_page(uvm_gpu_t *gpu, NvU64 dma_address)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_unmap_cpu_pages(gpu, dma_address, PAGE_SIZE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_gpu_is_gk110_plus(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return gpu->rm_info.gpuArch >= NV2080_CTRL_MC_ARCH_INFO_ARCHITECTURE_GK110;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns whether the given address is within the GPU's maximum addressable VA
 // range. Warning: This only checks whether the GPU's MMU can support the given
@@ -1175,10 +1176,10 @@ static bool uvm_gpu_is_gk110_plus(uvm_gpu_t *gpu)
 bool uvm_gpu_can_address(uvm_gpu_t *gpu, NvU64 addr);
 
 static bool uvm_gpu_supports_eviction(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Eviction is supported only if the GPU supports replayable faults
     return gpu->replayable_faults_supported;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Debug print of GPU properties
 void uvm_gpu_print(uvm_gpu_t *gpu);

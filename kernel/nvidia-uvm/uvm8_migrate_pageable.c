@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018-2019 NVIDIA Corporation
 
@@ -134,7 +135,7 @@ static NV_STATUS migrate_vma_page_copy_address(struct page *page,
                                                uvm_gpu_t *copying_gpu,
                                                migrate_vma_state_t *state,
                                                uvm_gpu_address_t *gpu_addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = state->va_space;
     uvm_gpu_t *owning_gpu = UVM_ID_IS_CPU(resident_id)? NULL: uvm_va_space_get_gpu(va_space, resident_id);
     const bool can_copy_from = uvm_processor_mask_test(&va_space->can_copy_from[uvm_id_value(copying_gpu->id)],
@@ -179,11 +180,11 @@ static NV_STATUS migrate_vma_page_copy_address(struct page *page,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Return the GPU identified with the given NUMA node id
 static uvm_gpu_t *get_gpu_from_node_id(uvm_va_space_t *va_space, int node_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
 
     for_each_va_space_gpu(gpu, va_space) {
@@ -192,7 +193,7 @@ static uvm_gpu_t *get_gpu_from_node_id(uvm_va_space_t *va_space, int node_id)
     }
 
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a new push to zero pages on dst_id
 static NV_STATUS migrate_vma_zero_begin_push(uvm_va_space_t *va_space,
@@ -201,7 +202,7 @@ static NV_STATUS migrate_vma_zero_begin_push(uvm_va_space_t *va_space,
                                              unsigned long start,
                                              unsigned long outer,
                                              uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_type_t channel_type;
 
     if (UVM_ID_IS_CPU(dst_id)) {
@@ -220,7 +221,7 @@ static NV_STATUS migrate_vma_zero_begin_push(uvm_va_space_t *va_space,
                           uvm_va_space_processor_name(va_space, gpu->id),
                           start,
                           outer);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Create a new push to copy pages between src_id and dst_id
 static NV_STATUS migrate_vma_copy_begin_push(uvm_va_space_t *va_space,
@@ -229,7 +230,7 @@ static NV_STATUS migrate_vma_copy_begin_push(uvm_va_space_t *va_space,
                                              unsigned long start,
                                              unsigned long outer,
                                              uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_type_t channel_type;
     uvm_gpu_t *gpu;
 
@@ -289,12 +290,12 @@ static NV_STATUS migrate_vma_copy_begin_push(uvm_va_space_t *va_space,
                           uvm_va_space_processor_name(va_space, dst_id),
                           start,
                           outer);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void migrate_vma_compute_masks(struct vm_area_struct *vma,
                                       const unsigned long *src,
                                       migrate_vma_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long i;
     const bool is_rw = vma->vm_flags & VM_WRITE;
 
@@ -390,10 +391,10 @@ static void migrate_vma_compute_masks(struct vm_area_struct *vma,
 
         __set_bit(i, state->processors[uvm_id_value(src_id)].page_mask);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static struct page *migrate_vma_alloc_page(migrate_vma_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct page *dst_page;
     uvm_va_space_t *va_space = state->va_space;
 
@@ -417,14 +418,14 @@ static struct page *migrate_vma_alloc_page(migrate_vma_state_t *state)
     }
 
     return dst_page;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS migrate_vma_populate_anon_pages(struct vm_area_struct *vma,
                                                  unsigned long *dst,
                                                  unsigned long start,
                                                  unsigned long outer,
                                                  migrate_vma_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     unsigned long i;
     unsigned long *page_mask = state->processors[uvm_id_value(state->dst_id)].page_mask;
@@ -501,7 +502,7 @@ static NV_STATUS migrate_vma_populate_anon_pages(struct vm_area_struct *vma,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS migrate_vma_copy_pages_from(struct vm_area_struct *vma,
                                              const unsigned long *src,
@@ -510,7 +511,7 @@ static NV_STATUS migrate_vma_copy_pages_from(struct vm_area_struct *vma,
                                              unsigned long outer,
                                              uvm_processor_id_t src_id,
                                              migrate_vma_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_push_t push;
     uvm_gpu_t *copying_gpu = NULL;
@@ -587,7 +588,7 @@ static NV_STATUS migrate_vma_copy_pages_from(struct vm_area_struct *vma,
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS migrate_vma_copy_pages(struct vm_area_struct *vma,
                                         const unsigned long *src,
@@ -595,7 +596,7 @@ static NV_STATUS migrate_vma_copy_pages(struct vm_area_struct *vma,
                                         unsigned long start,
                                         unsigned long outer,
                                         migrate_vma_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_processor_id_t src_id;
 
     for_each_id_in_mask(src_id, &state->src_processors) {
@@ -607,7 +608,7 @@ static NV_STATUS migrate_vma_copy_pages(struct vm_area_struct *vma,
     UVM_ASSERT(bitmap_empty(state->pending_page_mask, state->num_pages));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void migrate_vma_alloc_and_copy(struct vm_area_struct *vma,
                                        const unsigned long *src,
@@ -615,7 +616,7 @@ static void migrate_vma_alloc_and_copy(struct vm_area_struct *vma,
                                        unsigned long start,
                                        unsigned long outer,
                                        void *private)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS tracker_status;
     migrate_vma_state_t *state = (migrate_vma_state_t *)private;
 
@@ -638,7 +639,7 @@ static void migrate_vma_alloc_and_copy(struct vm_area_struct *vma,
 
     if (state->status == NV_OK)
         state->status = tracker_status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void migrate_vma_finalize_and_map(struct vm_area_struct *vma,
                                          const unsigned long *src,
@@ -646,7 +647,7 @@ static void migrate_vma_finalize_and_map(struct vm_area_struct *vma,
                                          unsigned long start,
                                          unsigned long outer,
                                          void *private)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     migrate_vma_state_t *state = (migrate_vma_state_t *)private;
 
     // Pages could fail migration if the page state could not be migrated by the
@@ -670,7 +671,7 @@ static void migrate_vma_finalize_and_map(struct vm_area_struct *vma,
     UVM_ASSERT(!bitmap_intersects(state->unpopulated_pages_mask,
                                   state->allocation_failed_mask,
                                   state->num_pages));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static struct migrate_vma_ops g_migrate_vma_ops =
 {
@@ -682,7 +683,7 @@ static NV_STATUS migrate_pageable_vma_populate_mask(struct vm_area_struct *vma,
                                                     unsigned long start,
                                                     unsigned long outer,
                                                     const unsigned long *mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const unsigned long num_pages = (outer - start) / PAGE_SIZE;
     unsigned long subregion_first = find_first_bit(mask, num_pages);
 
@@ -701,14 +702,14 @@ static NV_STATUS migrate_pageable_vma_populate_mask(struct vm_area_struct *vma,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS migrate_pageable_vma_migrate_mask(struct vm_area_struct *vma,
                                                    unsigned long start,
                                                    unsigned long outer,
                                                    const unsigned long *mask,
                                                    migrate_vma_state_t *migrate_vma_state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const unsigned long num_pages = (outer - start) / PAGE_SIZE;
     unsigned long subregion_first = find_first_bit(mask, num_pages);
 
@@ -734,7 +735,7 @@ static NV_STATUS migrate_pageable_vma_migrate_mask(struct vm_area_struct *vma,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 static NV_STATUS migrate_pageable_vma_region(struct vm_area_struct *vma,
@@ -742,7 +743,7 @@ static NV_STATUS migrate_pageable_vma_region(struct vm_area_struct *vma,
                                              unsigned long outer,
                                              migrate_vma_state_t *migrate_vma_state,
                                              unsigned long *next_addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     const unsigned long num_pages = (outer - start) / PAGE_SIZE;
     struct mm_struct *mm = vma->vm_mm;
@@ -814,14 +815,14 @@ static NV_STATUS migrate_pageable_vma_region(struct vm_area_struct *vma,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS migrate_pageable_vma(struct vm_area_struct *vma,
                                       unsigned long start,
                                       unsigned long outer,
                                       migrate_vma_state_t *migrate_vma_state,
                                       unsigned long *next_addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     struct mm_struct *mm = vma->vm_mm;
     uvm_va_space_t *va_space = migrate_vma_state->va_space;
@@ -866,7 +867,7 @@ static NV_STATUS migrate_pageable_vma(struct vm_area_struct *vma,
     };
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS migrate_pageable(struct mm_struct *mm,
                                   const unsigned long start,
@@ -874,7 +875,7 @@ static NV_STATUS migrate_pageable(struct mm_struct *mm,
                                   migrate_vma_state_t * migrate_vma_state,
                                   NvU64 *user_space_start,
                                   NvU64 *user_space_length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct vm_area_struct *vma;
     const unsigned long outer = start + length;
     unsigned long prev_outer = outer;
@@ -928,7 +929,7 @@ static NV_STATUS migrate_pageable(struct mm_struct *mm,
 
     // Input range not fully covered by VMAs.
     return NV_ERR_INVALID_ADDRESS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_migrate_pageable(uvm_va_space_t *va_space,
                                struct mm_struct *mm,
@@ -938,7 +939,7 @@ NV_STATUS uvm_migrate_pageable(uvm_va_space_t *va_space,
                                int dst_cpu_node_id,
                                NvU64 *user_space_start,
                                NvU64 *user_space_length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     migrate_vma_state_t *migrate_vma_state = NULL;
     NV_STATUS status;
 
@@ -971,19 +972,19 @@ NV_STATUS uvm_migrate_pageable(uvm_va_space_t *va_space,
     kmem_cache_free(g_uvm_migrate_vma_state_cache, migrate_vma_state);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_migrate_pageable_init()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     g_uvm_migrate_vma_state_cache = NV_KMEM_CACHE_CREATE("migrate_vma_state_t", migrate_vma_state_t);
     if (!g_uvm_migrate_vma_state_cache)
         return NV_ERR_NO_MEMORY;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_migrate_pageable_exit()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     kmem_cache_destroy_safe(&g_uvm_migrate_vma_state_cache);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif

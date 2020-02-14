@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -29,23 +30,23 @@
 #include "clc076.h"
 
 void uvm_hal_pascal_host_membar_sys(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_4U(C06F, MEM_OP_A, 0,
                      MEM_OP_B, 0,
                      MEM_OP_C, HWCONST(C06F, MEM_OP_C, MEMBAR_TYPE, SYS_MEMBAR),
                      MEM_OP_D, HWCONST(C06F, MEM_OP_D, OPERATION, MEMBAR));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_host_membar_gpu(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_4U(C06F, MEM_OP_A, 0,
                      MEM_OP_B, 0,
                      MEM_OP_C, HWCONST(C06F, MEM_OP_C, MEMBAR_TYPE, MEMBAR),
                      MEM_OP_D, HWCONST(C06F, MEM_OP_D, OPERATION, MEMBAR));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_host_tlb_invalidate_all(uvm_push_t *push, uvm_gpu_phys_address_t pdb, NvU32 depth, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 aperture_value;
     NvU32 page_table_level;
     NvU32 pdb_lo;
@@ -89,10 +90,10 @@ void uvm_hal_pascal_host_tlb_invalidate_all(uvm_push_t *push, uvm_gpu_phys_addre
                                HWVALUE(C06F, MEM_OP_D, TLB_INVALIDATE_PDB_ADDR_HI, pdb_hi));
 
     uvm_hal_tlb_invalidate_membar(push, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_host_tlb_invalidate_va(uvm_push_t *push, uvm_gpu_phys_address_t pdb, NvU32 depth, NvU64 base, NvU64 size, NvU32 page_size, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 aperture_value;
     NvU32 page_table_level;
     NvU32 pdb_lo;
@@ -153,11 +154,11 @@ void uvm_hal_pascal_host_tlb_invalidate_va(uvm_push_t *push, uvm_gpu_phys_addres
     }
 
     uvm_hal_tlb_invalidate_membar(push, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_host_tlb_invalidate_test(uvm_push_t *push, uvm_gpu_phys_address_t pdb,
                                              UVM_TEST_INVALIDATE_TLB_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 ack_value = 0;
     NvU32 invalidate_gpc_value = 0;
     NvU32 pdb_mode_value;
@@ -247,10 +248,10 @@ void uvm_hal_pascal_host_tlb_invalidate_test(uvm_push_t *push, uvm_gpu_phys_addr
         membar = UVM_MEMBAR_NONE;
 
     uvm_hal_tlb_invalidate_membar(push, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_replay_faults(uvm_push_t *push, uvm_fault_replay_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 aperture_value;
     NvU32 replay_value = 0;
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
@@ -298,10 +299,10 @@ void uvm_hal_pascal_replay_faults(uvm_push_t *push, uvm_fault_replay_type_t type
                                replay_value,
                      MEM_OP_D, HWCONST(C06F, MEM_OP_D, OPERATION, MMU_TLB_INVALIDATE_TARGETED) |
                                HWVALUE(C06F, MEM_OP_D, TLB_INVALIDATE_PDB_ADDR_HI, pdb_hi));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 instance_ptr_aperture_type_to_hw_value(uvm_aperture_t aperture)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (aperture)
     {
         case UVM_APERTURE_SYS:
@@ -313,16 +314,16 @@ static NvU32 instance_ptr_aperture_type_to_hw_value(uvm_aperture_t aperture)
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_host_init(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_1U(C076, SET_OBJECT, GP100_UVM_SW);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_cancel_faults_targeted(uvm_push_t *push, uvm_gpu_phys_address_t instance_ptr, NvU32 gpc_id,
                                            NvU32 client_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 instance_ptr_lo;
     NvU32 instance_ptr_hi;
 
@@ -339,4 +340,4 @@ void uvm_hal_pascal_cancel_faults_targeted(uvm_push_t *push, uvm_gpu_phys_addres
                      FAULT_CANCEL_B, HWVALUE(C076, FAULT_CANCEL_B, INST_HI, instance_ptr_hi),
                      FAULT_CANCEL_C, HWVALUE(C076, FAULT_CANCEL_C, CLIENT_ID, client_id) |
                                      HWVALUE(C076, FAULT_CANCEL_C, GPC_ID, gpc_id));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

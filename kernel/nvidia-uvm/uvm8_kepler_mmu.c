@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2018 NVIDIA Corporation
 
@@ -45,23 +46,23 @@
 #define MMU_SMALL 1
 
 static NvU32 entries_per_index_kepler(NvU32 depth)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 2);
     if (depth == 0)
         return 2;
     return 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvLength entry_offset_kepler(NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 2);
     if (page_size == UVM_PAGE_SIZE_4K && depth == 0)
         return MMU_SMALL;
     return MMU_BIG;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 big_half_pde_kepler(uvm_mmu_page_table_alloc_t *phys_alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pde_bits = 0;
     if (phys_alloc != NULL) {
        NvU64 address = phys_alloc->addr.address >> NV_MMU_PDE_ADDRESS_SHIFT;
@@ -81,10 +82,10 @@ static NvU64 big_half_pde_kepler(uvm_mmu_page_table_alloc_t *phys_alloc)
         }
     }
     return pde_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 small_half_pde_kepler(uvm_mmu_page_table_alloc_t *phys_alloc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pde_bits = 0;
     if (phys_alloc != NULL) {
         NvU64 address = phys_alloc->addr.address >> NV_MMU_PDE_ADDRESS_SHIFT;
@@ -104,26 +105,26 @@ static NvU64 small_half_pde_kepler(uvm_mmu_page_table_alloc_t *phys_alloc)
         }
     }
     return pde_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void make_pde_kepler(void *entry, uvm_mmu_page_table_alloc_t **phys_allocs, NvU32 depth)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pde_bits = 0;
     UVM_ASSERT(depth == 0);
     pde_bits |= HWCONST64(_MMU, PDE, SIZE, FULL);
     pde_bits |= big_half_pde_kepler(phys_allocs[MMU_BIG]) | small_half_pde_kepler(phys_allocs[MMU_SMALL]);
 
     *(NvU64 *)entry = pde_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvLength entry_size_kepler(NvU32 depth)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 2);
     return 8;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 index_bits_kepler_64(NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 2);
     UVM_ASSERT(page_size == UVM_PAGE_SIZE_4K ||
                page_size == UVM_PAGE_SIZE_64K ||
@@ -138,10 +139,10 @@ static NvU32 index_bits_kepler_64(NvU32 depth, NvU32 page_size)
         else
             return 10;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 index_bits_kepler_128(NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(depth < 2);
     UVM_ASSERT(page_size == UVM_PAGE_SIZE_4K ||
                page_size == UVM_PAGE_SIZE_128K ||
@@ -156,40 +157,40 @@ static NvU32 index_bits_kepler_128(NvU32 depth, NvU32 page_size)
         else
             return 10;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 num_va_bits_kepler(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return 40;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvLength allocation_size_kepler_64(NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return entry_size_kepler(depth) << index_bits_kepler_64(depth, page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvLength allocation_size_kepler_128(NvU32 depth, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return entry_size_kepler(depth) << index_bits_kepler_128(depth, page_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 page_table_depth_kepler(NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 page_sizes_kepler_128(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return UVM_PAGE_SIZE_128K | UVM_PAGE_SIZE_4K;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 page_sizes_kepler_64(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return UVM_PAGE_SIZE_64K | UVM_PAGE_SIZE_4K;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 unmapped_pte_kepler(NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Setting the privilege bit on an otherwise-zeroed big PTE causes the
     // corresponding 4k PTEs to be ignored. This allows the invalidation of a
     // mixed PDE range to be much faster.
@@ -201,10 +202,10 @@ static NvU64 unmapped_pte_kepler(NvU32 page_size)
     return HWCONST64(_MMU, PTE, VALID,     FALSE) |
            HWCONST64(_MMU, PTE, PRIVILEGE, TRUE)  |
            HWCONST64(_MMU, PTE, VOL,       FALSE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 make_pte_kepler(uvm_aperture_t aperture, NvU64 address, uvm_prot_t prot, bool vol, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pte_bits = 0;
     NvU8 aperture_bits = 0;
 
@@ -276,20 +277,20 @@ static NvU64 make_pte_kepler(uvm_aperture_t aperture, NvU64 address, uvm_prot_t 
         pte_bits |= HWCONST64(_MMU, PTE, WRITE_DISABLE, FALSE);
 
     return pte_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 make_sked_reflected_pte_kepler(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pte_bits = 0;
 
     pte_bits |= HWCONST64(_MMU, PTE, VALID, TRUE);
     pte_bits |= HWCONST64(_MMU, PTE, KIND, SMSKED_MESSAGE);
 
     return pte_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 poisoned_pte_kepler(NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // An invalid PTE is also fatal on Kepler, but a PRIV violation will
     // immediately identify bad PTE usage.
 
@@ -304,7 +305,7 @@ static NvU64 poisoned_pte_kepler(NvU32 page_size)
     NvU64 pte_bits = make_pte_kepler(UVM_APERTURE_VID, phys_addr, UVM_PROT_READ_ONLY, true, page_size);
 
     return WRITE_HWCONST64(pte_bits, _MMU, PTE, PRIVILEGE, TRUE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_mmu_mode_hal_t kepler_64_mmu_mode_hal =
 {
@@ -341,32 +342,32 @@ static uvm_mmu_mode_hal_t kepler_128_mmu_mode_hal =
 };
 
 uvm_mmu_mode_hal_t *uvm_hal_mmu_mode_kepler(NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(big_page_size == UVM_PAGE_SIZE_64K || big_page_size == UVM_PAGE_SIZE_128K);
     if (big_page_size == UVM_PAGE_SIZE_64K)
         return &kepler_64_mmu_mode_hal;
 
     return &kepler_128_mmu_mode_hal;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_mmu_enable_prefetch_faults_unsupported(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "mmu enable_prefetch_faults called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_kepler_mmu_disable_prefetch_faults_unsupported(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "mmu disable_prefetch_faults called on Kepler GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_mmu_engine_type_t uvm_hal_kepler_mmu_engine_id_to_type_unsupported(NvU16 mmu_engine_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(0);
     return UVM_MMU_ENGINE_TYPE_COUNT;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU16 uvm_hal_kepler_mmu_client_id_to_utlb_id_unsupported(NvU16 client_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(0);
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -30,7 +31,7 @@
 #include "uvm8_mmu.h"
 
 static NV_STATUS test_chunk_index_range(NvU64 start, NvU64 size, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t chunk_index, last_chunk_index = 0;
     uvm_chunk_size_t chunk_size, test_chunk_size;
     NvU64 addr, next_addr, outer_addr;
@@ -74,10 +75,10 @@ static NV_STATUS test_chunk_index_range(NvU64 start, NvU64 size, uvm_gpu_t *gpu)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_chunk_index(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Fake a random address aligned to a block boundary
     const NvU64 start = 17 * UVM_VA_BLOCK_SIZE;
     uvm_va_block_region_t region;
@@ -93,10 +94,10 @@ static NV_STATUS test_chunk_index(uvm_gpu_t *gpu)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_va_block(UVM_TEST_VA_BLOCK_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
     uvm_gpu_t *gpu;
     NV_STATUS status = NV_OK;
@@ -109,4 +110,4 @@ NV_STATUS uvm8_test_va_block(UVM_TEST_VA_BLOCK_PARAMS *params, struct file *filp
 out:
     uvm_va_space_up_read(va_space);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

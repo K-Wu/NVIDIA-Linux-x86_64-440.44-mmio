@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -224,25 +225,25 @@ NV_STATUS uvm_mem_map_kernel(uvm_mem_t *mem, const uvm_global_processor_mask_t *
 
 // Helper for allocating sysmem
 static NV_STATUS uvm_mem_alloc_sysmem(NvU64 size, uvm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mem_alloc_params_t params = { 0 };
     params.size = size;
     params.backing_gpu = NULL;
     params.page_size = UVM_PAGE_SIZE_DEFAULT;
 
     return uvm_mem_alloc(&params, mem_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper for allocating vidmem with the default page size
 static NV_STATUS uvm_mem_alloc_vidmem(NvU64 size, uvm_gpu_t *gpu, uvm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_mem_alloc_params_t params = { 0 };
     params.size = size;
     params.backing_gpu = gpu;
     params.page_size = UVM_PAGE_SIZE_DEFAULT;
 
     return uvm_mem_alloc(&params, mem_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Free the memory.
 // Clear all mappings and free the memory
@@ -299,23 +300,23 @@ uvm_gpu_address_t uvm_mem_gpu_address_physical(uvm_mem_t *mem, uvm_gpu_t *gpu, N
 uvm_gpu_address_t uvm_mem_gpu_address_copy(uvm_mem_t *mem, uvm_gpu_t *accessing_gpu, NvU64 offset, NvU64 size);
 
 static bool uvm_mem_is_sysmem(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return mem->backing_gpu == NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_mem_is_vidmem(uvm_mem_t *mem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return !uvm_mem_is_sysmem(mem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool uvm_mem_is_local_vidmem(uvm_mem_t *mem, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return mem->backing_gpu == gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper for allocating sysmem and mapping it on the CPU
 static NV_STATUS uvm_mem_alloc_sysmem_and_map_cpu_kernel(NvU64 size, uvm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_mem_t *mem;
     uvm_mem_alloc_params_t params = { 0 };
@@ -333,6 +334,6 @@ static NV_STATUS uvm_mem_alloc_sysmem_and_map_cpu_kernel(NvU64 size, uvm_mem_t *
 
     *mem_out = mem;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // __UVM8_MEM_H__

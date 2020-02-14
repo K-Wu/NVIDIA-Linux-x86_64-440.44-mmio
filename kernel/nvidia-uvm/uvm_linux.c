@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2013 NVIDIA Corporation
 
@@ -32,7 +33,7 @@
 
 #if !defined(NV_ADDRESS_SPACE_INIT_ONCE_PRESENT)
 void address_space_init_once(struct address_space *mapping)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(mapping, 0, sizeof(*mapping));
     INIT_RADIX_TREE(&mapping->page_tree, GFP_ATOMIC);
 
@@ -52,6 +53,6 @@ void address_space_init_once(struct address_space *mapping)
     spin_lock_init(&mapping->private_lock);
     INIT_RAW_PRIO_TREE_ROOT(&mapping->i_mmap);
     INIT_LIST_HEAD(&mapping->i_mmap_nonlinear);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 #endif
 

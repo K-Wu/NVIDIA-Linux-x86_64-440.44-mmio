@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -29,7 +30,7 @@
 #include "clc36f.h"
 
 void uvm_hal_volta_host_write_gpu_put(uvm_channel_t *channel, NvU32 gpu_put)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // We need to add a BAR1 read if GPPut is located in sysmem. This
     // guarantees that any in-flight BAR1 writes from the CPU will have reached
     // the GPU by the time the GPU reads the updated GPPut. Read the provided
@@ -42,10 +43,10 @@ void uvm_hal_volta_host_write_gpu_put(uvm_channel_t *channel, NvU32 gpu_put)
     wmb();
 
     UVM_GPU_WRITE_ONCE(*channel->channel_info.workSubmissionOffset, channel->channel_info.workSubmissionToken);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 fault_cancel_va_mode_to_cancel_access_type(uvm_fault_cancel_va_mode_t cancel_va_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // There are only two logical cases from the perspective of UVM. Accesses to
     // an invalid address, which will cancel all accesses on the page, and
     // accesses with an invalid type on a read-only page, which will cancel all
@@ -61,13 +62,13 @@ static NvU32 fault_cancel_va_mode_to_cancel_access_type(uvm_fault_cancel_va_mode
     }
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_cancel_faults_va(uvm_push_t *push,
                                     uvm_gpu_phys_address_t pdb,
                                     const uvm_fault_buffer_entry_t *fault_entry,
                                     uvm_fault_cancel_va_mode_t cancel_va_mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 aperture_value;
     NvU32 pdb_lo;
     NvU32 pdb_hi;
@@ -111,12 +112,12 @@ void uvm_hal_volta_cancel_faults_va(uvm_push_t *push,
                                aperture_value,
                      MEM_OP_D, HWCONST(C36F, MEM_OP_D, OPERATION, MMU_TLB_INVALIDATE_TARGETED) |
                                HWVALUE(C36F, MEM_OP_D, TLB_INVALIDATE_PDB_ADDR_HI, pdb_hi));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_host_clear_faulted_channel_method(uvm_push_t *push,
                                                      uvm_user_channel_t *user_channel,
                                                      const uvm_fault_buffer_entry_t *fault)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 clear_type_value = 0;
 
     UVM_ASSERT(user_channel->gpu->has_clear_faulted_channel_method);
@@ -134,19 +135,19 @@ void uvm_hal_volta_host_clear_faulted_channel_method(uvm_push_t *push,
 
     NV_PUSH_1U(C36F, CLEAR_FAULTED, HWVALUE(C36F, CLEAR_FAULTED, CHID, user_channel->hw_channel_id) |
                                     clear_type_value);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_access_counter_clear_all(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_4U(C36F, MEM_OP_A, 0,
                      MEM_OP_B, 0,
                      MEM_OP_C, 0,
                      MEM_OP_D, HWCONST(C36F, MEM_OP_D, OPERATION, ACCESS_COUNTER_CLR) |
                                HWCONST(C36F, MEM_OP_D, ACCESS_COUNTER_CLR_TYPE, ALL));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 get_access_counter_type_value(uvm_access_counter_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (type == UVM_ACCESS_COUNTER_TYPE_MIMC)
         return NVC36F_MEM_OP_D_ACCESS_COUNTER_CLR_TYPE_MIMC;
     else if (type == UVM_ACCESS_COUNTER_TYPE_MOMC)
@@ -155,10 +156,10 @@ static NvU32 get_access_counter_type_value(uvm_access_counter_type_t type)
         UVM_ASSERT_MSG(false, "Invalid access counter type %u\n", type);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 get_access_counter_targeted_type_value(uvm_access_counter_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (type == UVM_ACCESS_COUNTER_TYPE_MIMC)
         return NVC36F_MEM_OP_D_ACCESS_COUNTER_CLR_TARGETED_TYPE_MIMC;
     else if (type == UVM_ACCESS_COUNTER_TYPE_MOMC)
@@ -167,10 +168,10 @@ static NvU32 get_access_counter_targeted_type_value(uvm_access_counter_type_t ty
         UVM_ASSERT_MSG(false, "Invalid access counter type %u\n", type);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_access_counter_clear_type(uvm_push_t *push, uvm_access_counter_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 type_value = get_access_counter_type_value(type);
 
     NV_PUSH_4U(C36F, MEM_OP_A, 0,
@@ -178,11 +179,11 @@ void uvm_hal_volta_access_counter_clear_type(uvm_push_t *push, uvm_access_counte
                      MEM_OP_C, 0,
                      MEM_OP_D, HWCONST(C36F, MEM_OP_D, OPERATION, ACCESS_COUNTER_CLR) |
                                HWVALUE(C36F, MEM_OP_D, ACCESS_COUNTER_CLR_TYPE, type_value));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_access_counter_clear_targeted(uvm_push_t *push,
                                                  const uvm_access_counter_buffer_entry_t *buffer_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 targeted_type_value = get_access_counter_targeted_type_value(buffer_entry->counter_type);
 
     NV_PUSH_4U(C36F, MEM_OP_A, 0,
@@ -192,7 +193,7 @@ void uvm_hal_volta_access_counter_clear_targeted(uvm_push_t *push,
                                HWCONST(C36F, MEM_OP_D, ACCESS_COUNTER_CLR_TYPE, TARGETED) |
                                HWVALUE(C36F, MEM_OP_D, ACCESS_COUNTER_CLR_TARGETED_TYPE, targeted_type_value) |
                                HWVALUE(C36F, MEM_OP_D, ACCESS_COUNTER_CLR_TARGETED_BANK, buffer_entry->bank));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_host_tlb_invalidate_va(uvm_push_t *push,
                                           uvm_gpu_phys_address_t pdb,
@@ -201,7 +202,7 @@ void uvm_hal_volta_host_tlb_invalidate_va(uvm_push_t *push,
                                           NvU64 size,
                                           NvU32 page_size,
                                           uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 aperture_value;
     NvU32 page_table_level;
     NvU32 pdb_lo;
@@ -284,10 +285,10 @@ void uvm_hal_volta_host_tlb_invalidate_va(uvm_push_t *push,
                                HWVALUE(C36F, MEM_OP_D, TLB_INVALIDATE_PDB_ADDR_HI, pdb_hi));
 
     uvm_hal_tlb_invalidate_membar(push, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_replay_faults(uvm_push_t *push, uvm_fault_replay_type_t type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 replay_value = 0;
     const NvU32 va_lo = 0;
     const NvU32 va_hi = 0;
@@ -316,4 +317,4 @@ void uvm_hal_volta_replay_faults(uvm_push_t *push, uvm_fault_replay_type_t type)
                                replay_value,
                      MEM_OP_D, HWCONST(C36F, MEM_OP_D, OPERATION, MMU_TLB_INVALIDATE_TARGETED) |
                                HWVALUE(C36F, MEM_OP_D, TLB_INVALIDATE_PDB_ADDR_HI, pdb_hi));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

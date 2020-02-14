@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017 NVIDIA Corporation
 
@@ -33,7 +34,7 @@
 // sets NV_MMU_PTE_KIND_GENERIC_MEMORY, instead, since NV_MMU_PTE_KIND_PITCH
 // no longer exists.
 static NvU64 make_pte_turing(uvm_aperture_t aperture, NvU64 address, uvm_prot_t prot, bool vol, NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU8 aperture_bits = 0;
     NvU64 pte_bits = 0;
 
@@ -105,20 +106,20 @@ static NvU64 make_pte_turing(uvm_aperture_t aperture, NvU64 address, uvm_prot_t 
     pte_bits |= HWVALUE64(_MMU_VER2, PTE, KIND, NV_MMU_PTE_KIND_GENERIC_MEMORY);
 
     return pte_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 make_sked_reflected_pte_turing(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 pte_bits = 0;
 
     pte_bits |= HWCONST64(_MMU_VER2, PTE, VALID, TRUE);
     pte_bits |= HWVALUE64(_MMU_VER2, PTE, KIND, NV_MMU_PTE_KIND_SMSKED_MESSAGE);
 
     return pte_bits;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 poisoned_pte_turing(NvU32 page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // An invalid PTE won't be fatal from faultable units like SM, which is the
     // most likely source of bad PTE accesses.
 
@@ -132,13 +133,13 @@ static NvU64 poisoned_pte_turing(NvU32 page_size)
 
     NvU64 pte_bits = make_pte_turing(UVM_APERTURE_VID, phys_addr, UVM_PROT_READ_ONLY, true, page_size);
     return WRITE_HWCONST64(pte_bits, _MMU_VER2, PTE, PRIVILEGE, TRUE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 static uvm_mmu_mode_hal_t turing_mmu_mode_hal;
 
 uvm_mmu_mode_hal_t *uvm_hal_mmu_mode_turing(NvU32 big_page_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     static bool initialized = false;
 
     UVM_ASSERT(big_page_size == UVM_PAGE_SIZE_64K || big_page_size == UVM_PAGE_SIZE_128K);
@@ -165,10 +166,10 @@ uvm_mmu_mode_hal_t *uvm_hal_mmu_mode_turing(NvU32 big_page_size)
     }
 
     return &turing_mmu_mode_hal;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_mmu_engine_type_t uvm_hal_turing_mmu_engine_id_to_type(NvU16 mmu_engine_id)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (mmu_engine_id >= NV_PFAULT_MMU_ENG_ID_HOST0 && mmu_engine_id <= NV_PFAULT_MMU_ENG_ID_HOST14)
         return UVM_MMU_ENGINE_TYPE_HOST;
 
@@ -180,4 +181,4 @@ uvm_mmu_engine_type_t uvm_hal_turing_mmu_engine_id_to_type(NvU16 mmu_engine_id)
                    "Unexpected engine ID: 0x%x\n", mmu_engine_id);
 
     return UVM_MMU_ENGINE_TYPE_GRAPHICS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

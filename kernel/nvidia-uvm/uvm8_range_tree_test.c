@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -98,31 +99,31 @@ typedef struct
 } rtt_range_t;
 
 static rtt_range_t rtt_node_get_range(uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_range_t range = {node->start, node->end};
     return range;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Since end is inclusive a range can't have a size of 0. A return value of 0
 // means that the range is 2^64.
 static NvU64 rtt_get_range_size(rtt_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return range->end - range->start + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool rtt_ranges_overlap(rtt_range_t *a, rtt_range_t *b)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_ranges_overlap(a->start, a->end, b->start, b->end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool rtt_range_overlaps_node(uvm_range_tree_node_t *node, rtt_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_range_t temp = rtt_node_get_range(node);
     return rtt_ranges_overlap(&temp, range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void rtt_state_destroy(rtt_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
 
     if (!state)
@@ -133,10 +134,10 @@ static void rtt_state_destroy(rtt_state_t *state)
 
     uvm_kvfree(state->nodes);
     uvm_kvfree(state);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static rtt_state_t *rtt_state_create(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_state_t *state = uvm_kvmalloc_zero(sizeof(*state));
     if (!state)
         return NULL;
@@ -150,10 +151,10 @@ static rtt_state_t *rtt_state_create(void)
 
     uvm_range_tree_init(&state->tree);
     return state;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_range_tree_node_t *rtt_alloc_node(rtt_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
     uvm_range_tree_node_t **new_nodes;
     size_t new_max;
@@ -185,10 +186,10 @@ static uvm_range_tree_node_t *rtt_alloc_node(rtt_state_t *state)
 error:
     uvm_kvfree(node);
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_range_add(rtt_state_t *state, rtt_range_t *range, uvm_range_tree_node_t **new_node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_tree_node_t *node;
 
@@ -219,10 +220,10 @@ static NV_STATUS rtt_range_add(rtt_state_t *state, rtt_range_t *range, uvm_range
 error:
     uvm_kvfree(node);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_index_remove(rtt_state_t *state, size_t index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
     NvU64 size;
 
@@ -240,10 +241,10 @@ static NV_STATUS rtt_index_remove(rtt_state_t *state, size_t index)
     ++state->stats.total_removes;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_node_shrink(rtt_state_t *state, uvm_range_tree_node_t *node, NvU64 new_start, NvU64 new_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 old_size;
     NvU64 new_size;
 
@@ -259,13 +260,13 @@ static NV_STATUS rtt_node_shrink(rtt_state_t *state, uvm_range_tree_node_t *node
     state->stats.size_sum -= (old_size - new_size);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_node_split(rtt_state_t *state,
                                 uvm_range_tree_node_t *node,
                                 NvU64 new_end,
                                 uvm_range_tree_node_t **new_node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_tree_node_t *new;
 
@@ -295,10 +296,10 @@ static NV_STATUS rtt_node_split(rtt_state_t *state,
 error:
     uvm_kvfree(new);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_check_node(rtt_state_t *state, uvm_range_tree_node_t *node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *temp, *prev, *next;
     NvU64 start, mid, end;
 
@@ -338,10 +339,10 @@ static NV_STATUS rtt_check_node(rtt_state_t *state, uvm_range_tree_node_t *node)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_check_iterator_all(rtt_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node, *prev = NULL, *expected = NULL;
     size_t iter_count = 0;
 
@@ -361,7 +362,7 @@ static NV_STATUS rtt_check_iterator_all(rtt_state_t *state)
 
     TEST_CHECK_RET(iter_count == state->count);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // Attempts to add the given range to the tree and performs some sanity checks
@@ -380,7 +381,7 @@ static NV_STATUS rtt_check_iterator_all(rtt_state_t *state)
 // NV_ERR_NO_MEMORY           The obvious.
 //
 static NV_STATUS rtt_range_add_check(rtt_state_t *state, rtt_range_t *range)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_range_tree_node_t *node = NULL;
     size_t i;
@@ -415,11 +416,11 @@ static NV_STATUS rtt_range_add_check(rtt_state_t *state, rtt_range_t *range)
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns NV_ERR_INVALID_STATE on sanity check failure, NV_OK otherwise.
 static NV_STATUS rtt_index_remove_check(rtt_state_t *state, size_t index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node, *prev, *next;
     NvU64 start, end;
     NV_STATUS status;
@@ -452,11 +453,11 @@ static NV_STATUS rtt_index_remove_check(rtt_state_t *state, size_t index)
         TEST_CHECK_RET(state->count == 0);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns NV_ERR_INVALID_STATE on sanity check failure, NV_OK otherwise.
 static NV_STATUS rtt_node_shrink_check(rtt_state_t *state, uvm_range_tree_node_t *node, NvU64 new_start, NvU64 new_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *prev, *next;
     NV_STATUS status;
     NvU64 old_start = node->start;
@@ -487,10 +488,10 @@ static NV_STATUS rtt_node_shrink_check(rtt_state_t *state, uvm_range_tree_node_t
     TEST_CHECK_RET(uvm_range_tree_find(&state->tree, new_end) == node);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_remove_all_check(rtt_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     status = rtt_check_iterator_all(state);
@@ -503,10 +504,10 @@ static NV_STATUS rtt_remove_all_check(rtt_state_t *state)
             return status;
     }
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_node_split_check(rtt_state_t *state, uvm_range_tree_node_t *node, NvU64 new_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *prev, *next, *new = NULL;
     NV_STATUS status;
 
@@ -533,13 +534,13 @@ static NV_STATUS rtt_node_split_check(rtt_state_t *state, uvm_range_tree_node_t 
     TEST_CHECK_RET(uvm_range_tree_prev(&state->tree, new)  == node);
     TEST_CHECK_RET(uvm_range_tree_next(&state->tree, new)  == next);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // The rtt_index_merge_check_* functions don't have a non-check helper because
 // both the helper and the caller need to walk the whole array to properly free
 // the removed node. It's simpler to just handle all that in the same function.
 static NV_STATUS rtt_index_merge_check_prev(rtt_state_t *state, size_t index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node, *prev, *returned, *expected = NULL;
     size_t i = 0; // Shut up compiler
     NV_STATUS status;
@@ -594,10 +595,10 @@ static NV_STATUS rtt_index_merge_check_prev(rtt_state_t *state, size_t index)
 
     // Failed merge
     return NV_ERR_INVALID_ADDRESS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_index_merge_check_next(rtt_state_t *state, size_t index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node, *next, *returned, *expected = NULL;
     size_t i = 0; // Shut up compiler
     NV_STATUS status;
@@ -652,70 +653,70 @@ static NV_STATUS rtt_index_merge_check_next(rtt_state_t *state, size_t index)
 
     // Failed merge
     return NV_ERR_INVALID_ADDRESS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 // Directed test helpers for using hard-coded values
 
 // Returns the index of the node containing addr, or state->count if none.
 static size_t rtt_node_find(rtt_state_t *state, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t i;
     for (i = 0; i < state->count; i++) {
         if (state->nodes[i]->start <= addr && addr <= state->nodes[i]->end)
             break;
     }
     return i;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_range_add_check_val(rtt_state_t *state, NvU64 start, NvU64 end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_range_t range = {start, end};
     return rtt_range_add_check(state, &range);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_index_remove_check_val(rtt_state_t *state, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index = rtt_node_find(state, addr);
     if (index == state->count)
         return NV_ERR_INVALID_STATE;
     return rtt_index_remove_check(state, index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_node_shrink_check_val(rtt_state_t *state, NvU64 new_start, NvU64 new_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index = rtt_node_find(state, new_start);
     if (index == state->count)
         return NV_ERR_INVALID_STATE;
     return rtt_node_shrink_check(state, state->nodes[index], new_start, new_end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_node_split_check_val(rtt_state_t *state, NvU64 new_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index = rtt_node_find(state, new_end);
     if (index == state->count || new_end == state->nodes[index]->end)
         return NV_ERR_INVALID_STATE;
     return rtt_node_split_check(state, state->nodes[index], new_end);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_index_merge_check_prev_val(rtt_state_t *state, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index = rtt_node_find(state, addr);
     if (index == state->count)
         return NV_ERR_INVALID_STATE;
     return rtt_index_merge_check_prev(state, index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_index_merge_check_next_val(rtt_state_t *state, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index = rtt_node_find(state, addr);
     if (index == state->count)
         return NV_ERR_INVALID_STATE;
     return rtt_index_merge_check_next(state, index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS rtt_directed(rtt_state_t *state)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
 
     // Empty tree
@@ -807,10 +808,10 @@ static NV_STATUS rtt_directed(rtt_state_t *state)
     MEM_NV_CHECK_RET(rtt_remove_all_check(state),              NV_OK);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_range_tree_directed(UVM_TEST_RANGE_TREE_DIRECTED_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_state_t *state;
     NV_STATUS status;
 
@@ -820,14 +821,14 @@ NV_STATUS uvm8_test_range_tree_directed(UVM_TEST_RANGE_TREE_DIRECTED_PARAMS *par
     status = rtt_directed(state);
     rtt_state_destroy(state);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // ------------------------------ Random Test ------------------------------ //
 
 // Randomly place a block of the given size in the range described by bounds.
 // size == 0 means size == 2^64.
 static void rtt_rand_place(uvm_test_rng_t *rng, NvU64 size, rtt_range_t *bounds, rtt_range_t *out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(bounds->start <= bounds->end);
 
     if (size == 0) {
@@ -845,19 +846,19 @@ static void rtt_rand_place(uvm_test_rng_t *rng, NvU64 size, rtt_range_t *bounds,
         out->start = uvm_test_rng_range_64(rng, bounds->start, bounds->end + 1 - size);
         out->end   = out->start + size - 1;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Compute a range in [0, max_end] of random size. The size is selected with
 // logarithmic distribution for a good mix of large and small ranges.
 static void rtt_get_rand_range(uvm_test_rng_t *rng, NvU64 max_end, rtt_range_t *out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_range_t bounds = {0, max_end};
     NvU64 size;
 
     // Offset size by 1 to handle overflow when max_end is ULLONG_MAX.
     size = uvm_test_rng_range_log64(rng, 0, max_end) + 1;
     rtt_rand_place(rng, size, &bounds, out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Like rtt_get_rand_range but guarantees that the generated range will overlap
 // with the input cover range. This is used to generate overlapping ranges to
@@ -866,7 +867,7 @@ static void rtt_get_rand_range_covering(uvm_test_rng_t *rng,
                                         NvU64 max_end,
                                         rtt_range_t *cover,
                                         rtt_range_t *out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 size;
     rtt_range_t bounds;
 
@@ -899,7 +900,7 @@ static void rtt_get_rand_range_covering(uvm_test_rng_t *rng,
 
     rtt_rand_place(rng, size, &bounds, out);
     UVM_ASSERT(rtt_ranges_overlap(cover, out));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Attempt to add N ranges to the tree, where N is randomly selected from the
 // range [1, params->max_batch_count]. Each range is randomly chosen.
@@ -909,7 +910,7 @@ static void rtt_get_rand_range_covering(uvm_test_rng_t *rng,
 // ranges, adjusts the RNG probabilities to prefer remove operations, and
 // returns NV_ERR_BUSY_RETRY.
 static NV_STATUS rtt_batch_add(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t size = 0, ranges_to_add, max_ranges;
     NvU32 collisions = 0;
     NV_STATUS status = NV_OK;
@@ -973,12 +974,12 @@ static NV_STATUS rtt_batch_add(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PA
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Removes N ranges from the tree, where N is randomly selected from the range
 // [1, params->max_batch_count].
 static NV_STATUS rtt_batch_remove(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index, max_ranges, ranges_to_remove;
     NV_STATUS status;
 
@@ -1002,13 +1003,13 @@ static NV_STATUS rtt_batch_remove(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Attempts to shrink a randomly-selected range in the tree. On selecting a range
 // of size 1, the attempt is repeated with another range up to the
 // params->max_attempts threshold.
 static NV_STATUS rtt_rand_shrink(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = NULL;
     NvU64 old_start;
     NvU64 old_end;
@@ -1057,7 +1058,7 @@ static NV_STATUS rtt_rand_shrink(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Attempts to split a randomly-selected range in the tree. On selecting a range
 // of size 1, the attempt is repeated with another range up to the
@@ -1065,7 +1066,7 @@ static NV_STATUS rtt_rand_shrink(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_
 // probabilities are adjusted to prefer merge operations and NV_ERR_BUSY_RETRY
 // is returned.
 static NV_STATUS rtt_rand_split(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node = NULL;
     rtt_range_t old_range;
     size_t index;
@@ -1115,7 +1116,7 @@ static NV_STATUS rtt_rand_split(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_P
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Attempts to merge a randomly-selected range in the tree in a randomly-selected
 // direction (next or prev). On selecting a range with a non-adjacent neighbor,
@@ -1123,7 +1124,7 @@ static NV_STATUS rtt_rand_split(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_P
 // threshold. On reaching the attempt threshold the RNG probabilities are
 // adjusted to prefer split operations and NV_ERR_BUSY_RETRY is returned.
 static NV_STATUS rtt_rand_merge(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node;
     size_t index;
     NvU32 i;
@@ -1175,12 +1176,12 @@ static NV_STATUS rtt_rand_merge(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_P
     ++state->stats.max_attempts_merge;
     state->split_chance = params->high_probability;
     return NV_ERR_BUSY_RETRY;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Randomly generate a range that collides with an allocated range and verify
 // that adding the range fails.
 static NV_STATUS rtt_rand_collision_check(rtt_state_t *state, NvU64 max_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t index;
     rtt_range_t cover, check;
 
@@ -1196,12 +1197,12 @@ static NV_STATUS rtt_rand_collision_check(rtt_state_t *state, NvU64 max_end)
     MEM_NV_CHECK_RET(rtt_range_add(state, &check, NULL), NV_ERR_UVM_ADDRESS_IN_USE);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Generate a random range and verify that the tree iterator walks all nodes
 // in that range in order.
 static NV_STATUS rtt_rand_iterator_check(rtt_state_t *state, NvU64 max_end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_range_tree_node_t *node, *prev = NULL;
     size_t i, target_count = 0, iter_count = 0;
     rtt_range_t range;
@@ -1225,10 +1226,10 @@ static NV_STATUS rtt_rand_iterator_check(rtt_state_t *state, NvU64 max_end)
 
     TEST_CHECK_RET(iter_count == target_count);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static rtt_op_t rtt_get_rand_op(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 r_group, r_sub;
 
     // The possible options depend on the current number of nodes in the tree:
@@ -1271,7 +1272,7 @@ static rtt_op_t rtt_get_rand_op(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_P
     if (r_group <= params->add_remove_shrink_group_probability)
         return RTT_OP_REMOVE;
     return RTT_OP_MERGE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This random stress test performs the following every iteration of the main
 // loop:
@@ -1309,7 +1310,7 @@ static rtt_op_t rtt_get_rand_op(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_P
 // a simple allocator, with merge/split logic. That would increase the
 // complexity of this test immensely, so instead we're doing best-effort.
 static NV_STATUS rtt_random(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_op_t op;
     NvU64 i;
     NvU32 j;
@@ -1408,10 +1409,10 @@ static NV_STATUS rtt_random(rtt_state_t *state, UVM_TEST_RANGE_TREE_RANDOM_PARAM
     params->stats.failed_shrinks        = state->stats.failed_shrinks;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_range_tree_random(UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     rtt_state_t *state;
     NV_STATUS status;
 
@@ -1428,4 +1429,4 @@ NV_STATUS uvm8_test_range_tree_random(UVM_TEST_RANGE_TREE_RANDOM_PARAMS *params,
     status = rtt_random(state, params);
     rtt_state_destroy(state);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

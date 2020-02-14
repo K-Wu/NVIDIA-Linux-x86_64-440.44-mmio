@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -50,10 +51,10 @@ typedef enum {
 } uvm_volta_gpc_utlb_id_t;
 
 static NvU32 uvm_volta_get_utlbs_per_gpc(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(gpu->rm_info.maxTpcPerGpc + 1 <= UVM_VOLTA_GPC_UTLB_COUNT);
     return gpu->rm_info.maxTpcPerGpc + 1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU8 uvm_volta_get_ve_id(NvU16 mmu_engine_id, uvm_mmu_engine_type_t mmu_engine_type);
 

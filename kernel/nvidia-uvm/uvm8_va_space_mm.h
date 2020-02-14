@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018 NVIDIA Corporation
 
@@ -117,11 +118,11 @@ void uvm_va_space_mm_release(uvm_va_space_mm_t *va_space_mm);
 
 // Helper which handles a NULL va_space_mm
 static struct mm_struct *uvm_va_space_mm_get_mm(uvm_va_space_mm_t *va_space_mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (va_space_mm)
         return va_space_mm->mm;
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Handles the va_space_mm's mm being torn down while the VA space still exists.
 // Subsequent calls to uvm_va_space_mm_retain will return NULL and this function

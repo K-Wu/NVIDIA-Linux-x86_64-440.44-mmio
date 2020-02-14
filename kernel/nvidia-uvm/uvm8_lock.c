@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -26,7 +27,7 @@
 #include "uvm8_kvmalloc.h"
 
 const char *uvm_lock_order_to_string(uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_LOCK_ORDER_COUNT != 26);
 
     switch (lock_order) {
@@ -58,10 +59,10 @@ const char *uvm_lock_order_to_string(uvm_lock_order_t lock_order)
         UVM_ENUM_STRING_CASE(UVM_LOCK_ORDER_LEAF);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_record_lock(void *lock, uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool correct = true;
     uvm_lock_order_t conflicting_order;
     uvm_thread_context_lock_t *uvm_context = uvm_thread_context_lock_get();
@@ -130,10 +131,10 @@ bool __uvm_record_lock(void *lock, uvm_lock_order_t lock_order, uvm_lock_flags_t
     uvm_context->acquired[lock_order] = lock;
 
     return correct;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_record_unlock(void *lock, uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool correct = true;
     uvm_thread_context_lock_t *uvm_context = uvm_thread_context_lock_get();
     uvm_lock_flags_t mode_flags = (flags & UVM_LOCK_FLAGS_MODE_MASK);
@@ -192,10 +193,10 @@ bool __uvm_record_unlock(void *lock, uvm_lock_order_t lock_order, uvm_lock_flags
     uvm_context->acquired[lock_order] = NULL;
 
     return correct;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_record_downgrade(void *lock, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *uvm_context = uvm_thread_context_lock_get();
 
     if (!uvm_context) {
@@ -215,10 +216,10 @@ bool __uvm_record_downgrade(void *lock, uvm_lock_order_t lock_order)
 
     clear_bit(lock_order, uvm_context->exclusive_acquired_lock_orders);
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_check_locked(void *lock, uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *uvm_context = uvm_thread_context_lock_get();
     uvm_lock_flags_t mode_flags = (flags & UVM_LOCK_FLAGS_MODE_MASK);
     bool exclusive = (mode_flags == UVM_LOCK_FLAGS_MODE_EXCLUSIVE);
@@ -253,15 +254,15 @@ bool __uvm_check_locked(void *lock, uvm_lock_order_t lock_order, uvm_lock_flags_
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_locking_initialized(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_thread_context_global_initialized();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_check_lockable_order(uvm_lock_order_t lock_order, uvm_lock_flags_t flags)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_lock_order_t conflicting_order;
     uvm_thread_context_lock_t *uvm_context = uvm_thread_context_lock_get();
     bool trylock = (flags & UVM_LOCK_FLAGS_TRYLOCK);
@@ -288,10 +289,10 @@ bool __uvm_check_lockable_order(uvm_lock_order_t lock_order, uvm_lock_flags_t fl
     }
 
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_check_unlocked_order(uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_thread_context_lock_t *uvm_context = uvm_thread_context_lock_get();
     if (!uvm_context)
         return true;
@@ -309,10 +310,10 @@ bool __uvm_check_unlocked_order(uvm_lock_order_t lock_order)
         return false;
     }
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_check_all_unlocked(uvm_thread_context_lock_t *uvm_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_lock_order_t lock_order;
     NvU32 still_locked_count;
 
@@ -332,15 +333,15 @@ bool __uvm_check_all_unlocked(uvm_thread_context_lock_t *uvm_context)
     }
 
     return false;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool __uvm_thread_check_all_unlocked()
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return __uvm_check_all_unlocked(uvm_thread_context_lock_get());
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_bit_locks_init(uvm_bit_locks_t *bit_locks, size_t count, uvm_lock_order_t lock_order)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // TODO: Bug 1772140: Notably bit locks currently do not work on memory
     // allocated through vmalloc() (including big allocations created with
     // uvm_kvmalloc()). The problem is the bit_waitqueue() helper used by the
@@ -361,10 +362,10 @@ NV_STATUS uvm_bit_locks_init(uvm_bit_locks_t *bit_locks, size_t count, uvm_lock_
 #endif
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_bit_locks_deinit(uvm_bit_locks_t *bit_locks)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     kfree(bit_locks->bits);
     memset(bit_locks, 0, sizeof(*bit_locks));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

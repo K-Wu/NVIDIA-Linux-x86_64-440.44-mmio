@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2017-2019 NVIDIA Corporation
 
@@ -48,7 +49,7 @@ static uvm_gpu_t *g_volta_plus_gpu;
 static NV_STATUS check_reverse_map_block_page(uvm_va_block_t *va_block,
                                               NvU64 base_dma_addr,
                                               const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_page_index_t page_index;
 
     for_each_va_block_page(page_index, va_block) {
@@ -75,7 +76,7 @@ static NV_STATUS check_reverse_map_block_page(uvm_va_block_t *va_block,
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check that the DMA addresses in the range defined by
 // [base_dma_addr:base_dma_addr + uvm_va_block_size(va_block)] and page_mask
@@ -85,7 +86,7 @@ static NV_STATUS check_reverse_map_block_page(uvm_va_block_t *va_block,
 static NV_STATUS check_reverse_map_block_batch(uvm_va_block_t *va_block,
                                                NvU64 base_dma_addr,
                                                const uvm_page_mask_t *page_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t num_translations;
     size_t num_pages;
     size_t reverse_map_index;
@@ -118,7 +119,7 @@ static NV_STATUS check_reverse_map_block_batch(uvm_va_block_t *va_block,
         TEST_CHECK_RET(num_pages == uvm_va_block_num_cpu_pages(va_block));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check that the DMA addresses for all the CPU pages of the two given VA blocks
 // are registered in the reverse map, using a single translation call. The
@@ -128,7 +129,7 @@ static NV_STATUS check_reverse_map_block_batch(uvm_va_block_t *va_block,
 static NV_STATUS check_reverse_map_two_blocks_batch(NvU64 base_dma_addr,
                                                     uvm_va_block_t *va_block0,
                                                     uvm_va_block_t *va_block1)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t num_pages;
     size_t num_translations;
     size_t reverse_map_index;
@@ -166,7 +167,7 @@ static NV_STATUS check_reverse_map_two_blocks_batch(NvU64 base_dma_addr,
     TEST_CHECK_RET(num_pages == uvm_va_block_num_cpu_pages(va_block0) + uvm_va_block_num_cpu_pages(va_block1));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const NvU64 g_base_dma_addr = UVM_VA_BLOCK_SIZE;
 
@@ -177,7 +178,7 @@ static NV_STATUS test_pmm_sysmem_reverse_map_single(uvm_va_block_t *va_block,
                                                     uvm_page_mask_t *page_mask,
                                                     uvm_chunk_size_t split_size,
                                                     bool merge)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_block_region_t subregion;
 
@@ -256,12 +257,12 @@ static NV_STATUS test_pmm_sysmem_reverse_map_single(uvm_va_block_t *va_block,
     TEST_CHECK_RET(check_reverse_map_block_batch(va_block, g_base_dma_addr, page_mask) == NV_OK);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_page_mask_t g_page_mask;
 
 static NV_STATUS test_pmm_sysmem_reverse_map_single_whole(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_t *va_block;
     const bool merge_array[] = {false, true};
@@ -291,10 +292,10 @@ static NV_STATUS test_pmm_sysmem_reverse_map_single_whole(uvm_va_space_t *va_spa
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_pmm_sysmem_reverse_map_single_pattern(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_t *va_block;
     uvm_page_index_t page_index;
@@ -311,12 +312,12 @@ static NV_STATUS test_pmm_sysmem_reverse_map_single_pattern(uvm_va_space_t *va_s
     }
 
     return test_pmm_sysmem_reverse_map_single(va_block, &g_page_mask, UVM_CHUNK_SIZE_MAX, false);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function assumes that addr points at a VA range with 4 sized VA blocks
 // with size UVM_VA_BLOCK_SIZE / 4.
 static NV_STATUS test_pmm_sysmem_reverse_map_many_blocks(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_block_t *va_block0;
     uvm_va_block_t *va_block1;
@@ -379,12 +380,12 @@ error:
     uvm_mutex_unlock(&va_block0->lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function registers a non-uniform distribution of chunks (mixing 4K and 64K chunks)
 // and merges them back to verify that the logic is working.
 static NV_STATUS test_pmm_sysmem_reverse_map_merge(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_va_block_t *va_block;
     const unsigned chunks_64k_pos[] =
@@ -475,10 +476,10 @@ static NV_STATUS test_pmm_sysmem_reverse_map_merge(uvm_va_space_t *va_space, NvU
     uvm_mutex_unlock(&va_block->lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_pmm_sysmem_reverse_map_remove_on_eviction(uvm_va_space_t *va_space, NvU64 addr)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_block_t *va_block;
     NV_STATUS status = uvm_va_block_find(va_space, addr, &va_block);
 
@@ -506,10 +507,10 @@ static NV_STATUS test_pmm_sysmem_reverse_map_remove_on_eviction(uvm_va_space_t *
     uvm_pmm_sysmem_mappings_remove_gpu_mapping_on_eviction(&g_reverse_map, g_base_dma_addr);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_pmm_sysmem_reverse_map(uvm_va_space_t *va_space, NvU64 addr1, NvU64 addr2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
 
@@ -549,10 +550,10 @@ static NV_STATUS test_pmm_sysmem_reverse_map(uvm_va_space_t *va_space, NvU64 add
     uvm_pmm_sysmem_mappings_deinit(&g_reverse_map);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_pmm_sysmem(UVM_TEST_PMM_SYSMEM_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space;
 
@@ -575,4 +576,4 @@ NV_STATUS uvm8_test_pmm_sysmem(UVM_TEST_PMM_SYSMEM_PARAMS *params, struct file *
     uvm_mutex_unlock(&g_uvm_global.global_lock);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

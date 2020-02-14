@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -27,7 +28,7 @@
 #include "uvm8_volta_fault_buffer.h"
 
 void uvm_hal_volta_arch_init_properties(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     gpu->big_page.swizzling = false;
 
     gpu->tlb_batch.va_invalidate_supported = true;
@@ -90,4 +91,4 @@ void uvm_hal_volta_arch_init_properties(uvm_gpu_t *gpu)
 
 
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

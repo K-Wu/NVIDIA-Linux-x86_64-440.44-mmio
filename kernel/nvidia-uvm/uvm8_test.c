@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -37,7 +38,7 @@
 #include "uvm8_gpu_access_counters.h"
 
 static NV_STATUS uvm8_test_get_gpu_ref_count(UVM_TEST_GET_GPU_REF_COUNT_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 retained_count = 0;
     uvm_gpu_t *gpu;
 
@@ -52,10 +53,10 @@ static NV_STATUS uvm8_test_get_gpu_ref_count(UVM_TEST_GET_GPU_REF_COUNT_PARAMS *
 
     params->ref_count = retained_count;
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_peer_ref_count(UVM_TEST_PEER_REF_COUNT_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 registered_ref_count = 0;
     uvm_gpu_t *gpu0 = NULL;
     uvm_gpu_t *gpu1 = NULL;
@@ -79,21 +80,21 @@ static NV_STATUS uvm8_test_peer_ref_count(UVM_TEST_PEER_REF_COUNT_PARAMS *params
     params->ref_count = registered_ref_count;
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_make_channel_stops_immediate(
         UVM_TEST_MAKE_CHANNEL_STOPS_IMMEDIATE_PARAMS *params,
         struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_va_space_get(filp)->user_channel_stops_are_immediate = NV_TRUE;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_nv_kthread_q(
         UVM_TEST_NV_KTHREAD_Q_PARAMS *params,
         struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // The nv-kthread-q system returns 0 or -1, because it is not actually
     // part of UVM. UVM needs to run this test, because otherwise, the
     // nv-kthread-q code would not get adequate test coverage. That's because
@@ -103,11 +104,11 @@ static NV_STATUS uvm8_test_nv_kthread_q(
         return NV_OK;
 
     return NV_ERR_INVALID_STATE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_numa_get_closest_cpu_node_to_gpu(UVM_TEST_NUMA_GET_CLOSEST_CPU_NODE_TO_GPU_PARAMS *params,
                                                            struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NV_STATUS status;
     uvm_rm_user_object_t user_rm_va_space = {
@@ -127,12 +128,12 @@ static NV_STATUS uvm8_test_numa_get_closest_cpu_node_to_gpu(UVM_TEST_NUMA_GET_CL
     params->node_id = gpu->closest_cpu_numa_node;
     uvm_gpu_release(gpu);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Callers of this function should ensure that node is not NUMA_NO_NODE in order to avoid
 // overrunning the kernel's node to cpumask map.
 static NV_STATUS uvm8_test_verify_bh_affinity(uvm_intr_handler_t *isr, int node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(node != NUMA_NO_NODE);
 
     // If the bottom half has been executed but its cpus_used_mask is empty
@@ -145,11 +146,11 @@ static NV_STATUS uvm8_test_verify_bh_affinity(uvm_intr_handler_t *isr, int node)
         return NV_ERR_INVALID_STATE;
     }
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_numa_check_affinity(UVM_TEST_NUMA_CHECK_AFFINITY_PARAMS *params,
                                                struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NV_STATUS status;
     uvm_rm_user_object_t user_rm_va_space = {
@@ -202,19 +203,19 @@ static NV_STATUS uvm8_test_numa_check_affinity(UVM_TEST_NUMA_CHECK_AFFINITY_PARA
 release:
     uvm_gpu_release(gpu);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS uvm8_test_get_kernel_virtual_address(
         UVM_TEST_GET_KERNEL_VIRTUAL_ADDRESS_PARAMS *params,
         struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     params->addr = (NvU64)uvm_va_space_get(filp);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 long uvm8_test_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Disable all test entry points if the module parameter wasn't provided.
     // These should not be enabled in a production environment.
     if (!uvm_enable_builtin_tests) {
@@ -308,4 +309,4 @@ long uvm8_test_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
     }
 
     return -EINVAL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

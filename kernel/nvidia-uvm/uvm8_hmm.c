@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016, 2016 NVIDIA Corporation
 
@@ -47,29 +48,29 @@ MODULE_PARM_DESC(uvm_hmm, "Enable (1) or disable (0) HMM mode. Default: 0. "
 #include "uvm8_va_space.h"
 
 static bool uvm_hmm_is_enabled_system_wide(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (uvm_hmm != 0) && !g_uvm_global.ats.enabled;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_hmm_is_enabled(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_hmm_is_enabled_system_wide() &&
            !(va_space->initialization_flags & UVM_INIT_FLAGS_DISABLE_HMM);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // If ATS support is enabled, then HMM will be disabled, even if HMM was
 // specifically requested via uvm_hmm kernel module parameter. Detect that case
 // and print a warning to the unsuspecting developer.
 void uvm_hmm_init(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if ((uvm_hmm != 0) && g_uvm_global.ats.enabled) {
         UVM_ERR_PRINT("uvm_hmm=%d (HMM was requested), ATS mode is also enabled, which is incompatible with HMM, "
                       "so HMM remains disabled\n", uvm_hmm);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_hmm_device_register(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct hmm_device *device;
 
     // Register the GPU with HMM whether or not any applications decide
@@ -90,10 +91,10 @@ NV_STATUS uvm_hmm_device_register(uvm_gpu_t *gpu)
     gpu->hmm_gpu.device = device;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hmm_device_unregister(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_hmm_is_enabled_system_wide())
         return;
 
@@ -103,22 +104,22 @@ void uvm_hmm_device_unregister(uvm_gpu_t *gpu)
     hmm_device_put(gpu->hmm_gpu.device);
 
     gpu->hmm_gpu.device = NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void mirror_sync_cpu_device_pagetables(struct hmm_mirror *mirror,
                                               enum hmm_update_type update,
                                               unsigned long start,
                                               unsigned long end)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // TODO: Bug 1750144: Implement this
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const struct hmm_mirror_ops mirror_ops = {
     .sync_cpu_device_pagetables = &mirror_sync_cpu_device_pagetables,
 };
 
 NV_STATUS uvm_hmm_mirror_register(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int ret;
 
     if (!uvm_hmm_is_enabled(va_space))
@@ -134,10 +135,10 @@ NV_STATUS uvm_hmm_mirror_register(uvm_va_space_t *va_space)
         return errno_to_nv_status(ret);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hmm_mirror_unregister(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!uvm_hmm_is_enabled(va_space))
         return;
 
@@ -147,6 +148,6 @@ void uvm_hmm_mirror_unregister(uvm_va_space_t *va_space)
         return;
 
     hmm_mirror_unregister(&va_space->hmm_va_space.mirror);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // UVM_IS_CONFIG_HMM()

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2018 NVIDIA Corporation
 
@@ -37,11 +38,11 @@ NV_STATUS uvm_ats_invalidate_tlbs(uvm_gpu_va_space_t *gpu_va_space,
                                   uvm_tracker_t *out_tracker);
 
 static bool uvm_can_ats_service_faults(uvm_gpu_va_space_t *gpu_va_space, struct mm_struct *mm)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (mm)
         uvm_assert_mmap_sem_locked(&mm->mmap_sem);
     if (gpu_va_space->ats.enabled)
         UVM_ASSERT(g_uvm_global.ats.enabled);
 
     return gpu_va_space->ats.enabled && mm;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

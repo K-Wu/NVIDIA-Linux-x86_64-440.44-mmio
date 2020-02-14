@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -76,7 +77,7 @@ typedef enum
 static NvU32 uvm_channel_update_progress_with_max(uvm_channel_t *channel,
                                                   NvU32 max_to_complete,
                                                   uvm_channel_update_mode_t mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 gpu_get;
     NvU32 cpu_put;
     NvU32 completed_count = 0;
@@ -111,40 +112,40 @@ static NvU32 uvm_channel_update_progress_with_max(uvm_channel_t *channel,
         pending_gpfifos = channel->num_gpfifo_entries - gpu_get + cpu_put;
 
     return pending_gpfifos;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_channel_update_progress(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // By default, don't complete too many entries at a time to spread the cost
     // of doing so across callers and avoid holding a spin lock for too long.
     return uvm_channel_update_progress_with_max(channel, 8, UVM_CHANNEL_UPDATE_MODE_COMPLETED);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Update progress for all pending GPFIFO entries. This might take a longer time
 // and should be only used in exceptional circumstances like when a channel
 // error is encountered. Otherwise, uvm_chanel_update_progress() should be used.
 static NvU32 channel_update_progress_all(uvm_channel_t *channel, uvm_channel_update_mode_t mode)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_channel_update_progress_with_max(channel, channel->num_gpfifo_entries, mode);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_channel_update_progress_all(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return channel_update_progress_all(channel, UVM_CHANNEL_UPDATE_MODE_COMPLETED);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_channel_manager_update_progress(uvm_channel_manager_t *channel_manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 pending_gpfifos = 0;
     uvm_channel_t *channel;
     uvm_for_each_channel(channel, channel_manager)
         pending_gpfifos += uvm_channel_update_progress(channel);
 
     return pending_gpfifos;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool is_channel_available(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 next_put;
 
     uvm_assert_spinlock_locked(&channel->pool->lock);
@@ -152,10 +153,10 @@ static bool is_channel_available(uvm_channel_t *channel)
     next_put = (channel->cpu_put + channel->current_pushes_count + 1) % channel->num_gpfifo_entries;
 
     return (next_put != channel->gpu_get);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool try_claim_channel(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     bool claimed = false;
 
     uvm_spin_lock(&channel->pool->lock);
@@ -168,14 +169,14 @@ static bool try_claim_channel(uvm_channel_t *channel)
     uvm_spin_unlock(&channel->pool->lock);
 
     return claimed;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Reserve a channel in the given manager index range
 static NV_STATUS channel_reserve_in_range(uvm_channel_manager_t *manager,
                                           unsigned start,
                                           unsigned end,
                                           uvm_channel_t **channel_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel;
     uvm_spin_loop_t spin;
 
@@ -209,17 +210,17 @@ static NV_STATUS channel_reserve_in_range(uvm_channel_manager_t *manager,
 
     UVM_ASSERT_MSG(0, "Cannot get here?!\n");
     return NV_ERR_GENERIC;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool channel_manager_uses_ce(uvm_channel_manager_t *manager, NvU32 ce_index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return manager->channel_pools[ce_index].manager != NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS channel_reserve_ce(uvm_channel_manager_t *channel_manager,
                                     NvU32 ce_index,
                                     uvm_channel_t **channel_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned start, end;
 
     UVM_ASSERT(ce_index < UVM_COPY_ENGINE_COUNT_MAX);
@@ -229,12 +230,12 @@ static NV_STATUS channel_reserve_ce(uvm_channel_manager_t *channel_manager,
     end = start + UVM_CHANNELS_PER_COPY_ENGINE;
 
     return channel_reserve_in_range(channel_manager, start, end, channel_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_reserve_type(uvm_channel_manager_t *channel_manager,
                                    uvm_channel_type_t type,
                                    uvm_channel_t **channel_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned ce_index;
 
     if (type == UVM_CHANNEL_TYPE_ANY)
@@ -242,12 +243,12 @@ NV_STATUS uvm_channel_reserve_type(uvm_channel_manager_t *channel_manager,
 
     ce_index = channel_manager->ce_to_use.default_for_type[type];
     return channel_reserve_ce(channel_manager, ce_index, channel_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_reserve_gpu_to_gpu(uvm_channel_manager_t *channel_manager,
                                          uvm_gpu_t *dst_gpu,
                                          uvm_channel_t **channel_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const NvU32 dst_gpu_index = uvm_id_gpu_index(dst_gpu->id);
     NvU32 ce_index = channel_manager->ce_to_use.gpu_to_gpu[dst_gpu_index];
 
@@ -256,10 +257,10 @@ NV_STATUS uvm_channel_reserve_gpu_to_gpu(uvm_channel_manager_t *channel_manager,
         ce_index = channel_manager->ce_to_use.default_for_type[UVM_CHANNEL_TYPE_GPU_TO_GPU];
 
     return channel_reserve_ce(channel_manager, ce_index, channel_out);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_manager_wait(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_spin_loop_t spin;
 
@@ -273,10 +274,10 @@ NV_STATUS uvm_channel_manager_wait(uvm_channel_manager_t *manager)
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 channel_get_available_push_info_index(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_info_t *push_info;
 
     uvm_spin_lock(&channel->pool->lock);
@@ -289,10 +290,10 @@ static NvU32 channel_get_available_push_info_index(uvm_channel_t *channel)
     uvm_spin_unlock(&channel->pool->lock);
 
     return push_info - channel->push_infos;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_begin_push(uvm_channel_t *channel, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_channel_manager_t *manager;
 
@@ -310,10 +311,10 @@ NV_STATUS uvm_channel_begin_push(uvm_channel_t *channel, uvm_push_t *push)
     push->push_info_index = channel_get_available_push_info_index(channel);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_channel_end_push(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = push->channel;
     uvm_channel_manager_t *channel_manager = channel->pool->manager;
     uvm_gpu_t *gpu = channel_manager->gpu;
@@ -381,10 +382,10 @@ void uvm_channel_end_push(uvm_push_t *push)
     wmb();
 
     push->channel_tracking_value = new_tracking_value;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_reserve(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_spin_loop_t spin;
 
@@ -401,12 +402,12 @@ NV_STATUS uvm_channel_reserve(uvm_channel_t *channel)
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the first pending GPFIFO entry, if any.
 // This doesn't stop the entry from being reused.
 static uvm_gpfifo_entry_t *uvm_channel_get_first_pending_entry(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpfifo_entry_t *entry = NULL;
     NvU32 pending_count = channel_update_progress_all(channel, UVM_CHANNEL_UPDATE_MODE_COMPLETED);
 
@@ -421,10 +422,10 @@ static uvm_gpfifo_entry_t *uvm_channel_get_first_pending_entry(uvm_channel_t *ch
     uvm_spin_unlock(&channel->pool->lock);
 
     return entry;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_get_status(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu;
     NvNotification *errorNotifier = channel->channel_info.errorNotifier;
     if (errorNotifier->status == 0)
@@ -441,17 +442,17 @@ NV_STATUS uvm_channel_get_status(uvm_channel_t *channel)
         return NV_ERR_ECC_ERROR;
 
     return NV_ERR_RC_ERROR;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpfifo_entry_t *uvm_channel_get_fatal_entry(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(uvm_channel_get_status(channel) != NV_OK);
 
     return uvm_channel_get_first_pending_entry(channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_check_errors(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpfifo_entry_t *fatal_entry;
     NV_STATUS status = uvm_channel_get_status(channel);
 
@@ -469,10 +470,10 @@ NV_STATUS uvm_channel_check_errors(uvm_channel_t *channel)
 
     uvm_global_set_fatal_error(status);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_manager_check_errors(uvm_channel_manager_t *channel_manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_global_get_status();
     uvm_channel_t *channel;
 
@@ -486,32 +487,32 @@ NV_STATUS uvm_channel_manager_check_errors(uvm_channel_manager_t *channel_manage
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_semaphore_t *uvm_channel_get_tracking_semaphore(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return &channel->tracking_sem.semaphore;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_channel_is_value_completed(uvm_channel_t *channel, NvU64 value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_tracking_semaphore_is_value_completed(&channel->tracking_sem, value);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_channel_update_completed_value(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_gpu_tracking_semaphore_update_completed_value(&channel->tracking_sem);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void destroy_channel(uvm_channel_manager_t *manager, uvm_channel_t *channel);
 
 static unsigned channel_pool_get_ce_index(const uvm_channel_pool_t *pool)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return pool - pool->manager->channel_pools;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS create_channel(uvm_channel_pool_t *pool, bool with_procfs, uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_channel_manager_t *manager = pool->manager;
     uvm_gpu_t *gpu = manager->gpu;
@@ -589,10 +590,10 @@ error:
     destroy_channel(manager, channel);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void destroy_channel(uvm_channel_manager_t *manager, uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(manager->num_channels > 0);
     UVM_ASSERT(uvm_channel_get_index(manager, channel) == manager->num_channels - 1);
 
@@ -626,10 +627,10 @@ static void destroy_channel(uvm_channel_manager_t *manager, uvm_channel_t *chann
     UVM_ASSERT(channel->tools.pending_event_count == 0);
 
     manager->num_channels--;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS init_channel(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_t push;
     uvm_gpu_t *gpu = uvm_channel_get_gpu(channel);
     NV_STATUS status = uvm_push_begin_on_channel(channel, &push, "Init channel");
@@ -646,10 +647,10 @@ static NV_STATUS init_channel(uvm_channel_t *channel)
         UVM_ERR_PRINT("Channel init failed: %s, GPU %s\n", nvstatusToString(status), gpu->name);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS create_channel_pool(uvm_channel_manager_t *channel_manager, unsigned ce_index, bool with_procfs)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned i;
     unsigned start, end;
     uvm_channel_pool_t *pool = channel_manager->channel_pools + ce_index;
@@ -678,10 +679,10 @@ static NV_STATUS create_channel_pool(uvm_channel_manager_t *channel_manager, uns
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_channel_t *uvm_channel_manager_find_available_channel(uvm_channel_manager_t *channel_manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel;
 
     uvm_for_each_channel(channel, channel_manager) {
@@ -695,10 +696,10 @@ uvm_channel_t *uvm_channel_manager_find_available_channel(uvm_channel_manager_t 
             return channel;
     }
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool ce_usable_for_channel_type(uvm_channel_type_t type, const UvmGpuCopyEngineCaps *cap)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!cap->supported || cap->grce)
         return false;
 
@@ -715,7 +716,7 @@ static bool ce_usable_for_channel_type(uvm_channel_type_t type, const UvmGpuCopy
             UVM_ASSERT_MSG(false, "Unexpected channel type 0x%x\n", type);
             return false;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns negative if the first CE should be considered better than the second
 static int compare_ce_for_channel_type(const UvmGpuCopyEngineCaps *ce_caps,
@@ -723,7 +724,7 @@ static int compare_ce_for_channel_type(const UvmGpuCopyEngineCaps *ce_caps,
                                        NvU32 ce_index0,
                                        NvU32 ce_index1,
                                        NvU32 *usage_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const UvmGpuCopyEngineCaps *cap0 = ce_caps + ce_index0;
     const UvmGpuCopyEngineCaps *cap1 = ce_caps + ce_index1;
 
@@ -806,7 +807,7 @@ static int compare_ce_for_channel_type(const UvmGpuCopyEngineCaps *ce_caps,
 
     // Last resort, just order by index
     return ce_index0 - ce_index1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Pick default CE for the given channel type, and increment its usage
 // count. This function also sets the i-th bit in usable_ce_mask if the
@@ -819,7 +820,7 @@ static NV_STATUS pick_ce_for_channel_type(uvm_channel_manager_t *manager,
                                           uvm_channel_type_t type,
                                           NvU32 *usage_count,
                                           long unsigned *usable_ce_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU32 best_ce = UVM_COPY_ENGINE_COUNT_MAX;
 
@@ -849,10 +850,10 @@ static NV_STATUS pick_ce_for_channel_type(uvm_channel_manager_t *manager,
     manager->ce_to_use.default_for_type[type] = best_ce;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS channel_manager_pick_copy_engines(uvm_channel_manager_t *manager, long unsigned *usable_ce_mask)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     unsigned i;
     UvmGpuCopyEnginesCaps ces_caps;
@@ -880,37 +881,37 @@ static NV_STATUS channel_manager_pick_copy_engines(uvm_channel_manager_t *manage
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void channel_manager_init_p2p_ces(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     for (i = 0; i < ARRAY_SIZE(manager->ce_to_use.gpu_to_gpu); i++)
         manager->ce_to_use.gpu_to_gpu[i] = UVM_COPY_ENGINE_COUNT_MAX;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_channel_manager_set_p2p_ce(uvm_channel_manager_t *manager,
                                     uvm_gpu_t *peer,
                                     NvU32 optimal_ce)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const NvU32 peer_gpu_index = uvm_id_gpu_index(peer->id);
 
     UVM_ASSERT(manager->gpu != peer);
     UVM_ASSERT(optimal_ce < UVM_COPY_ENGINE_COUNT_MAX);
 
     manager->ce_to_use.gpu_to_gpu[peer_gpu_index] = optimal_ce;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool is_string_valid_location(const char *loc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return strcmp(uvm_channel_gpfifo_loc, "sys") == 0 ||
            strcmp(uvm_channel_gpfifo_loc, "vid") == 0 ||
            strcmp(uvm_channel_gpfifo_loc, "auto") == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static UVM_BUFFER_LOCATION string_to_buffer_location(const char *loc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(is_string_valid_location(loc));
 
     if (strcmp(loc, "sys") == 0)
@@ -919,10 +920,10 @@ static UVM_BUFFER_LOCATION string_to_buffer_location(const char *loc)
         return UVM_BUFFER_LOCATION_VID;
     else
         return UVM_BUFFER_LOCATION_DEFAULT;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static const char *buffer_location_to_string(UVM_BUFFER_LOCATION loc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (loc == UVM_BUFFER_LOCATION_SYS)
         return "sys";
     else if (loc == UVM_BUFFER_LOCATION_VID)
@@ -932,10 +933,10 @@ static const char *buffer_location_to_string(UVM_BUFFER_LOCATION loc)
 
     UVM_ASSERT_MSG(false, "Invalid buffer locationvalue %d\n", loc);
     return NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void init_channel_manager_conf(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     const char *gpfifo_loc_value;
     const char *gpput_loc_value;
     const char *pushbuffer_loc_value;
@@ -1029,10 +1030,10 @@ static void init_channel_manager_conf(uvm_channel_manager_t *manager)
         if (manager->conf.gpput_loc == UVM_BUFFER_LOCATION_SYS)
             pr_info("CAUTION: allocating GPPut in sysmem is NOT supported and may crash your system.\n");
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_channel_manager_create_common(uvm_gpu_t *gpu, bool with_procfs, uvm_channel_manager_t **channel_manager_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_channel_manager_t *channel_manager;
     NvU32 i;
@@ -1088,10 +1089,10 @@ NV_STATUS uvm_channel_manager_create_common(uvm_gpu_t *gpu, bool with_procfs, uv
 error:
     uvm_channel_manager_destroy(channel_manager);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_channel_manager_destroy(uvm_channel_manager_t *channel_manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (channel_manager == NULL)
         return;
 
@@ -1105,10 +1106,10 @@ void uvm_channel_manager_destroy(uvm_channel_manager_t *channel_manager)
     uvm_pushbuffer_destroy(channel_manager->pushbuffer);
 
     uvm_kvfree(channel_manager);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 const char *uvm_channel_type_to_string(uvm_channel_type_t channel_type)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     BUILD_BUG_ON(UVM_CHANNEL_TYPE_COUNT != 6);
 
     switch (channel_type) {
@@ -1120,10 +1121,10 @@ const char *uvm_channel_type_to_string(uvm_channel_type_t channel_type)
         UVM_ENUM_STRING_CASE(UVM_CHANNEL_TYPE_ANY);
         UVM_ENUM_STRING_DEFAULT();
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_channel_print_info(uvm_channel_t *channel, struct seq_file *s)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_manager_t *manager = channel->pool->manager;
     UVM_SEQ_OR_DBG_PRINT(s, "Channel %s\n", channel->name);
 
@@ -1140,10 +1141,10 @@ static void uvm_channel_print_info(uvm_channel_t *channel, struct seq_file *s)
                                                                                         uvm_channel_get_gpu(channel)));
 
     uvm_spin_unlock(&channel->pool->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void channel_print_push_acquires(uvm_push_acquire_info_t *push_acquire_info, struct seq_file *seq)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
     NvU32 valid_entries;
 
@@ -1171,12 +1172,12 @@ static void channel_print_push_acquires(uvm_push_acquire_info_t *push_acquire_in
     }
 
     UVM_SEQ_OR_DBG_PRINT(seq, "\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Print all pending pushes and up to finished_pushes_count completed if their
 // GPFIFO entries haven't been reused yet.
 static void channel_print_pushes(uvm_channel_t *channel, NvU32 finished_pushes_count, struct seq_file *seq)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 gpu_get;
     NvU32 cpu_put;
 
@@ -1216,15 +1217,15 @@ static void channel_print_pushes(uvm_channel_t *channel, NvU32 finished_pushes_c
             channel_print_push_acquires(push_acquire_info, seq);
     }
     uvm_spin_unlock(&channel->pool->lock);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_channel_print_pending_pushes(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     channel_print_pushes(channel, 0, NULL);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void channel_manager_print_pending_pushes(uvm_channel_manager_t *manager, struct seq_file *seq)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel;
 
     uvm_for_each_channel(channel, manager) {
@@ -1232,10 +1233,10 @@ static void channel_manager_print_pending_pushes(uvm_channel_manager_t *manager,
 
         channel_print_pushes(channel, 0, seq);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS manager_create_procfs_dirs(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = manager->gpu;
 
     // The channel manager procfs files are debug only
@@ -1247,10 +1248,10 @@ static NV_STATUS manager_create_procfs_dirs(uvm_channel_manager_t *manager)
         return NV_ERR_OPERATING_SYSTEM;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_manager_pending_pushes(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_manager_t *manager = (uvm_channel_manager_t *)s->private;
 
     if (!uvm_down_read_trylock(&g_uvm_global.pm.lock))
@@ -1261,17 +1262,17 @@ static int nv_procfs_read_manager_pending_pushes(struct seq_file *s, void *v)
     uvm_up_read(&g_uvm_global.pm.lock);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_manager_pending_pushes_entry(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(nv_procfs_read_manager_pending_pushes(s, v));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 UVM_DEFINE_SINGLE_PROCFS_FILE(manager_pending_pushes_entry);
 
 static NV_STATUS manager_create_procfs(uvm_channel_manager_t *manager)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = manager->gpu;
 
     // The channel manager procfs files are debug only
@@ -1286,10 +1287,10 @@ static NV_STATUS manager_create_procfs(uvm_channel_manager_t *manager)
         return NV_ERR_OPERATING_SYSTEM;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_channel_info(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = (uvm_channel_t *)s->private;
 
     if (!uvm_down_read_trylock(&g_uvm_global.pm.lock))
@@ -1300,17 +1301,17 @@ static int nv_procfs_read_channel_info(struct seq_file *s, void *v)
     uvm_up_read(&g_uvm_global.pm.lock);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_channel_info_entry(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(nv_procfs_read_channel_info(s, v));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 UVM_DEFINE_SINGLE_PROCFS_FILE(channel_info_entry);
 
 static int nv_procfs_read_channel_pushes(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = (uvm_channel_t *)s->private;
 
     if (!uvm_down_read_trylock(&g_uvm_global.pm.lock))
@@ -1322,17 +1323,17 @@ static int nv_procfs_read_channel_pushes(struct seq_file *s, void *v)
     uvm_up_read(&g_uvm_global.pm.lock);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int nv_procfs_read_channel_pushes_entry(struct seq_file *s, void *v)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ENTRY_RET(nv_procfs_read_channel_pushes(s, v));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 UVM_DEFINE_SINGLE_PROCFS_FILE(channel_pushes_entry);
 
 static NV_STATUS channel_create_procfs(uvm_channel_t *channel)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     char channel_dirname[16];
     uvm_channel_manager_t *manager = channel->pool->manager;
 
@@ -1355,4 +1356,4 @@ static NV_STATUS channel_create_procfs(uvm_channel_t *channel)
         return NV_ERR_OPERATING_SYSTEM;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

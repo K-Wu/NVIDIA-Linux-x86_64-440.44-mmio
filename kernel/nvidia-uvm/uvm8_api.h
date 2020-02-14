@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -168,26 +169,26 @@
 
 // Validate input ranges from the user with specific alignment requirement
 static bool uvm_api_range_invalid_aligned(NvU64 base, NvU64 length, NvU64 alignment)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return !IS_ALIGNED(base, alignment)     ||
            !IS_ALIGNED(length, alignment)   ||
            base == 0                        ||
            length == 0                      ||
            base + length < base; // Overflow
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Most APIs require PAGE_SIZE alignment
 static bool uvm_api_range_invalid(NvU64 base, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_api_range_invalid_aligned(base, length, PAGE_SIZE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Some APIs can only enforce 4K alignment as it's the smallest GPU page size
 // even when the smallest host page is larger (e.g. 64K on ppc64le).
 static bool uvm_api_range_invalid_4k(NvU64 base, NvU64 length)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_api_range_invalid_aligned(base, length, 4096);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns true if the interval [start, start + length) is entirely covered by
 // valid vmas. A vma is valid if the corresponding VM_SPECIAL flags are not

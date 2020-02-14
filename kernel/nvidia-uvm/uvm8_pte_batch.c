@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -25,20 +26,20 @@
 #include "uvm8_hal.h"
 
 static bool uvm_gpu_phys_address_eq(uvm_gpu_phys_address_t pa1, uvm_gpu_phys_address_t pa2)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return pa1.address == pa2.address && pa1.aperture == pa2.aperture;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pte_batch_begin(uvm_push_t *push, uvm_pte_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(batch, 0, sizeof(*batch));
 
     batch->membar = UVM_MEMBAR_GPU;
     batch->push = push;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_pte_batch_flush_ptes_inline(uvm_pte_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_address_t inline_data_addr;
     uvm_gpu_t *gpu = uvm_push_get_gpu(batch->push);
     size_t ptes_size = batch->pte_count * batch->pte_entry_size;
@@ -54,10 +55,10 @@ static void uvm_pte_batch_flush_ptes_inline(uvm_pte_batch_t *batch)
     uvm_push_set_flag(batch->push, UVM_PUSH_FLAG_CE_NEXT_MEMBAR_NONE);
     uvm_push_set_flag(batch->push, UVM_PUSH_FLAG_CE_NEXT_PIPELINED);
     gpu->ce_hal->memcopy(batch->push, uvm_gpu_address_from_phys(batch->pte_first_address), inline_data_addr, ptes_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_pte_batch_flush_ptes_memset(uvm_pte_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(batch->push);
     uvm_gpu_address_t addr = uvm_gpu_address_from_phys(batch->pte_first_address);
     NvU32 i;
@@ -71,10 +72,10 @@ static void uvm_pte_batch_flush_ptes_memset(uvm_pte_batch_t *batch)
         gpu->ce_hal->memset_8(batch->push, addr, batch->pte_bits_queue[i], sizeof(NvU64));
         addr.address += batch->pte_entry_size;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_pte_batch_flush_ptes(uvm_pte_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (batch->pte_count == 0)
         return;
 
@@ -84,10 +85,10 @@ static void uvm_pte_batch_flush_ptes(uvm_pte_batch_t *batch)
         uvm_pte_batch_flush_ptes_memset(batch);
 
     batch->pte_count = 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_pte_batch_write_consecutive_inline(uvm_pte_batch_t *batch, NvU64 pte_bits)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     size_t extra_size = batch->pte_entry_size - sizeof(pte_bits);
 
     UVM_ASSERT(extra_size < batch->pte_entry_size);
@@ -99,10 +100,10 @@ static void uvm_pte_batch_write_consecutive_inline(uvm_pte_batch_t *batch, NvU64
     // And zero out the rest of the entry if anything remaining
     if (extra_size != 0)
         memset(uvm_push_inline_data_get(&batch->inline_data, extra_size), 0, extra_size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_pte_batch_write_consecutive(uvm_pte_batch_t *batch, NvU64 pte_bits)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (batch->inlining) {
         uvm_pte_batch_write_consecutive_inline(batch, pte_bits);
     }
@@ -111,10 +112,10 @@ static void uvm_pte_batch_write_consecutive(uvm_pte_batch_t *batch, NvU64 pte_bi
         batch->pte_bits_queue[batch->pte_count] = pte_bits;
     }
     ++batch->pte_count;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void pte_batch_begin_inline(uvm_pte_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i;
 
     UVM_ASSERT(!batch->inlining);
@@ -124,10 +125,10 @@ static void pte_batch_begin_inline(uvm_pte_batch_t *batch)
 
     for (i = 0; i < batch->pte_count; ++i)
         uvm_pte_batch_write_consecutive_inline(batch, batch->pte_bits_queue[i]);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pte_batch_write_ptes(uvm_pte_batch_t *batch, uvm_gpu_phys_address_t first_pte, NvU64 *pte_bits, NvU32 entry_size, NvU32 entry_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 max_entries = UVM_PUSH_INLINE_DATA_MAX_SIZE / entry_size;
 
     // Updating PTEs in sysmem requires a sysmembar after writing them and
@@ -152,10 +153,10 @@ void uvm_pte_batch_write_ptes(uvm_pte_batch_t *batch, uvm_gpu_phys_address_t fir
         first_pte.address += entries_this_time * entry_size;
         entry_count -= entries_this_time;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pte_batch_write_pte(uvm_pte_batch_t *batch, uvm_gpu_phys_address_t pte, NvU64 pte_bits, NvU32 pte_size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_phys_address_t consecutive_pte_address = batch->pte_first_address;
     bool needs_flush = false;
     consecutive_pte_address.address += batch->pte_count * pte_size;
@@ -186,10 +187,10 @@ void uvm_pte_batch_write_pte(uvm_pte_batch_t *batch, uvm_gpu_phys_address_t pte,
         pte_batch_begin_inline(batch);
 
     uvm_pte_batch_write_consecutive(batch, pte_bits);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pte_batch_clear_ptes(uvm_pte_batch_t *batch, uvm_gpu_phys_address_t first_pte, NvU64 empty_pte_bits, NvU32 entry_size, NvU32 entry_count)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(batch->push);
 
     // TODO: Bug 1767241: Allow small clears to batch
@@ -201,10 +202,10 @@ void uvm_pte_batch_clear_ptes(uvm_pte_batch_t *batch, uvm_gpu_phys_address_t fir
 
     if (first_pte.aperture == UVM_APERTURE_SYS)
         batch->membar = UVM_MEMBAR_SYS;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_pte_batch_end(uvm_pte_batch_t *batch)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_pte_batch_flush_ptes(batch);
     uvm_hal_wfi_membar(batch->push, batch->membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -26,15 +27,15 @@
 #include "clc0b5.h"
 
 void uvm_hal_pascal_ce_offset_out(uvm_push_t *push, NvU64 offset_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_2U(C0B5, OFFSET_OUT_UPPER, HWVALUE(C0B5, OFFSET_OUT_UPPER, UPPER, NvOffset_HI32(offset_out)),
                      OFFSET_OUT_LOWER, HWVALUE(C0B5, OFFSET_OUT_LOWER, VALUE, NvOffset_LO32(offset_out)));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_ce_offset_in_out(uvm_push_t *push, NvU64 offset_in, NvU64 offset_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_PUSH_4U(C0B5, OFFSET_IN_UPPER,  HWVALUE(C0B5, OFFSET_IN_UPPER,  UPPER, NvOffset_HI32(offset_in)),
                      OFFSET_IN_LOWER,  HWVALUE(C0B5, OFFSET_IN_LOWER,  VALUE, NvOffset_LO32(offset_in)),
                      OFFSET_OUT_UPPER, HWVALUE(C0B5, OFFSET_OUT_UPPER, UPPER, NvOffset_HI32(offset_out)),
                      OFFSET_OUT_LOWER, HWVALUE(C0B5, OFFSET_OUT_LOWER, VALUE, NvOffset_LO32(offset_out)));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

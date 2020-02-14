@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -82,9 +83,9 @@
 
 // This exists in order to have a function to place a breakpoint on:
 void on_nvq_assert(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     (void)NULL;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Basic start-stop test
@@ -96,14 +97,14 @@ typedef struct basic_start_stop_args
 } basic_start_stop_args_t;
 
 static void _basic_start_stop_callback(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     basic_start_stop_args_t *start_stop_args = (basic_start_stop_args_t*)args;
 
     *start_stop_args->where_to_write = start_stop_args->value_to_write;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int _basic_start_stop_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int i, was_scheduled;
     int result = 0;
     nv_kthread_q_item_t q_item[NUM_Q_ITEMS_IN_BASIC_TEST];
@@ -170,7 +171,7 @@ static int _basic_start_stop_test(void)
         TEST_CHECK_RET(callback_values_written[i] == i);
 
     return result;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Multithreaded test
@@ -183,11 +184,11 @@ typedef struct multithread_args
 } multithread_args_t;
 
 static void _multithread_callback(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     multithread_args_t *multithread_args = (multithread_args_t*)(args);
     atomic_inc(multithread_args->test_wide_accumulator);
     atomic_inc(&multithread_args->per_thread_accumulator);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 //
 // Return values:
@@ -196,7 +197,7 @@ static void _multithread_callback(void *args)
 // -EINVAL:  test failed due to mismatched accumulator counts
 //
 static int _multithreaded_q_kthread_function(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int i, was_scheduled;
     int result = 0;
     int per_thread_count;
@@ -247,10 +248,10 @@ done:
         schedule();
 
     return result;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int _multithreaded_q_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int i, j;
     int result = 0;
     struct task_struct *kthreads[NUM_TEST_KTHREADS];
@@ -300,7 +301,7 @@ failed:
 
     nv_kthread_q_stop(&local_q);
     return -1;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Self-rescheduling test
@@ -315,7 +316,7 @@ typedef struct resched_args
 } resched_args_t;
 
 static void _reschedule_callback(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int was_scheduled;
     resched_args_t *resched_args = (resched_args_t*)args;
 
@@ -336,12 +337,12 @@ static void _reschedule_callback(void *args)
 
     // Ensure thread relinquishes control else we hang in single-core environments
     schedule();
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Verify that re-scheduling the same q_item, from within its own
 // callback, works.
 static int _reschedule_same_item_from_its_own_callback_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int was_scheduled;
     int result = 0;
     resched_args_t resched_args;
@@ -375,7 +376,7 @@ static int _reschedule_same_item_from_its_own_callback_test(void)
     nv_kthread_q_stop(&resched_args.test_q);
 
     return (result || resched_args.test_failure);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Rescheduling the exact same q_item test
@@ -386,13 +387,13 @@ typedef struct same_q_item_args
 } same_q_item_args_t;
 
 static void _same_q_item_callback(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     same_q_item_args_t *same_q_item_args = (same_q_item_args_t*)(args);
     atomic_inc(&same_q_item_args->test_accumulator);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int _same_q_item_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result, i;
     int num_scheduled = 0;
     same_q_item_args_t  same_q_item_args;
@@ -427,10 +428,10 @@ static int _same_q_item_test(void)
     TEST_CHECK_RET(atomic_read(&same_q_item_args.test_accumulator) == num_scheduled);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void _check_cpu_affinity_callback(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct task_struct *thread = get_current();
     struct page *stack;
     int *stack_allocation_node = (int *)args;
@@ -446,10 +447,10 @@ static void _check_cpu_affinity_callback(void *args)
     else
         stack = virt_to_page(thread->stack);
     *stack_allocation_node = page_to_nid(stack);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static int _check_cpu_affinity_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result, i, stack_allocation_node;
     nv_kthread_q_t local_q;
     nv_kthread_q_item_t q_item;
@@ -500,13 +501,13 @@ static int _check_cpu_affinity_test(void)
         TEST_CHECK_RET(result != 0);
     }
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Top-level test entry point
 
 int nv_kthread_q_run_self_test(void)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     int result;
 
     result = _basic_start_stop_test();
@@ -525,4 +526,4 @@ int nv_kthread_q_run_self_test(void)
     TEST_CHECK_RET(result == 0);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

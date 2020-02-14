@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -31,19 +32,19 @@
 #include "uvm_linux.h"
 
 static bool tracker_is_using_static_entries(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return tracker->max_size == ARRAY_SIZE(tracker->static_entries);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void free_entries(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (tracker_is_using_static_entries(tracker))
         return;
     uvm_kvfree(tracker->dynamic_entries);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_tracker_entry_t *uvm_tracker_get_entries(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (tracker_is_using_static_entries(tracker)) {
         return tracker->static_entries;
     }
@@ -51,20 +52,20 @@ uvm_tracker_entry_t *uvm_tracker_get_entries(uvm_tracker_t *tracker)
         UVM_ASSERT(tracker->dynamic_entries != NULL);
         return tracker->dynamic_entries;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_tracker_entry_t *get_new_entry(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_reserve(tracker, 1);
     if (status != NV_OK)
         return NULL;
     UVM_ASSERT(tracker->size < tracker->max_size);
 
     return &uvm_tracker_get_entries(tracker)[tracker->size++];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_init_from(uvm_tracker_t *dst, uvm_tracker_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_tracker_init(dst);
     status = uvm_tracker_overwrite(dst, src);
@@ -73,16 +74,16 @@ NV_STATUS uvm_tracker_init_from(uvm_tracker_t *dst, uvm_tracker_t *src)
         uvm_tracker_init(dst);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tracker_deinit(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     free_entries(tracker);
     memset(tracker, 0, sizeof(*tracker));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_overwrite(uvm_tracker_t *dst, uvm_tracker_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     uvm_tracker_clear(dst);
@@ -97,10 +98,10 @@ NV_STATUS uvm_tracker_overwrite(uvm_tracker_t *dst, uvm_tracker_t *src)
            src->size * sizeof(*uvm_tracker_get_entries(dst)));
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_reserve(uvm_tracker_t *tracker, NvU32 min_free_entries)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (tracker->size + min_free_entries > tracker->max_size) {
         // Special case the first resize to jump from 1 all the way to 8.
         // This is based on a guess that if a tracker needs more than 1
@@ -123,19 +124,19 @@ NV_STATUS uvm_tracker_reserve(uvm_tracker_t *tracker, NvU32 min_free_entries)
     }
     UVM_ASSERT(tracker->size + min_free_entries <= tracker->max_size);
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_add_push(uvm_tracker_t *tracker, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t entry;
 
     uvm_push_get_tracker_entry(push, &entry);
 
     return uvm_tracker_add_entry(tracker, &entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_add_entry(uvm_tracker_t *tracker, uvm_tracker_entry_t *new_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t *tracker_entry;
 
     for_each_tracker_entry(tracker_entry, tracker) {
@@ -152,10 +153,10 @@ NV_STATUS uvm_tracker_add_entry(uvm_tracker_t *tracker, uvm_tracker_entry_t *new
     *tracker_entry = *new_entry;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tracker_overwrite_with_entry(uvm_tracker_t *tracker, uvm_tracker_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     uvm_tracker_clear(tracker);
@@ -164,19 +165,19 @@ void uvm_tracker_overwrite_with_entry(uvm_tracker_t *tracker, uvm_tracker_entry_
     // fail.
     status = uvm_tracker_add_entry(tracker, entry);
     UVM_ASSERT(status == NV_OK);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tracker_overwrite_with_push(uvm_tracker_t *tracker, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t entry;
 
     uvm_push_get_tracker_entry(push, &entry);
 
     uvm_tracker_overwrite_with_entry(tracker, &entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS reserve_for_entries_from_tracker(uvm_tracker_t *dst, uvm_tracker_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 needed_free_entries = 0;
     uvm_tracker_entry_t *src_entry, *dst_entry;
 
@@ -193,10 +194,10 @@ static NV_STATUS reserve_for_entries_from_tracker(uvm_tracker_t *dst, uvm_tracke
     }
 
     return uvm_tracker_reserve(dst, needed_free_entries);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_add_tracker(uvm_tracker_t *dst, uvm_tracker_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_tracker_entry_t *src_entry;
 
@@ -219,58 +220,58 @@ NV_STATUS uvm_tracker_add_tracker(uvm_tracker_t *dst, uvm_tracker_t *src)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_overwrite_safe(uvm_tracker_t *dst, uvm_tracker_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_overwrite(dst, src);
     if (status == NV_ERR_NO_MEMORY) {
         UVM_DBG_PRINT_RL("Failed to overwrite tracker, waiting\n");
         status = uvm_tracker_wait(src);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_add_push_safe(uvm_tracker_t *tracker, uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_add_push(tracker, push);
     if (status == NV_ERR_NO_MEMORY) {
         UVM_DBG_PRINT_RL("Failed to add push to tracker, waiting\n");
         status = uvm_push_wait(push);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_add_entry_safe(uvm_tracker_t *tracker, uvm_tracker_entry_t *new_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_add_entry(tracker, new_entry);
     if (status == NV_ERR_NO_MEMORY) {
         UVM_DBG_PRINT_RL("Failed to add entry to tracker, waiting\n");
         status = uvm_tracker_wait_for_entry(new_entry);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_add_tracker_safe(uvm_tracker_t *dst, uvm_tracker_t *src)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = uvm_tracker_add_tracker(dst, src);
     if (status == NV_ERR_NO_MEMORY) {
         UVM_DBG_PRINT_RL("Failed to add tracker to tracker, waiting\n");
         status = uvm_tracker_wait(src);
     }
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_tracker_is_entry_completed(uvm_tracker_entry_t *tracker_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (!tracker_entry->channel)
         return true;
 
     return uvm_channel_is_value_completed(tracker_entry->channel, tracker_entry->value);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_tracker_entry_print_pending_pushes(uvm_tracker_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = entry->channel;
     uvm_gpu_t *gpu = uvm_channel_get_gpu(channel);
     UVM_DBG_PRINT("Tracker entry for value %llu (sema VA 0x%llx) channel %s GPU %s\n",
@@ -278,17 +279,17 @@ static void uvm_tracker_entry_print_pending_pushes(uvm_tracker_entry_t *entry)
             uvm_gpu_semaphore_get_gpu_va(&channel->tracking_sem.semaphore, gpu),
             channel->name, gpu->name);
     uvm_channel_print_pending_pushes(entry->channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_tracker_print_pending_pushes(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t *entry;
     for_each_tracker_entry(entry, tracker)
         uvm_tracker_entry_print_pending_pushes(entry);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS wait_for_entry_with_spin(uvm_tracker_entry_t *tracker_entry, uvm_spin_loop_t *spin)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
 
     while (!uvm_tracker_is_entry_completed(tracker_entry) && status == NV_OK) {
@@ -307,17 +308,17 @@ static NV_STATUS wait_for_entry_with_spin(uvm_tracker_entry_t *tracker_entry, uv
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_wait_for_entry(uvm_tracker_entry_t *tracker_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_spin_loop_t spin;
     uvm_spin_loop_init(&spin);
     return wait_for_entry_with_spin(tracker_entry, &spin);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_wait(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_spin_loop_t spin;
 
@@ -343,10 +344,10 @@ NV_STATUS uvm_tracker_wait(uvm_tracker_t *tracker)
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_wait_for_other_gpus(uvm_tracker_t *tracker, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_tracker_entry_t *entry;
     uvm_spin_loop_t spin;
@@ -371,10 +372,10 @@ NV_STATUS uvm_tracker_wait_for_other_gpus(uvm_tracker_t *tracker, uvm_gpu_t *gpu
     }
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_check_errors(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_entry_t *tracker_entry;
     NV_STATUS status = uvm_global_get_status();
 
@@ -388,10 +389,10 @@ NV_STATUS uvm_tracker_check_errors(uvm_tracker_t *tracker)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_tracker_query(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     bool completed = uvm_tracker_is_completed(tracker);
 
@@ -400,10 +401,10 @@ NV_STATUS uvm_tracker_query(uvm_tracker_t *tracker)
         return status;
 
     return completed ? NV_OK : NV_WARN_MORE_PROCESSING_REQUIRED;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_tracker_remove_completed(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 i = 0;
 
     uvm_tracker_entry_t *entries = uvm_tracker_get_entries(tracker);
@@ -419,17 +420,17 @@ void uvm_tracker_remove_completed(uvm_tracker_t *tracker)
             ++i;
         }
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_tracker_is_completed(uvm_tracker_t *tracker)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_tracker_remove_completed(tracker);
 
     return tracker->size == 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 uvm_gpu_t *uvm_tracker_entry_gpu(uvm_tracker_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return uvm_channel_get_gpu(entry->channel);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 

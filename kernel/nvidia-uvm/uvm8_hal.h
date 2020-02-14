@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -501,7 +502,7 @@ NV_STATUS uvm_hal_init_gpu(uvm_gpu_t *gpu);
 // Notably this doesn't just get the GPU from the push object to support the
 // test mode of the page tree code that doesn't do real pushes.
 static void uvm_hal_membar(uvm_gpu_t *gpu, uvm_push_t *push, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     switch (membar) {
         case UVM_MEMBAR_SYS:
             gpu->host_hal->membar_sys(push);
@@ -512,14 +513,14 @@ static void uvm_hal_membar(uvm_gpu_t *gpu, uvm_push_t *push, uvm_membar_t membar
         case UVM_MEMBAR_NONE:
             break;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void uvm_hal_wfi_membar(uvm_push_t *push, uvm_membar_t membar)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = uvm_push_get_gpu(push);
     gpu->host_hal->wait_for_idle(push);
     uvm_hal_membar(gpu, push, membar);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Internal helper used by the TLB invalidate hal functions. This issues the
 // appropriate Host membar(s) after a TLB invalidate.

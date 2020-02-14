@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -72,7 +73,7 @@
     } while (0)
 
 static int _main_loop(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     nv_kthread_q_t *q = (nv_kthread_q_t *)args;
     nv_kthread_q_item_t *q_item = NULL;
     unsigned long flags;
@@ -118,10 +119,10 @@ static int _main_loop(void *args)
         schedule();
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void nv_kthread_q_stop(nv_kthread_q_t *q)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // check if queue has been properly initialized
     if (unlikely(!q->q_kthread))
         return;
@@ -144,10 +145,10 @@ void nv_kthread_q_stop(nv_kthread_q_t *q)
         kthread_stop(q->q_kthread);
         q->q_kthread = NULL;
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 int nv_kthread_q_init_on_node(nv_kthread_q_t *q, const char *q_name, int node)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memset(q, 0, sizeof(*q));
 
     INIT_LIST_HEAD(&q->q_list_head);
@@ -178,12 +179,12 @@ int nv_kthread_q_init_on_node(nv_kthread_q_t *q, const char *q_name, int node)
     wake_up_process(q->q_kthread);
 
     return 0;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns true (non-zero) if the item was actually scheduled, and false if the
 // item was already pending in a queue.
 static int _raw_q_schedule(nv_kthread_q_t *q, nv_kthread_q_item_t *q_item)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     unsigned long flags;
     int ret = 1;
 
@@ -200,21 +201,21 @@ static int _raw_q_schedule(nv_kthread_q_t *q, nv_kthread_q_item_t *q_item)
         up(&q->q_sem);
 
     return ret;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void nv_kthread_q_item_init(nv_kthread_q_item_t *q_item,
                             nv_q_func_t function_to_run,
                             void *function_args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     INIT_LIST_HEAD(&q_item->q_list_node);
     q_item->function_to_run = function_to_run;
     q_item->function_args   = function_args;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Returns true (non-zero) if the q_item got scheduled, false otherwise.
 int nv_kthread_q_schedule_q_item(nv_kthread_q_t *q,
                                  nv_kthread_q_item_t *q_item)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (unlikely(atomic_read(&q->main_loop_should_exit))) {
         NVQ_WARN("Not allowed: nv_kthread_q_schedule_q_item was "
                    "called with a non-alive q: 0x%p\n", q);
@@ -222,17 +223,17 @@ int nv_kthread_q_schedule_q_item(nv_kthread_q_t *q,
     }
 
     return _raw_q_schedule(q, q_item);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void _q_flush_function(void *args)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     struct completion *completion = (struct completion *)args;
     complete(completion);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 
 static void _raw_q_flush(nv_kthread_q_t *q)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     nv_kthread_q_item_t q_item;
     DECLARE_COMPLETION(completion);
 
@@ -244,10 +245,10 @@ static void _raw_q_flush(nv_kthread_q_t *q)
     // previously queued items in front of it will have run, so that means
     // the flush is complete.
     wait_for_completion(&completion);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void nv_kthread_q_flush(nv_kthread_q_t *q)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     if (unlikely(atomic_read(&q->main_loop_should_exit))) {
         NVQ_WARN("Not allowed: nv_kthread_q_flush was called after "
                    "nv_kthread_q_stop. q: 0x%p\n", q);
@@ -259,4 +260,4 @@ void nv_kthread_q_flush(nv_kthread_q_t *q)
     // reschedules itself.
     _raw_q_flush(q);
     _raw_q_flush(q);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

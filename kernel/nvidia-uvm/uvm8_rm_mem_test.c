@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -28,7 +29,7 @@
 #include "uvm8_kvmalloc.h"
 
 static NV_STATUS alloc_and_map_cpu(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, size_t size, uvm_rm_mem_t **mem_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_rm_mem_t *rm_mem;
     void *cpu_va;
@@ -63,10 +64,10 @@ static NV_STATUS alloc_and_map_cpu(uvm_gpu_t *gpu, uvm_rm_mem_type_t type, size_
     memset(cpu_va, 0, size);
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS map_other_gpus(uvm_rm_mem_t *rm_mem, uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_t *gpu = rm_mem->gpu_owner;
     uvm_gpu_t *other_gpu;
@@ -89,10 +90,10 @@ static NV_STATUS map_other_gpus(uvm_rm_mem_t *rm_mem, uvm_va_space_t *va_space)
     }
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS test_all_gpus_in_va(uvm_va_space_t *va_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_t *gpu;
     NvU32 gpu_count;
@@ -156,10 +157,10 @@ cleanup:
     uvm_kvfree(all_mem);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm8_test_rm_mem_sanity(UVM_TEST_RM_MEM_SANITY_PARAMS *params, struct file *filp)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_va_space_t *va_space = uvm_va_space_get(filp);
 
@@ -170,4 +171,4 @@ NV_STATUS uvm8_test_rm_mem_sanity(UVM_TEST_RM_MEM_SANITY_PARAMS *params, struct 
     uvm_va_space_up_read_rm(va_space);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

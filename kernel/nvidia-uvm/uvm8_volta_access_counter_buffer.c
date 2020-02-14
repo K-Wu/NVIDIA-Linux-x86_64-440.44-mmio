@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -33,7 +34,7 @@ typedef struct {
 } access_counter_buffer_entry_c365_t;
 
 static void clear_access_counter_notifications_interrupt(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     volatile NvU32 *reg;
     NvU32 mask;
 
@@ -43,10 +44,10 @@ static void clear_access_counter_notifications_interrupt(uvm_gpu_t *gpu)
     mask = gpu->access_counter_buffer_info.rm_info.accessCounterMask;
 
     UVM_GPU_WRITE_ONCE(*reg, mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_enable_access_counter_notifications(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     volatile NvU32 *reg;
     NvU32 mask;
 
@@ -54,10 +55,10 @@ void uvm_hal_volta_enable_access_counter_notifications(uvm_gpu_t *gpu)
     mask = gpu->access_counter_buffer_info.rm_info.accessCounterMask;
 
     UVM_GPU_WRITE_ONCE(*reg, mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_disable_access_counter_notifications(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     volatile NvU32 *reg;
     NvU32 mask;
 
@@ -72,10 +73,10 @@ void uvm_hal_volta_disable_access_counter_notifications(uvm_gpu_t *gpu)
         // See the comment in uvm_hal_pascal_disable_replayable_faults
         clear_access_counter_notifications_interrupt(gpu);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_clear_access_counter_notifications(uvm_gpu_t *gpu, NvU32 get)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // TODO: Bug 2031935: pulse-based interrupts is a Turing feature but we
     // have to add it here because the HAL is class oriented. And the class for
     // access counters didn't change from Volta to Turing. Fix when we add a
@@ -90,15 +91,15 @@ void uvm_hal_volta_clear_access_counter_notifications(uvm_gpu_t *gpu, NvU32 get)
     // Write GET to force the re-evaluation of the interrupt condition after the
     // interrupt bit has been cleared.
     UVM_GPU_WRITE_ONCE(*gpu->access_counter_buffer_info.rm_info.pAccessCntrBufferGet, get);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_hal_volta_access_counter_buffer_entry_size(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return NVC365_NOTIFY_BUF_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_aperture_t get_access_counter_inst_aperture(NvU32 *access_counter_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 hw_aperture_value = READ_HWVALUE_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, INST_APERTURE);
 
     switch (hw_aperture_value) {
@@ -111,10 +112,10 @@ static uvm_aperture_t get_access_counter_inst_aperture(NvU32 *access_counter_ent
 
     UVM_ASSERT_MSG(false, "Invalid inst aperture value: %d\n", hw_aperture_value);
     return UVM_APERTURE_MAX;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_aperture_t get_access_counter_aperture(NvU32 *access_counter_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 hw_aperture_value = READ_HWVALUE_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, APERTURE);
     NvU32 peer_id = READ_HWVALUE_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, PEER_ID);
 
@@ -130,10 +131,10 @@ static uvm_aperture_t get_access_counter_aperture(NvU32 *access_counter_entry)
 
     UVM_ASSERT_MSG(false, "Invalid aperture value: %d\n", hw_aperture_value);
     return UVM_APERTURE_MAX;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_gpu_address_t get_address(NvU32 *access_counter_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 address;
     bool is_virtual;
     NvU64 addr_hi = READ_HWVALUE_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, ADDR_HI);
@@ -154,19 +155,19 @@ static uvm_gpu_address_t get_address(NvU32 *access_counter_entry)
 
         return uvm_gpu_address_physical(aperture, address);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_access_counter_type_t get_access_counter_type(NvU32 *access_counter_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 type_value = READ_HWVALUE_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, TYPE);
     if (type_value == NVC365_NOTIFY_BUF_ENTRY_TYPE_CPU)
         return UVM_ACCESS_COUNTER_TYPE_MOMC;
     else
         return UVM_ACCESS_COUNTER_TYPE_MIMC;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 *get_access_counter_buffer_entry(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     access_counter_buffer_entry_c365_t *buffer_start;
     NvU32 *access_counter_entry;
 
@@ -176,10 +177,10 @@ static NvU32 *get_access_counter_buffer_entry(uvm_gpu_t *gpu, NvU32 index)
     access_counter_entry = (NvU32 *)&buffer_start[index];
 
     return access_counter_entry;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_hal_volta_access_counter_buffer_entry_is_valid(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 *access_counter_entry;
     bool is_valid;
 
@@ -188,21 +189,21 @@ bool uvm_hal_volta_access_counter_buffer_entry_is_valid(uvm_gpu_t *gpu, NvU32 in
     is_valid = READ_HWVALUE_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, VALID);
 
     return is_valid;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_access_counter_buffer_entry_clear_valid(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 *access_counter_entry;
 
     access_counter_entry = get_access_counter_buffer_entry(gpu, index);
 
     WRITE_HWCONST_MW(access_counter_entry, C365, NOTIFY_BUF_ENTRY, VALID, FALSE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_volta_access_counter_buffer_parse_entry(uvm_gpu_t *gpu,
                                                      NvU32 index,
                                                      uvm_access_counter_buffer_entry_t *buffer_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 *access_counter_entry;
 
     // Valid bit must be set before this function is called
@@ -257,4 +258,4 @@ void uvm_hal_volta_access_counter_buffer_parse_entry(uvm_gpu_t *gpu,
 
     // Automatically clear valid bit for the entry in the access counter buffer
     uvm_hal_volta_access_counter_buffer_entry_clear_valid(gpu, index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

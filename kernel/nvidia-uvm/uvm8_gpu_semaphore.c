@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015 NVIDIA Corporation
 
@@ -66,7 +67,7 @@ struct uvm_gpu_semaphore_pool_page_struct
 };
 
 static NvU32 get_index(uvm_gpu_semaphore_t *semaphore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 offset;
     NvU32 index;
 
@@ -80,7 +81,7 @@ static NvU32 get_index(uvm_gpu_semaphore_t *semaphore)
     UVM_ASSERT(index < UVM_SEMAPHORE_COUNT_PER_PAGE);
 
     return index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Use canary values on debug builds to catch semaphore use-after-free. We can
 // catch release-after-free by simply setting the payload to a known value at
@@ -107,18 +108,18 @@ static NvU32 get_index(uvm_gpu_semaphore_t *semaphore)
 // bits, otherwise those bits might carry us past the quadrant boundary when we
 // OR them in.
 static NvU32 make_canary(NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 prev_quadrant = payload - (1 << 30);
     return (prev_quadrant & UVM_SEMAPHORE_CANARY_MASK) | UVM_SEMAPHORE_CANARY_BASE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static bool is_canary(NvU32 val)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (val & ~UVM_SEMAPHORE_CANARY_MASK) == UVM_SEMAPHORE_CANARY_BASE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NV_STATUS pool_alloc_page(uvm_gpu_semaphore_pool_t *pool)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     uvm_gpu_semaphore_pool_page_t *pool_page;
     NvU32 *payloads;
@@ -155,10 +156,10 @@ static NV_STATUS pool_alloc_page(uvm_gpu_semaphore_pool_t *pool)
 error:
     uvm_kvfree(pool_page);
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static void pool_free_page(uvm_gpu_semaphore_pool_page_t *page)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_semaphore_pool_t *pool = page->pool;
     NvU32 *payloads;
     size_t i;
@@ -182,10 +183,10 @@ static void pool_free_page(uvm_gpu_semaphore_pool_page_t *page)
     list_del(&page->all_pages_node);
     uvm_rm_mem_free(page->memory);
     uvm_kvfree(page);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_semaphore_alloc(uvm_gpu_semaphore_pool_t *pool, uvm_gpu_semaphore_t *semaphore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_semaphore_pool_page_t *page;
 
@@ -225,10 +226,10 @@ done:
     uvm_mutex_unlock(&pool->mutex);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_semaphore_free(uvm_gpu_semaphore_t *semaphore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_semaphore_pool_page_t *page;
     uvm_gpu_semaphore_pool_t *pool;
     NvU32 index;
@@ -259,10 +260,10 @@ void uvm_gpu_semaphore_free(uvm_gpu_semaphore_t *semaphore)
     __set_bit(index, page->free_semaphores);
 
     uvm_mutex_unlock(&pool->mutex);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_semaphore_pool_create(uvm_gpu_t *gpu, uvm_gpu_semaphore_pool_t **pool_out)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_semaphore_pool_t *pool;
     pool = uvm_kvmalloc_zero(sizeof(*pool));
 
@@ -279,10 +280,10 @@ NV_STATUS uvm_gpu_semaphore_pool_create(uvm_gpu_t *gpu, uvm_gpu_semaphore_pool_t
     *pool_out = pool;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_semaphore_pool_destroy(uvm_gpu_semaphore_pool_t *pool)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_semaphore_pool_page_t *page;
     uvm_gpu_semaphore_pool_page_t *next_page;
 
@@ -304,10 +305,10 @@ void uvm_gpu_semaphore_pool_destroy(uvm_gpu_semaphore_pool_t *pool)
     uvm_mutex_unlock(&pool->mutex);
 
     uvm_kvfree(pool);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_semaphore_pool_map_gpu(uvm_gpu_semaphore_pool_t *pool, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status = NV_OK;
     uvm_gpu_semaphore_pool_page_t *page;
 
@@ -326,10 +327,10 @@ done:
     uvm_mutex_unlock(&pool->mutex);
 
     return status;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_semaphore_pool_unmap_gpu(uvm_gpu_semaphore_pool_t *pool, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_semaphore_pool_page_t *page;
 
     UVM_ASSERT(pool);
@@ -341,22 +342,22 @@ void uvm_gpu_semaphore_pool_unmap_gpu(uvm_gpu_semaphore_pool_t *pool, uvm_gpu_t 
         uvm_rm_mem_unmap_gpu(page->memory, gpu);
 
     uvm_mutex_unlock(&pool->mutex);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_gpu_semaphore_get_gpu_va(uvm_gpu_semaphore_t *semaphore, uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 index = get_index(semaphore);
     NvU64 base_va = uvm_rm_mem_get_gpu_va(semaphore->page->memory, gpu);
     return base_va + UVM_SEMAPHORE_SIZE * index;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_gpu_semaphore_get_payload(uvm_gpu_semaphore_t *semaphore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return UVM_GPU_READ_ONCE(*semaphore->payload);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_semaphore_set_payload(uvm_gpu_semaphore_t *semaphore, NvU32 payload)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // Provide a guarantee that all memory accesses prior to setting the payload
     // won't be moved past it.
     // Use a big hammer mb() as set_payload() is not used in any performance path
@@ -369,12 +370,12 @@ void uvm_gpu_semaphore_set_payload(uvm_gpu_semaphore_t *semaphore, NvU32 payload
     // the GPU correctly even on non-SMP).
     mb();
     UVM_GPU_WRITE_ONCE(*semaphore->payload, payload);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // This function is intended to catch channels which have been left dangling in
 // trackers after their owning GPUs have been destroyed.
 static bool tracking_semaphore_check_gpu(uvm_gpu_tracking_semaphore_t *tracking_sem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_t *gpu = tracking_sem->semaphore.page->pool->gpu;
     uvm_gpu_t *table_gpu;
 
@@ -393,10 +394,10 @@ static bool tracking_semaphore_check_gpu(uvm_gpu_tracking_semaphore_t *tracking_
     // Return a boolean so this function can be used in assertions for
     // conditional compilation
     return true;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NV_STATUS uvm_gpu_tracking_semaphore_alloc(uvm_gpu_semaphore_pool_t *pool, uvm_gpu_tracking_semaphore_t *tracking_sem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
 
     memset(tracking_sem, 0, sizeof(*tracking_sem));
@@ -412,15 +413,15 @@ NV_STATUS uvm_gpu_tracking_semaphore_alloc(uvm_gpu_semaphore_pool_t *pool, uvm_g
     tracking_sem->queued_value = 0;
 
     return NV_OK;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_gpu_tracking_semaphore_free(uvm_gpu_tracking_semaphore_t *tracking_sem)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_gpu_semaphore_free(&tracking_sem->semaphore);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU64 update_completed_value_locked(uvm_gpu_tracking_semaphore_t *tracking_semaphore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 old_value = atomic64_read(&tracking_semaphore->completed_value);
     // The semaphore value is the bottom 32 bits of completed_value
     NvU32 old_sem_value = (NvU32)old_value;
@@ -494,10 +495,10 @@ static NvU64 update_completed_value_locked(uvm_gpu_tracking_semaphore_t *trackin
     smp_mb__after_atomic();
 
     return new_value;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU64 uvm_gpu_tracking_semaphore_update_completed_value(uvm_gpu_tracking_semaphore_t *tracking_semaphore)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 completed;
 
     // Check that the GPU which owns the semaphore is still present
@@ -510,10 +511,10 @@ NvU64 uvm_gpu_tracking_semaphore_update_completed_value(uvm_gpu_tracking_semapho
     uvm_spin_unlock(&tracking_semaphore->lock);
 
     return completed;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_gpu_tracking_semaphore_is_value_completed(uvm_gpu_tracking_semaphore_t *tracking_sem, NvU64 value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU64 completed = atomic64_read(&tracking_sem->completed_value);
 
     // Check that the GPU which owns the semaphore is still present
@@ -534,4 +535,4 @@ bool uvm_gpu_tracking_semaphore_is_value_completed(uvm_gpu_tracking_semaphore_t 
     }
 
     return uvm_gpu_tracking_semaphore_update_completed_value(tracking_sem) >= value;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2018 NVIDIA Corporation
 
@@ -35,7 +36,7 @@ typedef struct {
 } fault_buffer_entry_b069_t;
 
 static void clear_replayable_faults_interrupt(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     volatile NvU32 *reg;
     NvU32 mask;
 
@@ -45,10 +46,10 @@ static void clear_replayable_faults_interrupt(uvm_gpu_t *gpu)
     mask = gpu->fault_buffer_info.rm_info.replayable.replayableFaultMask;
 
     UVM_GPU_WRITE_ONCE(*reg, mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_clear_replayable_faults(uvm_gpu_t *gpu, NvU32 get)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     // TODO: Bug 2031935: See uvm_hal_volta_clear_access_counter_notifications
     if (!gpu->has_pulse_based_interrupts)
         return;
@@ -60,10 +61,10 @@ void uvm_hal_pascal_clear_replayable_faults(uvm_gpu_t *gpu, NvU32 get)
     // Write GET to force the re-evaluation of the interrupt condition after the
     // interrupt bit has been cleared.
     gpu->fault_buffer_hal->write_get(gpu, get);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_enable_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     volatile NvU32 *reg;
     NvU32 mask;
 
@@ -71,10 +72,10 @@ void uvm_hal_pascal_enable_replayable_faults(uvm_gpu_t *gpu)
     mask = gpu->fault_buffer_info.rm_info.replayable.replayableFaultMask;
 
     UVM_GPU_WRITE_ONCE(*reg, mask);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_disable_replayable_faults(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     volatile NvU32 *reg;
     NvU32 mask;
 
@@ -91,33 +92,33 @@ void uvm_hal_pascal_disable_replayable_faults(uvm_gpu_t *gpu)
         // interrupt condition is no longer true.
         clear_replayable_faults_interrupt(gpu);
     }
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_hal_pascal_fault_buffer_read_put(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 put = UVM_GPU_READ_ONCE(*gpu->fault_buffer_info.rm_info.replayable.pFaultBufferPut);
     UVM_ASSERT(put < gpu->fault_buffer_info.replayable.max_faults);
 
     return put;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_hal_pascal_fault_buffer_read_get(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 get = UVM_GPU_READ_ONCE(*gpu->fault_buffer_info.rm_info.replayable.pFaultBufferGet);
     UVM_ASSERT(get < gpu->fault_buffer_info.replayable.max_faults);
 
     return get;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_fault_buffer_write_get(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(index < gpu->fault_buffer_info.replayable.max_faults);
 
     UVM_GPU_WRITE_ONCE(*gpu->fault_buffer_info.rm_info.replayable.pFaultBufferGet, index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_fault_access_type_t get_fault_access_type(const NvU32 *fault_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 hw_access_type_value = READ_HWVALUE_MW(fault_entry, B069, FAULT_BUF_ENTRY, ACCESS_TYPE);
 
     switch (hw_access_type_value)
@@ -135,10 +136,10 @@ static uvm_fault_access_type_t get_fault_access_type(const NvU32 *fault_entry)
     UVM_ASSERT_MSG(false, "Invalid fault access type value: %d\n", hw_access_type_value);
 
     return UVM_FAULT_ACCESS_TYPE_COUNT;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_fault_type_t get_fault_type(const NvU32 *fault_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 hw_fault_type_value = READ_HWVALUE_MW(fault_entry, B069, FAULT_BUF_ENTRY, FAULT_TYPE);
 
     switch (hw_fault_type_value)
@@ -179,10 +180,10 @@ static uvm_fault_type_t get_fault_type(const NvU32 *fault_entry)
     UVM_ASSERT_MSG(false, "Invalid fault type value: %d\n", hw_fault_type_value);
 
     return UVM_FAULT_TYPE_COUNT;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_fault_client_type_t get_fault_client_type(const NvU32 *fault_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 hw_client_type_value = READ_HWVALUE_MW(fault_entry, B069, FAULT_BUF_ENTRY, MMU_CLIENT_TYPE);
 
     switch (hw_client_type_value)
@@ -196,10 +197,10 @@ static uvm_fault_client_type_t get_fault_client_type(const NvU32 *fault_entry)
     UVM_ASSERT_MSG(false, "Invalid mmu client type value: %d\n", hw_client_type_value);
 
     return UVM_FAULT_CLIENT_TYPE_COUNT;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static uvm_aperture_t get_fault_inst_aperture(NvU32 *fault_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 hw_aperture_value = READ_HWVALUE_MW(fault_entry, B069, FAULT_BUF_ENTRY, INST_APERTURE);
 
     switch (hw_aperture_value)
@@ -214,10 +215,10 @@ static uvm_aperture_t get_fault_inst_aperture(NvU32 *fault_entry)
     UVM_ASSERT_MSG(false, "Invalid inst aperture value: %d\n", hw_aperture_value);
 
     return UVM_APERTURE_MAX;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 static NvU32 *get_fault_buffer_entry(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     fault_buffer_entry_b069_t *buffer_start;
     NvU32 *fault_entry;
 
@@ -227,10 +228,10 @@ static NvU32 *get_fault_buffer_entry(uvm_gpu_t *gpu, NvU32 index)
     fault_entry = (NvU32 *)&buffer_start[index];
 
     return fault_entry;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_fault_buffer_parse_entry(uvm_gpu_t *gpu, NvU32 index, uvm_fault_buffer_entry_t *buffer_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NV_STATUS status;
     NvU32 *fault_entry;
     NvU64 addr_hi, addr_lo;
@@ -295,10 +296,10 @@ void uvm_hal_pascal_fault_buffer_parse_entry(uvm_gpu_t *gpu, NvU32 index, uvm_fa
 
     // Automatically clear valid bit for the entry in the fault buffer
     uvm_hal_pascal_fault_buffer_entry_clear_valid(gpu, index);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 bool uvm_hal_pascal_fault_buffer_entry_is_valid(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 *fault_entry;
     bool is_valid;
 
@@ -307,25 +308,25 @@ bool uvm_hal_pascal_fault_buffer_entry_is_valid(uvm_gpu_t *gpu, NvU32 index)
     is_valid = READ_HWVALUE_MW(fault_entry, B069, FAULT_BUF_ENTRY, VALID);
 
     return is_valid;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_fault_buffer_entry_clear_valid(uvm_gpu_t *gpu, NvU32 index)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     NvU32 *fault_entry;
 
     fault_entry = get_fault_buffer_entry(gpu, index);
 
     WRITE_HWCONST_MW(fault_entry, B069, FAULT_BUF_ENTRY, VALID, FALSE);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 NvU32 uvm_hal_pascal_fault_buffer_entry_size(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return NVB069_FAULT_BUF_SIZE;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 void uvm_hal_pascal_fault_buffer_parse_non_replayable_entry_unsupported(uvm_gpu_t *gpu,
                                                                         void *fault_packet,
                                                                         uvm_fault_buffer_entry_t *buffer_entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(false, "fault_buffer_parse_non_replayable_entry called on Pascal GPU\n");
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

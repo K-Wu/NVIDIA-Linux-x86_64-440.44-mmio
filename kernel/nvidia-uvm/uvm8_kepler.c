@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016 NVIDIA Corporation
 
@@ -26,7 +27,7 @@
 #include "uvm8_mem.h"
 
 void uvm_hal_kepler_arch_init_properties(uvm_gpu_t *gpu)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     gpu->big_page.swizzling = true;
 
     // 128 GB should be enough for all current RM allocations and leaves enough
@@ -72,4 +73,4 @@ void uvm_hal_kepler_arch_init_properties(uvm_gpu_t *gpu)
 
 
 
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}

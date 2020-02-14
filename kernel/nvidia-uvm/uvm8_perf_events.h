@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2016-2019 NVIDIA Corporation
 
@@ -265,7 +266,7 @@ static inline void uvm_perf_event_notify_migration(uvm_perf_va_space_events_t *v
                                                    uvm_va_block_transfer_mode_t transfer_mode,
                                                    uvm_make_resident_cause_t cause,
                                                    uvm_make_resident_context_t *make_resident_context)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_event_data_t event_data =
         {
             .migration =
@@ -283,7 +284,7 @@ static inline void uvm_perf_event_notify_migration(uvm_perf_va_space_events_t *v
         };
 
     uvm_perf_event_notify(va_space_events, UVM_PERF_EVENT_MIGRATION, &event_data);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper to notify gpu fault events
 static inline void uvm_perf_event_notify_gpu_fault(uvm_perf_va_space_events_t *va_space_events,
@@ -292,7 +293,7 @@ static inline void uvm_perf_event_notify_gpu_fault(uvm_perf_va_space_events_t *v
                                                    uvm_fault_buffer_entry_t *buffer_entry,
                                                    NvU32 batch_id,
                                                    bool is_duplicate)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_event_data_t event_data =
         {
             .fault =
@@ -308,7 +309,7 @@ static inline void uvm_perf_event_notify_gpu_fault(uvm_perf_va_space_events_t *v
     event_data.fault.gpu.is_duplicate = is_duplicate;
 
     uvm_perf_event_notify(va_space_events, UVM_PERF_EVENT_FAULT, &event_data);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper to notify cpu fault events
 static inline void uvm_perf_event_notify_cpu_fault(uvm_perf_va_space_events_t *va_space_events,
@@ -316,7 +317,7 @@ static inline void uvm_perf_event_notify_cpu_fault(uvm_perf_va_space_events_t *v
                                                    NvU64 fault_va,
                                                    bool is_write,
                                                    NvU64 pc)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_event_data_t event_data =
         {
             .fault =
@@ -332,7 +333,7 @@ static inline void uvm_perf_event_notify_cpu_fault(uvm_perf_va_space_events_t *v
      event_data.fault.cpu.pc       = pc,
 
     uvm_perf_event_notify(va_space_events, UVM_PERF_EVENT_FAULT, &event_data);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper to notify permission revocation
 static inline void uvm_perf_event_notify_revocation(uvm_perf_va_space_events_t *va_space_events,
@@ -342,7 +343,7 @@ static inline void uvm_perf_event_notify_revocation(uvm_perf_va_space_events_t *
                                                     NvU64 bytes,
                                                     uvm_prot_t old_prot,
                                                     uvm_prot_t new_prot)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_perf_event_data_t event_data =
         {
             .revocation =
@@ -357,6 +358,6 @@ static inline void uvm_perf_event_notify_revocation(uvm_perf_va_space_events_t *
         };
 
     uvm_perf_event_notify(va_space_events, UVM_PERF_EVENT_REVOCATION, &event_data);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif

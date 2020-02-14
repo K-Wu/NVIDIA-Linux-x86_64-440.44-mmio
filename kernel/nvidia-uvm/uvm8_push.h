@@ -1,3 +1,4 @@
+#include <linux/kernel.h>
 /*******************************************************************************
     Copyright (c) 2015-2019 NVIDIA Corporation
 
@@ -254,13 +255,13 @@ NV_STATUS uvm_push_end_and_wait(uvm_push_t *push);
 // Get the tracker entry tracking the push
 // The push has to be finished before calling this function.
 static void uvm_push_get_tracker_entry(uvm_push_t *push, uvm_tracker_entry_t *entry)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(push->channel_tracking_value != 0);
     UVM_ASSERT(push->channel != NULL);
 
     entry->channel = push->channel;
     entry->value = push->channel_tracking_value;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Acquire all the entries in the tracker.
 // Subsequently pushed GPU work will not start before all the work tracked by
@@ -270,31 +271,31 @@ void uvm_push_acquire_tracker(uvm_push_t *push, uvm_tracker_t *tracker);
 
 // Set a push flag
 static void uvm_push_set_flag(uvm_push_t *push, uvm_push_flag_t flag)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(flag < UVM_PUSH_FLAG_COUNT, "flag %u\n", (unsigned)flag);
 
     __set_bit(flag, push->flags);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get and reset (if set) a push flag
 static bool uvm_push_get_and_reset_flag(uvm_push_t *push, uvm_push_flag_t flag)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT_MSG(flag < UVM_PUSH_FLAG_COUNT, "flag %u\n", (unsigned)flag);
 
     return __test_and_clear_bit(flag, push->flags);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get the size of the push so far
 static NvU32 uvm_push_get_size(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (push->next - push->begin) * sizeof(*push->next);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Check whether the push still has free_space bytes available to be pushed
 static bool uvm_push_has_space(uvm_push_t *push, NvU32 free_space)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return (UVM_MAX_PUSH_SIZE - uvm_push_get_size(push)) >= free_space;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Fake push begin and end
 //
@@ -318,11 +319,11 @@ void uvm_push_end_fake(uvm_push_t *push);
 // Also see uvm_push_get_single_inline_buffer() for a simple way of adding a
 // specified amount of data in one step.
 static void uvm_push_inline_data_begin(uvm_push_t *push, uvm_push_inline_data_t *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     data->push = push;
     // +1 for the NOOP method inserted at inline_data_end()
     data->next_data = (char*)(push->next + 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // End an line data fragment in the push
 //
@@ -333,9 +334,9 @@ uvm_gpu_address_t uvm_push_inline_data_end(uvm_push_inline_data_t *data);
 //
 // Can only be used while an inline data fragment is on-going.
 static size_t uvm_push_inline_data_size(uvm_push_inline_data_t *data)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     return data->next_data - (char*)(data->push->next + 1);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Get a buffer of size bytes of inline data in the push
 //
@@ -359,21 +360,21 @@ void *uvm_push_get_single_inline_buffer(uvm_push_t *push, size_t size, uvm_gpu_a
 
 // Helper that copies size bytes of data from src into the inline data fragment
 static void uvm_push_inline_data_add(uvm_push_inline_data_t *data, const void *src, size_t size)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     memcpy(uvm_push_inline_data_get(data, size), src, size);
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper that copies 4 bytes of data given by value into the inline data fragment
 static void uvm_push_inline_data_add_4(uvm_push_inline_data_t *data, NvU32 value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_inline_data_add(data, &value, sizeof(value));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Helper that copies 8 bytes of data given by value into the inline data fragment
 static void uvm_push_inline_data_add_8(uvm_push_inline_data_t *data, NvU64 value)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_push_inline_data_add(data, &value, sizeof(value));
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Push an operation releasing a timestamp into the pushbuffer.
 //
@@ -383,15 +384,15 @@ static void uvm_push_inline_data_add_8(uvm_push_inline_data_t *data, NvU64 value
 NvU64 *uvm_push_timestamp(uvm_push_t *push);
 
 static uvm_gpu_t *uvm_push_get_gpu(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     UVM_ASSERT(push->gpu);
 
     return push->gpu;
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 // Retrieve the push info object for a push that has already started
 static uvm_push_info_t *uvm_push_info_from_push(uvm_push_t *push)
-{
+{pr_info("UVM entering %s in %s(LINE:%s) dumping stack\n",__func__,__FILE__,__LINE__);dump_stack();pr_info("UVM entering %s in %s(LINE:%s) dumped stack\n",__func__,__FILE__,__LINE__);
     uvm_channel_t *channel = push->channel;
 
     UVM_ASSERT(channel != NULL);
@@ -400,6 +401,6 @@ static uvm_push_info_t *uvm_push_info_from_push(uvm_push_t *push)
     UVM_ASSERT_MSG(push->push_info_index < channel->num_gpfifo_entries, "index %u\n", push->push_info_index);
 
     return &channel->push_infos[push->push_info_index];
-}
+pr_info("UVM leaving %s in %s(LINE:%s)\n",__func__,__FILE__,__LINE__);}
 
 #endif // __UVM8_PUSH_H__
